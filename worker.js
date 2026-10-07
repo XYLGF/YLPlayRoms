@@ -1,3 +1,22 @@
+// ============================================================
+// 密码哈希工具：SHA-256 + 盐
+// ============================================================
+async function hashPassword(password, salt) {
+  const encoder = new TextEncoder();
+  const data = encoder.encode(salt + ':' + password);
+  const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+  return Array.from(new Uint8Array(hashBuffer))
+    .map(b => b.toString(16).padStart(2, '0'))
+    .join('');
+}
+
+function json(data, status = 200, headers = {}) {
+  return new Response(JSON.stringify(data), {
+    status,
+    headers: { 'Content-Type': 'application/json', ...headers }
+  });
+}
+
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
@@ -12,59 +31,133 @@ export default {
 
     if (method === 'OPTIONS') return new Response(null, { headers: cors });
 
+    // 非 API 请求交给静态资源
     if (!path.startsWith('/api/')) return env.ASSETS.fetch(request);
 
     try {
-      // ========== 登录 / 注册 ==========
-      if (path === '/api/login' && method === 'POST') {
+      // ==========================================================
+      // 注册
+      // ==========================================================
+      if (path === '/api/register' && method === 'POST') {
         const { username, password, email } = await request.json();
-        if (!username || !password) return json({ success: false, message: '用户名和密码不能为空' }, 400, cors);
-
-        let user = await env.DB.prepare('SELECT * FROM users WHERE username = ?').bind(username).first();
-        if (user) {
-          if (user.password !== password) return json({ success: false, message: '密码错误' }, 401, cors);
-        } else {
-          const now = Date.now();
-          await env.DB.prepare('INSERT INTO users (username, password, email, created_at) VALUES (?, ?, ?, ?)')
-            .bind(username, password, email || '', now).run();
-          user = { username, email, created_at: now };
+        if (!username || !password) {
+          return json({ success: false, message: '用户名和密码不能为空' }, 400, cors);
         }
-        return json({ success: true, user }, 200, cors);
+        if (username.length < 2 || username.length > 20) {
+          return json({ success: false, message: '用户名长度 2-20 位' }, 400, cors);
+        }
+        if (password.length < 4) {
+          return json({ success: false, message: '密码至少 4 位' }, 400, cors);
+        }
+
+        const exist = await env.DB.prepare('SELECT id FROM users WHERE username = ?')
+          .bind(username).first();
+        if (exist) {
+          return json({ success: false, message: '用户名已被注册' }, 409, cors);
+        }
+
+        const salt = crypto.randomUUID();
+        const hashed = await hashPassword(password, salt);
+        const now = Date.now();
+
+        await env.DB.prepare(
+          'INSERT INTO users (username, password, salt, email, created_at) VALUES (?, ?, ?, ?, ?)'
+        ).bind(username, hashed, salt, email || '', now).run();
+
+        return json({ success: true, message: '注册成功' }, 200, cors);
       }
 
-      // ========== 用户等级 ==========
+      // ==========================================================
+      // 登录
+      // ==========================================================
+      if (path === '/api/login' && method === 'POST') {
+        const { username, password } = await request.json();
+        if (!username || !password) {
+          return json({ success: false, message: '用户名和密码不能为空' }, 400, cors);
+        }
+
+        const user = await env.DB.prepare('SELECT * FROM users WHERE username = ?')
+          .bind(username).first();
+
+        if (!user) {
+          return json({ success: false, message: '用户不存在，请先注册' }, 404, cors);
+        }
+
+        // 兼容旧明文用户（过渡逻辑）
+        // 如果数据库里的 password 长度不是 64（SHA-256 长度），说明是旧的明文密码
+        let isMatch = false;
+        if (user.salt && user.password.length === 64) {
+          // 新用户：哈希比对
+          const hashed = await hashPassword(password, user.salt);
+          isMatch = (hashed === user.password);
+        } else {
+          // 旧用户：明文比对，成功后自动升级为哈希
+          if (user.password === password) {
+            isMatch = true;
+            const salt = crypto.randomUUID();
+            const hashed = await hashPassword(password, salt);
+            await env.DB.prepare(
+              'UPDATE users SET password = ?, salt = ? WHERE id = ?'
+            ).bind(hashed, salt, user.id).run();
+          }
+        }
+
+        if (!isMatch) {
+          return json({ success: false, message: '密码错误' }, 401, cors);
+        }
+
+        return json({
+          success: true,
+          user: { username: user.username, email: user.email, created_at: user.created_at }
+        }, 200, cors);
+      }
+
+      // ==========================================================
+      // 用户等级
+      // ==========================================================
       if (path === '/api/user/level' && method === 'GET') {
         const username = url.searchParams.get('username');
         if (!username) return json({ success: false, message: '缺少用户名' }, 400, cors);
-        const user = await env.DB.prepare('SELECT created_at FROM users WHERE username = ?').bind(username).first();
+
+        const user = await env.DB.prepare('SELECT created_at FROM users WHERE username = ?')
+          .bind(username).first();
         if (!user) return json({ success: false, message: '用户不存在' }, 404, cors);
 
-        const roms = await env.DB.prepare('SELECT COUNT(*) as c FROM roms WHERE author = ?').bind(username).first();
+        const roms = await env.DB.prepare('SELECT COUNT(*) as c FROM roms WHERE author = ?')
+          .bind(username).first();
         const hours = (Date.now() - user.created_at) / 3600000;
         let level = 0;
         if (roms.c > 0 && hours >= 1) level = 1;
         if (roms.c >= 3 && hours >= 24) level = 2;
         if (roms.c >= 5 && hours >= 72) level = 3;
+
         return json({ success: true, level, hours, romCount: roms.c }, 200, cors);
       }
 
-      // ========== 获取 ROM 列表 ==========
+      // ==========================================================
+      // 获取 ROM 列表
+      // ==========================================================
       if (path === '/api/roms' && method === 'GET') {
-        const { results } = await env.DB.prepare('SELECT * FROM roms ORDER BY created_at DESC').all();
+        const { results } = await env.DB.prepare(
+          'SELECT * FROM roms ORDER BY created_at DESC'
+        ).all();
         return json(results, 200, cors);
       }
 
-      // ========== 获取单个 ROM ==========
+      // ==========================================================
+      // 获取单个 ROM（含浏览 +1）
+      // ==========================================================
       if (path.startsWith('/api/rom/') && method === 'GET') {
         const id = path.split('/').pop();
         const rom = await env.DB.prepare('SELECT * FROM roms WHERE id = ?').bind(id).first();
         if (!rom) return json({ success: false, message: 'ROM 不存在' }, 404, cors);
-        // 浏览 +1
         await env.DB.prepare('UPDATE roms SET views = views + 1 WHERE id = ?').bind(id).run();
         return json(rom, 200, cors);
       }
 
-      // ========== 发布 ROM ==========
+      // ==========================================================
+      // 发布 ROM
+      // ==========================================================
       if (path === '/api/roms' && method === 'POST') {
         const body = await request.json();
         const { name, version, developer, url: romUrl, condition, code, author } = body;
@@ -78,52 +171,76 @@ export default {
         return json({ success: true }, 200, cors);
       }
 
-      // ========== 我发布的 ==========
+      // ==========================================================
+      // 我发布的 ROM
+      // ==========================================================
       if (path === '/api/roms/my' && method === 'GET') {
         const username = url.searchParams.get('username');
         if (!username) return json([], 200, cors);
-        const { results } = await env.DB.prepare('SELECT * FROM roms WHERE author = ? ORDER BY created_at DESC').bind(username).all();
+        const { results } = await env.DB.prepare(
+          'SELECT * FROM roms WHERE author = ? ORDER BY created_at DESC'
+        ).bind(username).all();
         return json(results, 200, cors);
       }
 
-      // ========== 下载计数 ==========
+      // ==========================================================
+      // 下载计数
+      // ==========================================================
       if (path === '/api/rom/download' && method === 'POST') {
         const { romId, username } = await request.json();
         if (!romId) return json({ success: false, message: '缺少ROM ID' }, 400, cors);
-        await env.DB.prepare('INSERT INTO download_logs (rom_id, username, created_at) VALUES (?, ?, ?)')
-          .bind(romId, username || '', Date.now()).run();
-        await env.DB.prepare('UPDATE roms SET downloads = downloads + 1 WHERE id = ?').bind(romId).run();
+        await env.DB.prepare(
+          'INSERT INTO download_logs (rom_id, username, created_at) VALUES (?, ?, ?)'
+        ).bind(romId, username || '', Date.now()).run();
+        await env.DB.prepare('UPDATE roms SET downloads = downloads + 1 WHERE id = ?')
+          .bind(romId).run();
         const rom = await env.DB.prepare('SELECT url FROM roms WHERE id = ?').bind(romId).first();
         return json({ success: true, url: rom ? rom.url : '' }, 200, cors);
       }
 
-      // ========== 收藏 ==========
+      // ==========================================================
+      // 收藏切换
+      // ==========================================================
       if (path === '/api/favorite' && method === 'POST') {
         const { romId, username } = await request.json();
         if (!romId || !username) return json({ success: false, message: '参数缺失' }, 400, cors);
-        const exist = await env.DB.prepare('SELECT id FROM favorites WHERE username = ? AND rom_id = ?').bind(username, romId).first();
+
+        const exist = await env.DB.prepare(
+          'SELECT id FROM favorites WHERE username = ? AND rom_id = ?'
+        ).bind(username, romId).first();
+
         if (exist) {
-          await env.DB.prepare('DELETE FROM favorites WHERE username = ? AND rom_id = ?').bind(username, romId).run();
-          await env.DB.prepare('UPDATE roms SET favorites_count = favorites_count - 1 WHERE id = ?').bind(romId).run();
+          await env.DB.prepare('DELETE FROM favorites WHERE username = ? AND rom_id = ?')
+            .bind(username, romId).run();
+          await env.DB.prepare('UPDATE roms SET favorites_count = favorites_count - 1 WHERE id = ?')
+            .bind(romId).run();
           return json({ success: true, favorited: false }, 200, cors);
         } else {
-          await env.DB.prepare('INSERT INTO favorites (username, rom_id, created_at) VALUES (?, ?, ?)')
-            .bind(username, romId, Date.now()).run();
-          await env.DB.prepare('UPDATE roms SET favorites_count = favorites_count + 1 WHERE id = ?').bind(romId).run();
+          await env.DB.prepare(
+            'INSERT INTO favorites (username, rom_id, created_at) VALUES (?, ?, ?)'
+          ).bind(username, romId, Date.now()).run();
+          await env.DB.prepare('UPDATE roms SET favorites_count = favorites_count + 1 WHERE id = ?')
+            .bind(romId).run();
           return json({ success: true, favorited: true }, 200, cors);
         }
       }
 
-      // ========== 检查是否已收藏 ==========
+      // ==========================================================
+      // 检查是否已收藏
+      // ==========================================================
       if (path === '/api/favorite/check' && method === 'GET') {
         const username = url.searchParams.get('username');
         const romId = url.searchParams.get('romId');
         if (!username || !romId) return json({ favorited: false }, 200, cors);
-        const exist = await env.DB.prepare('SELECT id FROM favorites WHERE username = ? AND rom_id = ?').bind(username, romId).first();
+        const exist = await env.DB.prepare(
+          'SELECT id FROM favorites WHERE username = ? AND rom_id = ?'
+        ).bind(username, romId).first();
         return json({ favorited: !!exist }, 200, cors);
       }
 
-      // ========== 我的收藏 ==========
+      // ==========================================================
+      // 我的收藏
+      // ==========================================================
       if (path === '/api/favorites/my' && method === 'GET') {
         const username = url.searchParams.get('username');
         if (!username) return json([], 200, cors);
@@ -133,19 +250,29 @@ export default {
         return json(results, 200, cors);
       }
 
-      // ========== 评论 ==========
+      // ==========================================================
+      // 评论列表
+      // ==========================================================
       if (path === '/api/comments' && method === 'GET') {
         const romId = url.searchParams.get('romId');
         if (!romId) return json([], 200, cors);
-        const { results } = await env.DB.prepare('SELECT * FROM comments WHERE rom_id = ? ORDER BY created_at DESC').bind(romId).all();
+        const { results } = await env.DB.prepare(
+          'SELECT * FROM comments WHERE rom_id = ? ORDER BY created_at DESC'
+        ).bind(romId).all();
         return json(results, 200, cors);
       }
 
+      // ==========================================================
+      // 发布评论
+      // ==========================================================
       if (path === '/api/comments' && method === 'POST') {
         const { romId, username, content } = await request.json();
-        if (!romId || !username || !content) return json({ success: false, message: '参数缺失' }, 400, cors);
-        await env.DB.prepare('INSERT INTO comments (rom_id, username, content, created_at) VALUES (?, ?, ?, ?)')
-          .bind(romId, username, content, Date.now()).run();
+        if (!romId || !username || !content) {
+          return json({ success: false, message: '参数缺失' }, 400, cors);
+        }
+        await env.DB.prepare(
+          'INSERT INTO comments (rom_id, username, content, created_at) VALUES (?, ?, ?, ?)'
+        ).bind(romId, username, content, Date.now()).run();
         return json({ success: true }, 200, cors);
       }
 
@@ -156,10 +283,3 @@ export default {
     }
   }
 };
-
-function json(data, status = 200, headers = {}) {
-  return new Response(JSON.stringify(data), {
-    status,
-    headers: { 'Content-Type': 'application/json', ...headers }
-  });
-}

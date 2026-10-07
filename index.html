@@ -176,7 +176,8 @@
       outline: none; background: transparent;
     }
     .auth-field .optional { font-size: 13px; font-weight: 400; color: #666; width: 80px; text-align: right; flex-shrink: 0; }
-    .auth-box .btn { margin-top: 20px; }
+    .auth-btn-row { display: flex; gap: 12px; margin-top: 20px; }
+    .auth-btn-row .btn { flex: 1; }
 
     /* ===== 个人中心 ===== */
     .profile-header {
@@ -259,7 +260,6 @@
 </head>
 <body>
 
-  <!-- ===== 顶部导航 ===== -->
   <header class="navbar">
     <div class="nav-logo">YL Play Roms</div>
     <div class="nav-avatar" id="navAvatar" onclick="onAvatarClick()">?</div>
@@ -284,7 +284,7 @@
   <!-- ===== 系统详情 ===== -->
   <div class="page" id="pageDetail">
     <div class="back-bar">
-      <button class="back-btn" onclick="switchPage('pageMarket')">←</button>
+      <button class="back-btn" onclick="goMarket()">←</button>
       <div class="back-title">系统详情</div>
     </div>
     <div class="detail-logo" id="detailLogo"></div>
@@ -324,10 +324,13 @@
     <div class="auth-container">
       <div class="auth-title">注册@登录</div>
       <div class="auth-box">
-        <div class="auth-field"><label>用户名</label><input type="text" id="authUsername"></div>
-        <div class="auth-field"><label>密码</label><input type="password" id="authPassword"></div>
+        <div class="auth-field"><label>用户名</label><input type="text" id="authUsername" autocomplete="username"></div>
+        <div class="auth-field"><label>密码</label><input type="password" id="authPassword" autocomplete="current-password"></div>
         <div class="auth-field"><span class="optional">邮箱(非必填)</span><input type="email" id="authEmail"></div>
-        <button class="btn btn-block" onclick="handleLogin()">登录</button>
+        <div class="auth-btn-row">
+          <button class="btn" onclick="handleLogin()">登录</button>
+          <button class="btn" onclick="handleRegister()">注册</button>
+        </div>
       </div>
     </div>
   </div>
@@ -342,13 +345,15 @@
     <div class="tabs">
       <div class="tab active" onclick="switchTab('published')">我发布的</div>
       <div class="tab" onclick="switchTab('favorites')">我的收藏</div>
-      <div class="tab" onclick="switchTab('logout')">退出登录</div>
     </div>
     <div class="tab-content active" id="tabPublished">
       <div id="myRomList"></div>
     </div>
     <div class="tab-content" id="tabFavorites">
       <div id="myFavList"></div>
+    </div>
+    <div style="padding: 20px;">
+      <button class="btn btn-block" onclick="handleLogout()">退出登录</button>
     </div>
   </div>
 
@@ -359,7 +364,7 @@
       <div class="publish-field"><label>名称</label><input type="text" id="pubName"></div>
       <div class="publish-field"><label>版本</label><input type="text" id="pubVersion"></div>
       <div class="publish-field"><label>开发者</label><input type="text" id="pubDeveloper"></div>
-      <div class="publish-field"><label>下载地址</label><input type="text" id="pubUrl"></div>
+      <div class="publish-field"><label>下载地址</label><input type="text" id="pubUrl" placeholder="例如 example.com/rom.zip"></div>
       <div class="publish-field"><label>下载条件</label></div>
       <div class="publish-box">
         <div class="publish-options">
@@ -384,13 +389,24 @@
     // ============================================================
     // 状态
     // ============================================================
-    let currentUser = null;   // { username }
-    let currentRom = null;    // 当前查看的 ROM
+    let currentUser = null;
+    let currentRom = null;
     let currentTab = 'published';
-    let downloadTimer = null;
+    let marketData = [];
+    let publishCondition = 'free';
 
     // ============================================================
-    // 本地持久化
+    // URL 标准化 —— 修复跳转拼接到当前域名的问题
+    // ============================================================
+    function normalizeUrl(url) {
+      if (!url) return '';
+      url = String(url).trim();
+      if (/^[a-zA-Z][a-zA-Z0-9+.-]*:\/\//.test(url)) return url;
+      return 'https://' + url;
+    }
+
+    // ============================================================
+    // 本地持久化（只存"当前登录的是谁"，不存账号数据）
     // ============================================================
     function saveUser() {
       if (currentUser) localStorage.setItem('yl_user', JSON.stringify(currentUser));
@@ -422,18 +438,26 @@
       document.querySelector('.nav-logo').textContent = 'YL Play Roms' + (pages[id] ? ' · ' + pages[id] : '');
 
       if (id === 'pageMarket') loadMarket();
-      if (id === 'pageProfile') loadProfile();
+      if (id === 'pageProfile' && currentUser) loadProfile();
     }
 
+    // 强制跳回市场（绕过 switchPage 异步干扰）
+    function forceGoMarket() {
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      document.getElementById('pageMarket').classList.add('active');
+      window.scrollTo(0, 0);
+      document.querySelector('.nav-logo').textContent = 'YL Play Roms · Rom市场';
+      loadMarket();
+    }
+
+    function goMarket() { forceGoMarket(); }
+
     // ============================================================
-    // 头像点击逻辑
+    // 头像点击
     // ============================================================
     function onAvatarClick() {
-      if (currentUser) {
-        switchPage('pageProfile');
-      } else {
-        switchPage('pageAuth');
-      }
+      if (currentUser) switchPage('pageProfile');
+      else switchPage('pageAuth');
     }
 
     function onPublishClick() {
@@ -468,16 +492,9 @@
 
     function updateAvatarUI() {
       const av = document.getElementById('navAvatar');
-      if (currentUser) {
-        av.textContent = currentUser.username.charAt(0).toUpperCase();
-      } else {
-        av.textContent = '?';
-      }
+      av.textContent = currentUser ? currentUser.username.charAt(0).toUpperCase() : '?';
     }
 
-    // ============================================================
-    // 默认书籍 SVG
-    // ============================================================
     const BOOK_SVG = `
       <svg viewBox="0 0 64 64" fill="none" stroke="#111111" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
         <path d="M8 12 Q8 8 12 8 L32 8 L32 56 L12 56 Q8 56 8 52 Z"/>
@@ -491,8 +508,6 @@
     // ============================================================
     // 市场
     // ============================================================
-    let marketData = [];
-
     async function loadMarket() {
       const list = document.getElementById('marketList');
       try {
@@ -518,7 +533,6 @@
               <h3>${escapeHtml(rom.name)}</h3>
               <p>${escapeHtml(rom.developer || '未知开发者')}</p>
             </div>
-            <button class="btn btn-sm" onclick="event.stopPropagation();openDetail(${rom.id})">下载</button>
           </div>
         </div>
       `).join('');
@@ -555,7 +569,6 @@
         document.getElementById('detailViews').textContent = rom.views || 0;
         document.getElementById('detailFavs').textContent = rom.favorites_count || 0;
 
-        // 检查收藏状态
         if (currentUser) {
           try {
             const fRes = await fetch(API_BASE + '/api/favorite/check?username=' + encodeURIComponent(currentUser.username) + '&romId=' + romId);
@@ -575,13 +588,20 @@
       }
     }
 
-    // 下载：停留 1 秒后计数
+    // ============================================================
+    // 下载 —— 修复跳转
+    // ============================================================
     function onDownloadClick() {
       if (!currentRom) return;
-      const romId = currentRom.id;
-      const url = currentRom.url;
 
-      // 条件检查
+      const romId = currentRom.id;
+      const finalUrl = normalizeUrl(currentRom.url);
+
+      if (!finalUrl) {
+        showToast('下载地址无效');
+        return;
+      }
+
       if (currentRom.condition === 'code') {
         const input = prompt('请输入激活码：');
         if (input === null) return;
@@ -591,22 +611,26 @@
         }
       }
 
-      showToast('准备下载...');
-      downloadTimer = setTimeout(async () => {
-        try {
-          await fetch(API_BASE + '/api/rom/download', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ romId, username: currentUser ? currentUser.username : '' })
-          });
-        } catch (e) {}
-        // 打开链接
-        window.open(url, '_blank');
-        showToast('开始下载');
-      }, 1000);
+      // 用 <a> 标签方式打开，保证绝对路径
+      const a = document.createElement('a');
+      a.href = finalUrl;
+      a.target = '_blank';
+      a.rel = 'noopener noreferrer';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+
+      // 异步上报计数
+      fetch(API_BASE + '/api/rom/download', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ romId, username: currentUser ? currentUser.username : '' })
+      }).catch(() => {});
     }
 
+    // ============================================================
     // 收藏
+    // ============================================================
     async function onFavoriteClick() {
       if (!currentUser) {
         showToast('请先登录');
@@ -624,7 +648,6 @@
         if (data.success) {
           document.getElementById('detailFavBtn').textContent = data.favorited ? '已收藏' : '收藏';
           showToast(data.favorited ? '已加入收藏' : '已取消收藏');
-          // 刷新收藏数
           const romRes = await fetch(API_BASE + '/api/rom/' + currentRom.id);
           const rom = await romRes.json();
           document.getElementById('detailFavs').textContent = rom.favorites_count || 0;
@@ -691,19 +714,17 @@
     }
 
     // ============================================================
-    // 登录
+    // 登录 / 注册
     // ============================================================
     async function handleLogin() {
       const username = document.getElementById('authUsername').value.trim();
       const password = document.getElementById('authPassword').value.trim();
-      const email = document.getElementById('authEmail').value.trim();
       if (!username || !password) { showToast('请填写用户名和密码'); return; }
-
       try {
         const res = await fetch(API_BASE + '/api/login', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ username, password, email })
+          body: JSON.stringify({ username, password })
         });
         const data = await res.json();
         if (data.success) {
@@ -720,13 +741,35 @@
       }
     }
 
+    async function handleRegister() {
+      const username = document.getElementById('authUsername').value.trim();
+      const password = document.getElementById('authPassword').value.trim();
+      const email = document.getElementById('authEmail').value.trim();
+      if (!username || !password) { showToast('请填写用户名和密码'); return; }
+      try {
+        const res = await fetch(API_BASE + '/api/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, password, email })
+        });
+        const data = await res.json();
+        if (data.success) {
+          showToast('注册成功，请登录');
+        } else {
+          showToast(data.message || '注册失败');
+        }
+      } catch (e) {
+        showToast('网络错误');
+      }
+    }
+
     // ============================================================
     // 个人中心
     // ============================================================
     function switchTab(tab) {
       currentTab = tab;
       document.querySelectorAll('.tab').forEach((t, i) => {
-        t.classList.toggle('active', ['published', 'favorites', 'logout'][i] === tab);
+        t.classList.toggle('active', ['published', 'favorites'][i] === tab);
       });
       document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
       if (tab === 'published') {
@@ -735,14 +778,15 @@
       } else if (tab === 'favorites') {
         document.getElementById('tabFavorites').classList.add('active');
         loadMyFavorites();
-      } else if (tab === 'logout') {
-        // 退出登录
-        currentUser = null;
-        saveUser();
-        updateAvatarUI();
-        showToast('已退出登录');
-        switchPage('pageMarket');
       }
+    }
+
+    function handleLogout() {
+      currentUser = null;
+      saveUser();
+      updateAvatarUI();
+      forceGoMarket();
+      showToast('已退出登录');
     }
 
     async function loadProfile() {
@@ -751,7 +795,6 @@
       document.getElementById('profileName').textContent = name;
       document.getElementById('profileAvatar').textContent = name.charAt(0).toUpperCase();
 
-      // 获取等级
       try {
         const res = await fetch(API_BASE + '/api/user/level?username=' + encodeURIComponent(name));
         const data = await res.json();
@@ -818,8 +861,6 @@
     // ============================================================
     // 发布
     // ============================================================
-    let publishCondition = 'free';
-
     function selectPublishOption(type) {
       publishCondition = type;
       document.getElementById('optFree').classList.toggle('selected', type === 'free');
@@ -832,9 +873,12 @@
       const name = document.getElementById('pubName').value.trim();
       const version = document.getElementById('pubVersion').value.trim();
       const developer = document.getElementById('pubDeveloper').value.trim();
-      const url = document.getElementById('pubUrl').value.trim();
+      let url = document.getElementById('pubUrl').value.trim();
       const code = document.getElementById('pubCode').value.trim();
+
       if (!name || !version || !developer || !url) { showToast('请填写完整信息'); return; }
+
+      url = normalizeUrl(url);
 
       try {
         const res = await fetch(API_BASE + '/api/roms', {
@@ -849,7 +893,6 @@
         const data = await res.json();
         if (data.success) {
           showToast('发布成功');
-          // 清空
           document.getElementById('pubName').value = '';
           document.getElementById('pubVersion').value = '';
           document.getElementById('pubDeveloper').value = '';
