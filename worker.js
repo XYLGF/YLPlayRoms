@@ -2,9 +2,9 @@
 // 工具：生成 18 位雪花风格 ID
 // ============================================================
 function generateSlug() {
-  const ts = Date.now();                              // 13 位毫秒时间戳
-  const rand = Math.floor(Math.random() * 100000);    // 5 位随机数
-  return String(ts) + String(rand).padStart(5, '0');  // 18 位
+  const ts = Date.now();
+  const rand = Math.floor(Math.random() * 100000);
+  return String(ts) + String(rand).padStart(5, '0');
 }
 
 // ============================================================
@@ -50,16 +50,12 @@ export default {
 
     if (method === 'OPTIONS') return new Response(null, { headers: cors });
 
-    // ========================================================
     // 路由分发
-    // ========================================================
     if (path.startsWith('/api/')) {
-      // API 请求 → 走下面的 API 逻辑
+      // API 请求
     } else if (path.includes('.')) {
-      // 有后缀（.html/.css/.js/.png...）→ 静态资源
       return env.ASSETS.fetch(request);
     } else {
-      // 无后缀（/system/xxx、/ 等）→ 返回 index.html 由前端路由处理
       const indexUrl = new URL(request.url);
       indexUrl.pathname = '/index.html';
       return env.ASSETS.fetch(new Request(indexUrl, request));
@@ -172,7 +168,7 @@ export default {
       }
 
       // ========================================================
-      // 按 slug 获取单个 ROM（必须在 /api/rom/:id 之前）
+      // 按 slug 获取单个 ROM
       // ========================================================
       if (path.startsWith('/api/rom/by-slug/') && method === 'GET') {
         const slug = path.split('/').pop();
@@ -194,16 +190,15 @@ export default {
       }
 
       // ========================================================
-      // 发布 ROM
+      // 发布 ROM（已加 logo 字段）
       // ========================================================
       if (path === '/api/roms' && method === 'POST') {
         const body = await request.json();
-        const { name, version, developer, url: romUrl, condition, code, author } = body;
+        const { name, version, developer, url: romUrl, condition, code, author, logo } = body;
         if (!name || !version || !developer || !romUrl || !author) {
           return json({ success: false, message: '请填写完整信息' }, 400, cors);
         }
 
-        // 生成唯一 slug
         let slug = null;
         for (let i = 0; i < 5; i++) {
           const candidate = generateSlug();
@@ -216,8 +211,8 @@ export default {
 
         const now = Date.now();
         await env.DB.prepare(
-          'INSERT INTO roms (name, version, developer, url, condition, code, author, slug, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)'
-        ).bind(name, version, developer, romUrl, condition, code || '', author, slug, now).run();
+          'INSERT INTO roms (name, version, developer, url, condition, code, author, slug, logo, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
+        ).bind(name, version, developer, romUrl, condition, code || '', author, slug, logo || '', now).run();
 
         return json({ success: true, slug }, 200, cors);
       }
