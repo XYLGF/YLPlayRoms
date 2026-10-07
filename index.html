@@ -3,13 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>YL Play Roms · 社区</title>
+  <title>YL Play Roms</title>
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
       font-family: 'PingFang SC', 'Microsoft YaHei', 'Helvetica Neue', sans-serif;
@@ -20,13 +16,10 @@
       -webkit-font-smoothing: antialiased;
     }
 
-    /* ========== 顶部导航 ========== */
+    /* ===== 顶部导航 ===== */
     .navbar {
       position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 56px;
+      top: 0; left: 0; width: 100%; height: 56px;
       background: #ffffff;
       border-bottom: 2px solid #111111;
       display: flex;
@@ -34,833 +27,677 @@
       justify-content: space-between;
       padding: 0 20px;
       z-index: 999;
-      box-sizing: border-box;
     }
 
-    .nav-logo {
-      font-size: 18px;
-      font-weight: 600;
-      letter-spacing: 1px;
-      color: #111111;
-    }
+    .nav-logo { font-size: 18px; font-weight: 600; letter-spacing: 1px; }
 
     .nav-avatar {
-      width: 34px;
-      height: 34px;
+      width: 34px; height: 34px;
       border: 2px solid #111111;
       border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 12px;
-      font-weight: 500;
-      color: #111111;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px; font-weight: 600;
       cursor: pointer;
       background: transparent;
+      text-transform: uppercase;
     }
 
-    /* ========== 页面容器 ========== */
-    .page {
-      display: none;
-      padding-top: 56px;
-      min-height: 100vh;
-    }
+    /* ===== 页面 ===== */
+    .page { display: none; padding-top: 56px; min-height: 100vh; }
+    .page.active { display: block; }
 
-    .page.active {
-      display: block;
-    }
-
-    /* ========== 通用按钮 ========== */
+    /* ===== 按钮 ===== */
     .btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      border: 2px solid #111111;
-      background: transparent;
-      color: #111111;
-      font-size: 15px;
-      font-weight: 500;
-      padding: 10px 28px;
-      border-radius: 4px;
-      cursor: pointer;
-      transition: all 0.15s;
-      letter-spacing: 1px;
-      font-family: inherit;
-      text-decoration: none;
+      display: inline-flex; align-items: center; justify-content: center;
+      border: 2px solid #111111; background: transparent; color: #111111;
+      font-size: 15px; font-weight: 500; padding: 10px 24px;
+      border-radius: 4px; cursor: pointer; transition: all 0.15s;
+      letter-spacing: 1px; font-family: inherit;
     }
+    .btn:active { background: #111111; color: #ffffff; }
+    .btn-block { width: 100%; display: flex; }
+    .btn-sm { padding: 6px 16px; font-size: 14px; }
 
-    .btn:active {
-      background: #111111;
-      color: #ffffff;
+    /* ===== 市场 ===== */
+    .market-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 20px;
     }
+    .market-header h1 { font-size: 28px; font-weight: 700; }
 
-    .btn-block {
-      width: 100%;
-      display: flex;
+    .search-bar {
+      display: flex; align-items: center;
+      margin: 0 20px 20px;
+      border: 2px solid #111111; border-radius: 4px;
+      padding: 10px 14px; gap: 10px;
     }
-
-    /* ========== 个人中心 ========== */
-    .profile-header {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 48px 20px 32px;
-      border-bottom: 2px solid #111111;
+    .search-bar input {
+      flex: 1; border: none; outline: none;
+      font-size: 15px; font-family: inherit;
+      background: transparent; color: #111111;
     }
+    .search-bar input::placeholder { color: #999; }
 
-    .profile-avatar {
-      width: 140px;
-      height: 140px;
-      border: 3px solid #111111;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 32px;
-      font-weight: 600;
-      color: #111111;
-      margin-bottom: 20px;
-      letter-spacing: 2px;
-    }
-
-    .profile-name {
-      font-size: 26px;
-      font-weight: 600;
-      margin-bottom: 4px;
-    }
-
-    .profile-level {
-      font-size: 20px;
-      font-weight: 300;
-      color: #555;
-    }
-
-    .section-title {
-      font-size: 22px;
-      font-weight: 600;
-      padding: 24px 20px 12px;
-      letter-spacing: 1px;
-    }
-
-    .rom-list {
-      padding: 0 20px 32px;
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
+    .market-list {
+      padding: 0 20px 40px;
+      display: flex; flex-direction: column; gap: 20px;
     }
 
     .rom-card {
+      border: 2px solid #111111; border-radius: 4px;
+      padding: 16px; cursor: pointer;
+      transition: transform 0.1s;
+    }
+    .rom-card:active { transform: scale(0.99); }
+
+    .rom-logo-placeholder {
+      height: 160px;
       border: 2px solid #111111;
-      border-radius: 4px;
-      overflow: hidden;
+      margin-bottom: 14px;
+      display: flex; align-items: center; justify-content: center;
+      background: #f7f7f7;
+    }
+    .rom-logo-placeholder svg { width: 80px; height: 80px; }
+
+    .rom-bottom { display: flex; align-items: flex-end; justify-content: space-between; }
+    .rom-bottom h3 { font-size: 22px; font-weight: 700; }
+    .rom-bottom p { font-size: 15px; color: #555; margin-top: 2px; }
+
+    .empty-tip {
+      text-align: center; color: #999; padding: 80px 20px;
+      font-size: 15px; line-height: 1.8;
     }
 
-    .rom-card-logo {
-      height: 140px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 22px;
-      font-weight: 600;
+    /* ===== 系统详情 ===== */
+    .detail-logo {
+      height: 220px;
+      display: flex; align-items: center; justify-content: center;
       border-bottom: 2px solid #111111;
       background: #f7f7f7;
-      color: #111111;
     }
+    .detail-logo svg { width: 120px; height: 120px; }
 
-    .rom-card-info {
-      padding: 12px 16px;
-      font-size: 17px;
-      font-weight: 500;
+    .detail-info {
+      display: flex; justify-content: space-between;
+      padding: 20px; border-bottom: 2px solid #111111;
     }
+    .detail-left h3 { font-size: 24px; font-weight: 700; margin-bottom: 6px; }
+    .detail-left p { font-size: 16px; color: #333; line-height: 1.6; }
+    .detail-left .btn { margin-top: 12px; }
+    .detail-left .btn-row { display: flex; gap: 10px; }
+    .detail-right { text-align: right; font-size: 14px; line-height: 1.9; color: #111111; }
 
-    /* ========== 系统展示 ========== */
-    .system-logo-full {
-      height: 200px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 32px;
-      font-weight: 700;
-      border-bottom: 2px solid #111111;
-      letter-spacing: 2px;
-    }
+    /* ===== 评论区 ===== */
+    .comment-section { padding: 20px; }
+    .comment-section h2 { font-size: 24px; font-weight: 700; margin-bottom: 20px; }
 
-    .system-detail {
-      display: flex;
-      justify-content: space-between;
-      padding: 20px;
-      border-bottom: 2px solid #111111;
-    }
-
-    .system-detail-left h3 {
-      font-size: 24px;
-      font-weight: 700;
-      margin-bottom: 4px;
-    }
-
-    .system-detail-left p {
-      font-size: 16px;
-      color: #333;
-      line-height: 1.6;
-    }
-
-    .system-detail-left .btn {
-      margin-top: 12px;
-    }
-
-    .system-detail-right {
-      text-align: right;
-      font-size: 15px;
-      line-height: 1.8;
-      color: #111111;
-    }
-
-    /* 评论区 */
-    .comment-section {
-      padding: 20px;
-    }
-
-    .comment-section h2 {
-      font-size: 24px;
-      font-weight: 700;
-      margin-bottom: 20px;
-    }
-
-    .comment-item {
-      display: flex;
-      gap: 12px;
-      margin-bottom: 24px;
-    }
-
+    .comment-item { display: flex; gap: 12px; margin-bottom: 20px; }
     .comment-avatar {
-      width: 44px;
-      height: 44px;
-      border: 2px solid #111111;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 16px;
-      font-weight: 600;
-      flex-shrink: 0;
+      width: 44px; height: 44px;
+      border: 2px solid #111111; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px; font-weight: 600; flex-shrink: 0;
+      text-transform: uppercase;
     }
-
-    .comment-body {
-      flex: 1;
-    }
-
-    .comment-meta {
-      font-size: 14px;
-      font-weight: 500;
-      margin-bottom: 8px;
-    }
-
+    .comment-body { flex: 1; }
+    .comment-meta { font-size: 14px; font-weight: 500; margin-bottom: 8px; }
     .comment-content {
-      border: 2px solid #111111;
-      border-radius: 4px;
-      padding: 14px 16px;
-      font-size: 15px;
-      min-height: 80px;
+      border: 2px solid #111111; border-radius: 4px;
+      padding: 12px 14px; font-size: 15px;
     }
 
     .comment-input-bar {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 12px 20px;
-      border-top: 2px solid #111111;
-      background: #ffffff;
-      position: sticky;
-      bottom: 0;
+      display: flex; align-items: center; gap: 10px;
+      padding: 12px 20px; border-top: 2px solid #111111;
+      background: #fff; position: sticky; bottom: 0;
     }
-
     .comment-input-bar input {
-      flex: 1;
-      border: 2px solid #111111;
-      border-radius: 4px;
-      padding: 10px 14px;
-      font-size: 15px;
-      font-family: inherit;
-      outline: none;
-      background: transparent;
-      color: #111111;
+      flex: 1; border: 2px solid #111111; border-radius: 4px;
+      padding: 10px 14px; font-size: 15px; font-family: inherit;
+      outline: none; background: transparent;
     }
-
-    .comment-input-bar input::placeholder {
-      color: #999;
-    }
-
     .comment-send {
-      width: 40px;
-      height: 40px;
-      border: 2px solid #111111;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      flex-shrink: 0;
-      background: transparent;
-      font-size: 18px;
-      color: #111111;
-      font-weight: 600;
+      width: 40px; height: 40px;
+      border: 2px solid #111111; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; flex-shrink: 0;
     }
+    .comment-send svg { width: 18px; height: 18px; }
 
-    /* ========== ROM市场 ========== */
-    .market-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 20px;
-    }
-
-    .market-header h1 {
-      font-size: 28px;
-      font-weight: 700;
-      letter-spacing: 1px;
-    }
-
-    .search-bar {
-      display: flex;
-      align-items: center;
-      margin: 0 20px 20px;
-      border: 2px solid #111111;
-      border-radius: 4px;
-      padding: 10px 14px;
-      gap: 10px;
-    }
-
-    .search-bar input {
-      flex: 1;
-      border: none;
-      outline: none;
-      font-size: 15px;
-      font-family: inherit;
-      background: transparent;
-      color: #111111;
-    }
-
-    .search-bar input::placeholder {
-      color: #999;
-    }
-
-    .search-bar svg {
-      width: 20px;
-      height: 20px;
-      flex-shrink: 0;
-    }
-
-    .market-list {
-      padding: 0 20px 32px;
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-    }
-
-    .market-rom-card {
-      border: 2px solid #111111;
-      border-radius: 4px;
-      padding: 16px;
-    }
-
-    .market-rom-logo {
-      height: 160px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 22px;
-      font-weight: 600;
-      border: 2px solid #111111;
-      margin-bottom: 14px;
-      background: #f7f7f7;
-    }
-
-    .market-rom-bottom {
-      display: flex;
-      align-items: flex-end;
-      justify-content: space-between;
-    }
-
-    .market-rom-bottom h3 {
-      font-size: 22px;
-      font-weight: 700;
-    }
-
-    .market-rom-bottom p {
-      font-size: 15px;
-      color: #555;
-      margin-top: 2px;
-    }
-
-    /* ========== 注册@登录 ========== */
-    .auth-container {
-      padding: 40px 24px;
-    }
-
-    .auth-title {
-      font-size: 32px;
-      font-weight: 700;
-      margin-bottom: 32px;
-      letter-spacing: 1px;
-    }
-
-    .auth-box {
-      border: 2px solid #111111;
-      border-radius: 4px;
-      padding: 28px 22px;
-    }
-
-    .auth-field {
-      display: flex;
-      align-items: center;
-      margin-bottom: 20px;
-      gap: 14px;
-    }
-
-    .auth-field label {
-      font-size: 20px;
-      font-weight: 600;
-      width: 90px;
-      flex-shrink: 0;
-      text-align: right;
-    }
-
+    /* ===== 登录 ===== */
+    .auth-container { padding: 60px 24px; }
+    .auth-title { font-size: 32px; font-weight: 700; margin-bottom: 32px; }
+    .auth-box { border: 2px solid #111111; border-radius: 4px; padding: 28px 22px; }
+    .auth-field { display: flex; align-items: center; margin-bottom: 20px; gap: 14px; }
+    .auth-field label { font-size: 18px; font-weight: 600; width: 80px; text-align: right; flex-shrink: 0; }
     .auth-field input {
-      flex: 1;
-      border: 2px solid #111111;
-      border-radius: 4px;
-      padding: 10px 12px;
-      font-size: 15px;
-      font-family: inherit;
-      outline: none;
-      background: transparent;
-      color: #111111;
+      flex: 1; border: 2px solid #111111; border-radius: 4px;
+      padding: 10px 12px; font-size: 15px; font-family: inherit;
+      outline: none; background: transparent;
     }
+    .auth-field .optional { font-size: 13px; font-weight: 400; color: #666; width: 80px; text-align: right; flex-shrink: 0; }
+    .auth-box .btn { margin-top: 20px; }
 
-    .auth-field .optional {
-      font-size: 14px;
-      font-weight: 400;
-      color: #666;
-      width: 90px;
-      flex-shrink: 0;
-      text-align: right;
+    /* ===== 个人中心 ===== */
+    .profile-header {
+      display: flex; flex-direction: column; align-items: center;
+      padding: 40px 20px 28px; border-bottom: 2px solid #111111;
     }
-
-    .auth-box .btn {
-      margin-top: 28px;
+    .profile-avatar {
+      width: 110px; height: 110px;
+      border: 3px solid #111111; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 44px; font-weight: 700; margin-bottom: 18px;
+      text-transform: uppercase;
     }
+    .profile-name { font-size: 24px; font-weight: 700; margin-bottom: 4px; }
+    .profile-level { font-size: 18px; font-weight: 300; color: #555; }
 
-    /* ========== 发布系统 ========== */
-    .publish-container {
-      padding: 32px 24px;
+    .tabs {
+      display: flex; border-bottom: 2px solid #111111;
     }
-
-    .publish-title {
-      font-size: 30px;
-      font-weight: 700;
-      margin-bottom: 28px;
-      letter-spacing: 1px;
-    }
-
-    .publish-field {
-      display: flex;
-      align-items: center;
-      margin-bottom: 18px;
-      gap: 14px;
-    }
-
-    .publish-field label {
-      font-size: 20px;
-      font-weight: 600;
-      width: 100px;
-      flex-shrink: 0;
-      text-align: right;
-    }
-
-    .publish-field input {
-      flex: 1;
-      border: 2px solid #111111;
-      border-radius: 4px;
-      padding: 10px 12px;
-      font-size: 15px;
-      font-family: inherit;
-      outline: none;
-      background: transparent;
-      color: #111111;
-    }
-
-    .publish-box {
-      border: 2px solid #111111;
-      border-radius: 4px;
-      padding: 20px;
-      margin-top: 24px;
-    }
-
-    .publish-options {
-      display: flex;
-      gap: 16px;
-      margin-bottom: 16px;
-    }
-
-    .publish-option {
-      flex: 1;
-      border: 2px solid #111111;
-      border-radius: 4px;
-      padding: 12px;
-      text-align: center;
-      font-size: 20px;
-      font-weight: 700;
-      cursor: pointer;
-      transition: all 0.15s;
-    }
-
-    .publish-option.selected {
-      background: #111111;
-      color: #ffffff;
-    }
-
-    .publish-hint {
-      font-size: 14px;
-      color: #333;
-      margin-bottom: 12px;
-    }
-
-    .publish-code-input {
-      width: 100%;
-      border: 2px solid #111111;
-      border-radius: 4px;
-      padding: 10px 12px;
-      font-size: 15px;
-      font-family: inherit;
-      outline: none;
-      background: transparent;
-      color: #111111;
-    }
-
-    .publish-container .btn-block {
-      margin-top: 28px;
-    }
-
-    /* ========== 底部导航 ========== */
-    .bottom-nav {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      height: 60px;
-      background: #ffffff;
-      border-top: 2px solid #111111;
-      display: flex;
-      z-index: 999;
-    }
-
-    .bottom-nav-item {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      font-size: 11px;
-      font-weight: 500;
+    .tab {
+      flex: 1; text-align: center; padding: 16px;
+      font-size: 17px; font-weight: 600; cursor: pointer;
       color: #999;
+    }
+    .tab.active { color: #111111; border-bottom: 4px solid #111111; margin-bottom: -2px; }
+
+    .tab-content { display: none; padding: 20px; }
+    .tab-content.active { display: block; }
+
+    /* ===== 发布 ===== */
+    .publish-container { padding: 24px; }
+    .publish-title { font-size: 28px; font-weight: 700; margin-bottom: 24px; }
+    .publish-field { display: flex; align-items: center; margin-bottom: 16px; gap: 14px; }
+    .publish-field label { font-size: 17px; font-weight: 600; width: 90px; text-align: right; flex-shrink: 0; }
+    .publish-field input {
+      flex: 1; border: 2px solid #111111; border-radius: 4px;
+      padding: 10px 12px; font-size: 15px; font-family: inherit;
+      outline: none; background: transparent;
+    }
+    .publish-box { border: 2px solid #111111; border-radius: 4px; padding: 18px; margin-top: 20px; }
+    .publish-options { display: flex; gap: 14px; margin-bottom: 14px; }
+    .publish-option {
+      flex: 1; border: 2px solid #111111; border-radius: 4px;
+      padding: 12px; text-align: center; font-size: 18px; font-weight: 600;
       cursor: pointer;
-      transition: color 0.15s;
-      gap: 2px;
-      letter-spacing: 0.5px;
     }
-
-    .bottom-nav-item.active {
-      color: #111111;
-      font-weight: 700;
+    .publish-option.selected { background: #111111; color: #ffffff; }
+    .publish-hint { font-size: 13px; color: #555; margin-bottom: 10px; }
+    .publish-code-input {
+      width: 100%; border: 2px solid #111111; border-radius: 4px;
+      padding: 10px 12px; font-size: 15px; font-family: inherit;
+      outline: none; background: transparent;
     }
+    .publish-container .btn-block { margin-top: 24px; }
 
-    .bottom-nav-item svg {
-      width: 22px;
-      height: 22px;
-    }
-
-    .page-content {
-      padding-bottom: 80px;
-    }
-
-    /* ========== Toast ========== */
+    /* ===== Toast ===== */
     .toast {
-      position: fixed;
-      top: 50%;
-      left: 50%;
+      position: fixed; top: 50%; left: 50%;
       transform: translate(-50%, -50%);
-      background: #111111;
-      color: #ffffff;
-      font-size: 15px;
-      padding: 14px 32px;
-      border-radius: 6px;
-      z-index: 9999;
-      opacity: 0;
-      pointer-events: none;
+      background: #111111; color: #fff;
+      font-size: 15px; padding: 14px 32px;
+      border-radius: 6px; z-index: 9999;
+      opacity: 0; pointer-events: none;
       transition: opacity 0.3s;
-      font-weight: 400;
     }
+    .toast.show { opacity: 1; }
 
-    .toast.show {
-      opacity: 1;
+    /* ===== 返回按钮 ===== */
+    .back-bar {
+      display: flex; align-items: center; gap: 12px;
+      padding: 14px 20px; border-bottom: 2px solid #111111;
     }
+    .back-btn {
+      font-size: 22px; cursor: pointer;
+      font-weight: 600; line-height: 1;
+      background: transparent; border: none;
+    }
+    .back-title { font-size: 17px; font-weight: 600; }
   </style>
 </head>
 <body>
 
+  <!-- ===== 顶部导航 ===== -->
   <header class="navbar">
-    <div class="nav-logo" id="navTitle">YL Play Roms</div>
-    <div class="nav-avatar" id="navAvatar">头像</div>
+    <div class="nav-logo">YL Play Roms</div>
+    <div class="nav-avatar" id="navAvatar" onclick="onAvatarClick()">?</div>
   </header>
 
-  <div class="page active" id="pageProfile">
-    <div class="page-content">
-      <div class="profile-header">
-        <div class="profile-avatar">头像</div>
-        <div class="profile-name">Test User</div>
-        <div class="profile-level">Lv.1</div>
-      </div>
-      <div class="section-title">我发布的Roms</div>
-      <div class="rom-list" id="myRomList">
-        <div class="rom-card">
-          <div class="rom-card-logo">系统LOGO</div>
-          <div class="rom-card-info">Test Roms</div>
-        </div>
-      </div>
+  <!-- ===== 市场（默认首页） ===== -->
+  <div class="page active" id="pageMarket">
+    <div class="market-header">
+      <h1>Rom市场</h1>
+      <button class="btn" onclick="onPublishClick()">发布rom</button>
     </div>
+    <div class="search-bar">
+      <input type="text" placeholder="搜索你的系统" id="searchInput" oninput="filterMarket()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#111111" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="20" height="20">
+        <circle cx="11" cy="11" r="8"></circle>
+        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+      </svg>
+    </div>
+    <div class="market-list" id="marketList"></div>
   </div>
 
-  <div class="page" id="pageSystem">
-    <div class="page-content">
-      <div class="system-logo-full">用户系统LOGO</div>
-      <div class="system-detail">
-        <div class="system-detail-left">
-          <h3>Test Roms</h3>
-          <p>1.0.0</p>
-          <p>Android 12</p>
-          <button class="btn" onclick="showToast('开始下载')">下载</button>
-        </div>
-        <div class="system-detail-right">
-          <div>下载人数:1</div>
-          <div>浏览人数:1</div>
-          <div>收藏人数:1</div>
-        </div>
-      </div>
-      <div class="comment-section">
-        <h2>评论区</h2>
-        <div class="comment-item">
-          <div class="comment-avatar">A</div>
-          <div class="comment-body">
-            <div class="comment-meta">小a 发布于2026-10-7 1:31</div>
-            <div class="comment-content">非常好</div>
-          </div>
+  <!-- ===== 系统详情 ===== -->
+  <div class="page" id="pageDetail">
+    <div class="back-bar">
+      <button class="back-btn" onclick="switchPage('pageMarket')">←</button>
+      <div class="back-title">系统详情</div>
+    </div>
+    <div class="detail-logo" id="detailLogo"></div>
+    <div class="detail-info">
+      <div class="detail-left">
+        <h3 id="detailName">-</h3>
+        <p id="detailVersion">-</p>
+        <p id="detailDeveloper">-</p>
+        <div class="btn-row" style="margin-top:12px;">
+          <button class="btn" id="detailDownloadBtn" onclick="onDownloadClick()">下载</button>
+          <button class="btn" id="detailFavBtn" onclick="onFavoriteClick()">收藏</button>
         </div>
       </div>
-      <div class="comment-input-bar">
-        <input type="text" placeholder="发布评论吧!" id="commentInput">
-        <div class="comment-send" onclick="sendComment()">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-            <line x1="22" y1="2" x2="11" y2="13"></line>
-            <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
-          </svg>
-        </div>
+      <div class="detail-right">
+        <div>下载人数:<span id="detailDownloads">0</span></div>
+        <div>浏览人数:<span id="detailViews">0</span></div>
+        <div>收藏人数:<span id="detailFavs">0</span></div>
       </div>
     </div>
-  </div>
-
-  <div class="page" id="pageMarket">
-    <div class="page-content">
-      <div class="market-header">
-        <h1>Rom市场</h1>
-        <button class="btn" onclick="switchPage('pagePublish')">发布rom</button>
-      </div>
-      <div class="search-bar">
-        <input type="text" placeholder="搜索你的系统" id="searchInput">
-        <svg viewBox="0 0 24 24" fill="none" stroke="#111111" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="11" cy="11" r="8"></circle>
-          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+    <div class="comment-section">
+      <h2>评论区</h2>
+      <div id="commentList"></div>
+    </div>
+    <div class="comment-input-bar">
+      <input type="text" placeholder="发布评论吧!" id="commentInput">
+      <div class="comment-send" onclick="sendComment()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="22" y1="2" x2="11" y2="13"></line>
+          <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
         </svg>
       </div>
-      <div class="market-list" id="marketList">
-        <div class="market-rom-card">
-          <div class="market-rom-logo">用户系统LOGO</div>
-          <div class="market-rom-bottom">
-            <div>
-              <h3>TEST Rom</h3>
-              <p>TEST user</p>
-            </div>
-            <button class="btn" onclick="showToast('开始下载')">下载</button>
-          </div>
-        </div>
-      </div>
     </div>
   </div>
 
+  <!-- ===== 登录 ===== -->
   <div class="page" id="pageAuth">
-    <div class="page-content">
-      <div class="auth-container">
-        <div class="auth-title">注册@登录</div>
-        <div class="auth-box">
-          <div class="auth-field">
-            <label>用户名</label>
-            <input type="text" id="authUsername" placeholder="">
-          </div>
-          <div class="auth-field">
-            <label>密码</label>
-            <input type="password" id="authPassword" placeholder="">
-          </div>
-          <div class="auth-field">
-            <span class="optional">邮箱(非必填)</span>
-            <input type="email" id="authEmail" placeholder="">
-          </div>
-          <button class="btn btn-block" onclick="handleLogin()">登录</button>
-        </div>
+    <div class="auth-container">
+      <div class="auth-title">注册@登录</div>
+      <div class="auth-box">
+        <div class="auth-field"><label>用户名</label><input type="text" id="authUsername"></div>
+        <div class="auth-field"><label>密码</label><input type="password" id="authPassword"></div>
+        <div class="auth-field"><span class="optional">邮箱(非必填)</span><input type="email" id="authEmail"></div>
+        <button class="btn btn-block" onclick="handleLogin()">登录</button>
       </div>
     </div>
   </div>
 
+  <!-- ===== 个人中心 ===== -->
+  <div class="page" id="pageProfile">
+    <div class="profile-header">
+      <div class="profile-avatar" id="profileAvatar">?</div>
+      <div class="profile-name" id="profileName">-</div>
+      <div class="profile-level" id="profileLevel">Lv.0</div>
+    </div>
+    <div class="tabs">
+      <div class="tab active" onclick="switchTab('published')">我发布的</div>
+      <div class="tab" onclick="switchTab('favorites')">我的收藏</div>
+      <div class="tab" onclick="switchTab('logout')">退出登录</div>
+    </div>
+    <div class="tab-content active" id="tabPublished">
+      <div id="myRomList"></div>
+    </div>
+    <div class="tab-content" id="tabFavorites">
+      <div id="myFavList"></div>
+    </div>
+  </div>
+
+  <!-- ===== 发布 ===== -->
   <div class="page" id="pagePublish">
-    <div class="page-content">
-      <div class="publish-container">
-        <div class="publish-title">发布Roms</div>
-        <div class="publish-field">
-          <label>名称</label>
-          <input type="text" id="pubName" placeholder="">
+    <div class="publish-container">
+      <div class="publish-title">发布Roms</div>
+      <div class="publish-field"><label>名称</label><input type="text" id="pubName"></div>
+      <div class="publish-field"><label>版本</label><input type="text" id="pubVersion"></div>
+      <div class="publish-field"><label>开发者</label><input type="text" id="pubDeveloper"></div>
+      <div class="publish-field"><label>下载地址</label><input type="text" id="pubUrl"></div>
+      <div class="publish-field"><label>下载条件</label></div>
+      <div class="publish-box">
+        <div class="publish-options">
+          <div class="publish-option selected" id="optFree" onclick="selectPublishOption('free')">免费</div>
+          <div class="publish-option" id="optCode" onclick="selectPublishOption('code')">需要激活码</div>
         </div>
-        <div class="publish-field">
-          <label>版本</label>
-          <input type="text" id="pubVersion" placeholder="">
-        </div>
-        <div class="publish-field">
-          <label>开发者</label>
-          <input type="text" id="pubDeveloper" placeholder="">
-        </div>
-        <div class="publish-field">
-          <label>下载地址</label>
-          <input type="text" id="pubUrl" placeholder="">
-        </div>
-
-        <div class="publish-field">
-          <label>下载条件</label>
-        </div>
-        <div class="publish-box">
-          <div class="publish-options">
-            <div class="publish-option selected" id="optFree" onclick="selectPublishOption('free')">免费</div>
-            <div class="publish-option" id="optCode" onclick="selectPublishOption('code')">需要激活码</div>
-          </div>
-          <div class="publish-hint">激活码(如果选的是免费就不需要填)</div>
-          <input type="text" class="publish-code-input" id="pubCode" placeholder="" disabled>
-        </div>
-
-        <button class="btn btn-block" onclick="handlePublish()">上传</button>
+        <div class="publish-hint">激活码(如果选的是免费就不需要填)</div>
+        <input type="text" class="publish-code-input" id="pubCode" disabled>
       </div>
+      <button class="btn btn-block" onclick="handlePublish()">上传</button>
     </div>
   </div>
-
-  <nav class="bottom-nav">
-    <div class="bottom-nav-item active" data-page="pageProfile" onclick="switchPage('pageProfile')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-        <circle cx="12" cy="7" r="4"></circle>
-      </svg>
-      <span>个人</span>
-    </div>
-    <div class="bottom-nav-item" data-page="pageMarket" onclick="switchPage('pageMarket')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
-        <line x1="3" y1="6" x2="21" y2="6"></line>
-        <path d="M16 10a4 4 0 0 1-8 0"></path>
-      </svg>
-      <span>市场</span>
-    </div>
-    <div class="bottom-nav-item" data-page="pageAuth" onclick="switchPage('pageAuth')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path>
-        <polyline points="10 17 15 12 10 7"></polyline>
-        <line x1="15" y1="12" x2="3" y2="12"></line>
-      </svg>
-      <span>登录</span>
-    </div>
-    <div class="bottom-nav-item" data-page="pageSystem" onclick="switchPage('pageSystem')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
-        <line x1="8" y1="21" x2="16" y2="21"></line>
-        <line x1="12" y1="17" x2="12" y2="21"></line>
-      </svg>
-      <span>系统</span>
-    </div>
-  </nav>
 
   <div class="toast" id="toast"></div>
 
   <script>
+    // ============================================================
+    // 配置
+    // ============================================================
     const API_BASE = 'https://roms.xylplay.top';
 
+    // ============================================================
+    // 状态
+    // ============================================================
+    let currentUser = null;   // { username }
+    let currentRom = null;    // 当前查看的 ROM
+    let currentTab = 'published';
+    let downloadTimer = null;
+
+    // ============================================================
+    // 本地持久化
+    // ============================================================
+    function saveUser() {
+      if (currentUser) localStorage.setItem('yl_user', JSON.stringify(currentUser));
+      else localStorage.removeItem('yl_user');
+    }
+
+    function loadUser() {
+      const s = localStorage.getItem('yl_user');
+      if (s) {
+        try { currentUser = JSON.parse(s); } catch (e) { currentUser = null; }
+      }
+    }
+
+    // ============================================================
+    // 页面切换
+    // ============================================================
     const pages = {
-      pageProfile: '个人中心',
-      pageSystem: '系统展示',
       pageMarket: 'Rom市场',
+      pageDetail: '系统详情',
       pageAuth: '注册@登录',
+      pageProfile: '个人中心',
       pagePublish: '发布系统'
     };
 
-    function switchPage(pageId) {
+    function switchPage(id) {
       document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-      const target = document.getElementById(pageId);
-      if (target) {
-        target.classList.add('active');
-        window.scrollTo(0, 0);
+      const t = document.getElementById(id);
+      if (t) { t.classList.add('active'); window.scrollTo(0, 0); }
+      document.querySelector('.nav-logo').textContent = 'YL Play Roms' + (pages[id] ? ' · ' + pages[id] : '');
+
+      if (id === 'pageMarket') loadMarket();
+      if (id === 'pageProfile') loadProfile();
+    }
+
+    // ============================================================
+    // 头像点击逻辑
+    // ============================================================
+    function onAvatarClick() {
+      if (currentUser) {
+        switchPage('pageProfile');
+      } else {
+        switchPage('pageAuth');
       }
-      document.querySelectorAll('.bottom-nav-item').forEach(item => {
-        item.classList.toggle('active', item.dataset.page === pageId);
-      });
-      document.getElementById('navTitle').textContent = 'YL Play Roms' + (pages[pageId] ? ' · ' + pages[pageId] : '');
     }
 
-    let toastTimer = null;
-    function showToast(msg) {
-      const toast = document.getElementById('toast');
-      toast.textContent = msg;
-      toast.classList.add('show');
-      if (toastTimer) clearTimeout(toastTimer);
-      toastTimer = setTimeout(() => {
-        toast.classList.remove('show');
-      }, 1800);
-    }
-
-    function sendComment() {
-      const input = document.getElementById('commentInput');
-      const content = input.value.trim();
-      if (!content) {
-        showToast('请输入评论内容');
+    function onPublishClick() {
+      if (!currentUser) {
+        showToast('请先登录');
+        switchPage('pageAuth');
         return;
       }
-      const section = document.querySelector('.comment-section');
-      const newItem = document.createElement('div');
-      newItem.className = 'comment-item';
-      const now = new Date();
-      const timeStr = now.getFullYear() + '-' + (now.getMonth() + 1) + '-' + now.getDate() + ' ' + now.getHours() + ':' + String(now.getMinutes()).padStart(2, '0');
-      newItem.innerHTML = `
-        <div class="comment-avatar">A</div>
-        <div class="comment-body">
-          <div class="comment-meta">我 发布于${timeStr}</div>
-          <div class="comment-content">${escapeHtml(content)}</div>
-        </div>
-      `;
-      section.appendChild(newItem);
-      input.value = '';
-      showToast('评论发布成功');
+      switchPage('pagePublish');
     }
 
+    // ============================================================
+    // Toast
+    // ============================================================
+    let toastTimer = null;
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.classList.add('show');
+      if (toastTimer) clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => t.classList.remove('show'), 1800);
+    }
+
+    // ============================================================
+    // 工具
+    // ============================================================
+    function escapeHtml(s) {
+      const d = document.createElement('div');
+      d.textContent = s == null ? '' : s;
+      return d.innerHTML;
+    }
+
+    function updateAvatarUI() {
+      const av = document.getElementById('navAvatar');
+      if (currentUser) {
+        av.textContent = currentUser.username.charAt(0).toUpperCase();
+      } else {
+        av.textContent = '?';
+      }
+    }
+
+    // ============================================================
+    // 默认书籍 SVG
+    // ============================================================
+    const BOOK_SVG = `
+      <svg viewBox="0 0 64 64" fill="none" stroke="#111111" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M8 12 Q8 8 12 8 L32 8 L32 56 L12 56 Q8 56 8 52 Z"/>
+        <path d="M32 8 L52 8 Q56 8 56 12 L56 52 Q56 56 52 56 L32 56"/>
+        <line x1="16" y1="20" x2="26" y2="20"/>
+        <line x1="16" y1="28" x2="26" y2="28"/>
+        <line x1="16" y1="36" x2="26" y2="36"/>
+      </svg>
+    `;
+
+    // ============================================================
+    // 市场
+    // ============================================================
+    let marketData = [];
+
+    async function loadMarket() {
+      const list = document.getElementById('marketList');
+      try {
+        const res = await fetch(API_BASE + '/api/roms');
+        marketData = await res.json();
+        renderMarket(marketData);
+      } catch (e) {
+        list.innerHTML = '<div class="empty-tip">加载失败，请稍后重试</div>';
+      }
+    }
+
+    function renderMarket(data) {
+      const list = document.getElementById('marketList');
+      if (!data || data.length === 0) {
+        list.innerHTML = '<div class="empty-tip">还没有任何系统<br>点击右上角「发布rom」上传第一个吧</div>';
+        return;
+      }
+      list.innerHTML = data.map(rom => `
+        <div class="rom-card" onclick="openDetail(${rom.id})">
+          <div class="rom-logo-placeholder">${BOOK_SVG}</div>
+          <div class="rom-bottom">
+            <div>
+              <h3>${escapeHtml(rom.name)}</h3>
+              <p>${escapeHtml(rom.developer || '未知开发者')}</p>
+            </div>
+            <button class="btn btn-sm" onclick="event.stopPropagation();openDetail(${rom.id})">下载</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function filterMarket() {
+      const kw = document.getElementById('searchInput').value.trim().toLowerCase();
+      if (!kw) { renderMarket(marketData); return; }
+      const filtered = marketData.filter(r =>
+        (r.name || '').toLowerCase().includes(kw) ||
+        (r.developer || '').toLowerCase().includes(kw)
+      );
+      renderMarket(filtered);
+    }
+
+    // ============================================================
+    // 系统详情
+    // ============================================================
+    async function openDetail(romId) {
+      try {
+        const res = await fetch(API_BASE + '/api/rom/' + romId);
+        const rom = await res.json();
+        if (!rom || rom.success === false) {
+          showToast('系统不存在');
+          return;
+        }
+        currentRom = rom;
+
+        document.getElementById('detailLogo').innerHTML = BOOK_SVG;
+        document.getElementById('detailName').textContent = rom.name;
+        document.getElementById('detailVersion').textContent = rom.version || '';
+        document.getElementById('detailDeveloper').textContent = rom.developer || '';
+        document.getElementById('detailDownloads').textContent = rom.downloads || 0;
+        document.getElementById('detailViews').textContent = rom.views || 0;
+        document.getElementById('detailFavs').textContent = rom.favorites_count || 0;
+
+        // 检查收藏状态
+        if (currentUser) {
+          try {
+            const fRes = await fetch(API_BASE + '/api/favorite/check?username=' + encodeURIComponent(currentUser.username) + '&romId=' + romId);
+            const fData = await fRes.json();
+            document.getElementById('detailFavBtn').textContent = fData.favorited ? '已收藏' : '收藏';
+          } catch (e) {
+            document.getElementById('detailFavBtn').textContent = '收藏';
+          }
+        } else {
+          document.getElementById('detailFavBtn').textContent = '收藏';
+        }
+
+        loadComments(romId);
+        switchPage('pageDetail');
+      } catch (e) {
+        showToast('加载失败');
+      }
+    }
+
+    // 下载：停留 1 秒后计数
+    function onDownloadClick() {
+      if (!currentRom) return;
+      const romId = currentRom.id;
+      const url = currentRom.url;
+
+      // 条件检查
+      if (currentRom.condition === 'code') {
+        const input = prompt('请输入激活码：');
+        if (input === null) return;
+        if (input !== currentRom.code) {
+          showToast('激活码错误');
+          return;
+        }
+      }
+
+      showToast('准备下载...');
+      downloadTimer = setTimeout(async () => {
+        try {
+          await fetch(API_BASE + '/api/rom/download', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ romId, username: currentUser ? currentUser.username : '' })
+          });
+        } catch (e) {}
+        // 打开链接
+        window.open(url, '_blank');
+        showToast('开始下载');
+      }, 1000);
+    }
+
+    // 收藏
+    async function onFavoriteClick() {
+      if (!currentUser) {
+        showToast('请先登录');
+        switchPage('pageAuth');
+        return;
+      }
+      if (!currentRom) return;
+      try {
+        const res = await fetch(API_BASE + '/api/favorite', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ romId: currentRom.id, username: currentUser.username })
+        });
+        const data = await res.json();
+        if (data.success) {
+          document.getElementById('detailFavBtn').textContent = data.favorited ? '已收藏' : '收藏';
+          showToast(data.favorited ? '已加入收藏' : '已取消收藏');
+          // 刷新收藏数
+          const romRes = await fetch(API_BASE + '/api/rom/' + currentRom.id);
+          const rom = await romRes.json();
+          document.getElementById('detailFavs').textContent = rom.favorites_count || 0;
+        }
+      } catch (e) {
+        showToast('操作失败');
+      }
+    }
+
+    // ============================================================
+    // 评论
+    // ============================================================
+    async function loadComments(romId) {
+      const list = document.getElementById('commentList');
+      try {
+        const res = await fetch(API_BASE + '/api/comments?romId=' + romId);
+        const data = await res.json();
+        if (!data || data.length === 0) {
+          list.innerHTML = '<div style="color:#999;font-size:14px;padding:10px 0;">还没有评论，来抢沙发吧</div>';
+          return;
+        }
+        list.innerHTML = data.map(c => `
+          <div class="comment-item">
+            <div class="comment-avatar">${escapeHtml((c.username || '?').charAt(0))}</div>
+            <div class="comment-body">
+              <div class="comment-meta">${escapeHtml(c.username)} · ${formatTime(c.created_at)}</div>
+              <div class="comment-content">${escapeHtml(c.content)}</div>
+            </div>
+          </div>
+        `).join('');
+      } catch (e) {
+        list.innerHTML = '<div style="color:#999;font-size:14px;">加载失败</div>';
+      }
+    }
+
+    async function sendComment() {
+      if (!currentUser) {
+        showToast('请先登录');
+        switchPage('pageAuth');
+        return;
+      }
+      if (!currentRom) return;
+      const input = document.getElementById('commentInput');
+      const content = input.value.trim();
+      if (!content) { showToast('请输入评论内容'); return; }
+      try {
+        await fetch(API_BASE + '/api/comments', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ romId: currentRom.id, username: currentUser.username, content })
+        });
+        input.value = '';
+        loadComments(currentRom.id);
+        showToast('评论成功');
+      } catch (e) {
+        showToast('评论失败');
+      }
+    }
+
+    function formatTime(ts) {
+      const d = new Date(ts);
+      const pad = n => String(n).padStart(2, '0');
+      return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+    }
+
+    // ============================================================
+    // 登录
+    // ============================================================
     async function handleLogin() {
       const username = document.getElementById('authUsername').value.trim();
       const password = document.getElementById('authPassword').value.trim();
       const email = document.getElementById('authEmail').value.trim();
-
-      if (!username || !password) {
-        showToast('请填写用户名和密码');
-        return;
-      }
+      if (!username || !password) { showToast('请填写用户名和密码'); return; }
 
       try {
         const res = await fetch(API_BASE + '/api/login', {
@@ -870,17 +707,117 @@
         });
         const data = await res.json();
         if (data.success) {
+          currentUser = data.user;
+          saveUser();
+          updateAvatarUI();
           showToast('登录成功');
-          switchPage('pageProfile');
+          switchPage('pageMarket');
         } else {
           showToast(data.message || '登录失败');
         }
       } catch (e) {
-        showToast('登录成功（演示模式）');
-        switchPage('pageProfile');
+        showToast('网络错误');
       }
     }
 
+    // ============================================================
+    // 个人中心
+    // ============================================================
+    function switchTab(tab) {
+      currentTab = tab;
+      document.querySelectorAll('.tab').forEach((t, i) => {
+        t.classList.toggle('active', ['published', 'favorites', 'logout'][i] === tab);
+      });
+      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+      if (tab === 'published') {
+        document.getElementById('tabPublished').classList.add('active');
+        loadMyRoms();
+      } else if (tab === 'favorites') {
+        document.getElementById('tabFavorites').classList.add('active');
+        loadMyFavorites();
+      } else if (tab === 'logout') {
+        // 退出登录
+        currentUser = null;
+        saveUser();
+        updateAvatarUI();
+        showToast('已退出登录');
+        switchPage('pageMarket');
+      }
+    }
+
+    async function loadProfile() {
+      if (!currentUser) { switchPage('pageAuth'); return; }
+      const name = currentUser.username;
+      document.getElementById('profileName').textContent = name;
+      document.getElementById('profileAvatar').textContent = name.charAt(0).toUpperCase();
+
+      // 获取等级
+      try {
+        const res = await fetch(API_BASE + '/api/user/level?username=' + encodeURIComponent(name));
+        const data = await res.json();
+        if (data.success) {
+          document.getElementById('profileLevel').textContent = 'Lv.' + data.level;
+        }
+      } catch (e) {}
+
+      loadMyRoms();
+    }
+
+    async function loadMyRoms() {
+      const list = document.getElementById('myRomList');
+      if (!currentUser) return;
+      try {
+        const res = await fetch(API_BASE + '/api/roms/my?username=' + encodeURIComponent(currentUser.username));
+        const data = await res.json();
+        if (!data || data.length === 0) {
+          list.innerHTML = '<div class="empty-tip">还没有发布过系统</div>';
+          return;
+        }
+        list.innerHTML = data.map(rom => `
+          <div class="rom-card" style="margin-bottom:16px;" onclick="openDetail(${rom.id})">
+            <div class="rom-logo-placeholder">${BOOK_SVG}</div>
+            <div class="rom-bottom">
+              <div>
+                <h3>${escapeHtml(rom.name)}</h3>
+                <p>${escapeHtml(rom.developer || '')}</p>
+              </div>
+            </div>
+          </div>
+        `).join('');
+      } catch (e) {
+        list.innerHTML = '<div class="empty-tip">加载失败</div>';
+      }
+    }
+
+    async function loadMyFavorites() {
+      const list = document.getElementById('myFavList');
+      if (!currentUser) return;
+      try {
+        const res = await fetch(API_BASE + '/api/favorites/my?username=' + encodeURIComponent(currentUser.username));
+        const data = await res.json();
+        if (!data || data.length === 0) {
+          list.innerHTML = '<div class="empty-tip">还没有收藏任何系统</div>';
+          return;
+        }
+        list.innerHTML = data.map(rom => `
+          <div class="rom-card" style="margin-bottom:16px;" onclick="openDetail(${rom.id})">
+            <div class="rom-logo-placeholder">${BOOK_SVG}</div>
+            <div class="rom-bottom">
+              <div>
+                <h3>${escapeHtml(rom.name)}</h3>
+                <p>${escapeHtml(rom.developer || '')}</p>
+              </div>
+            </div>
+          </div>
+        `).join('');
+      } catch (e) {
+        list.innerHTML = '<div class="empty-tip">加载失败</div>';
+      }
+    }
+
+    // ============================================================
+    // 发布
+    // ============================================================
     let publishCondition = 'free';
 
     function selectPublishOption(type) {
@@ -891,101 +828,48 @@
     }
 
     async function handlePublish() {
+      if (!currentUser) { showToast('请先登录'); switchPage('pageAuth'); return; }
       const name = document.getElementById('pubName').value.trim();
       const version = document.getElementById('pubVersion').value.trim();
       const developer = document.getElementById('pubDeveloper').value.trim();
       const url = document.getElementById('pubUrl').value.trim();
       const code = document.getElementById('pubCode').value.trim();
-
-      if (!name || !version || !developer || !url) {
-        showToast('请填写完整信息');
-        return;
-      }
+      if (!name || !version || !developer || !url) { showToast('请填写完整信息'); return; }
 
       try {
         const res = await fetch(API_BASE + '/api/roms', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            name, version, developer, url,
-            condition: publishCondition,
-            code: publishCondition === 'code' ? code : ''
+            name, version, developer, url, condition: publishCondition,
+            code: publishCondition === 'code' ? code : '',
+            author: currentUser.username
           })
         });
         const data = await res.json();
         if (data.success) {
           showToast('发布成功');
-          addMyRom(name);
+          // 清空
+          document.getElementById('pubName').value = '';
+          document.getElementById('pubVersion').value = '';
+          document.getElementById('pubDeveloper').value = '';
+          document.getElementById('pubUrl').value = '';
+          document.getElementById('pubCode').value = '';
           switchPage('pageProfile');
         } else {
           showToast(data.message || '发布失败');
         }
       } catch (e) {
-        showToast('发布成功（演示模式）');
-        addMyRom(name);
-        switchPage('pageProfile');
+        showToast('网络错误');
       }
     }
 
-    function addMyRom(name) {
-      const list = document.getElementById('myRomList');
-      const card = document.createElement('div');
-      card.className = 'rom-card';
-      card.innerHTML = `
-        <div class="rom-card-logo">系统LOGO</div>
-        <div class="rom-card-info">${escapeHtml(name)}</div>
-      `;
-      list.appendChild(card);
-    }
-
-    document.getElementById('searchInput').addEventListener('input', function() {
-      const keyword = this.value.trim().toLowerCase();
-      const cards = document.querySelectorAll('.market-rom-card');
-      cards.forEach(card => {
-        const text = card.textContent.toLowerCase();
-        card.style.display = text.includes(keyword) ? '' : 'none';
-      });
-    });
-
-    function escapeHtml(str) {
-      const div = document.createElement('div');
-      div.textContent = str;
-      return div.innerHTML;
-    }
-
-    document.getElementById('navAvatar').addEventListener('click', () => {
-      switchPage('pageProfile');
-    });
-
-    async function loadData() {
-      try {
-        const res = await fetch(API_BASE + '/api/roms');
-        const data = await res.json();
-        if (data && data.length > 0) {
-          const marketList = document.getElementById('marketList');
-          marketList.innerHTML = '';
-          data.forEach(rom => {
-            const card = document.createElement('div');
-            card.className = 'market-rom-card';
-            card.innerHTML = `
-              <div class="market-rom-logo">${escapeHtml(rom.name)}</div>
-              <div class="market-rom-bottom">
-                <div>
-                  <h3>${escapeHtml(rom.name)}</h3>
-                  <p>${escapeHtml(rom.developer)}</p>
-                </div>
-                <button class="btn" onclick="showToast('开始下载')">下载</button>
-              </div>
-            `;
-            marketList.appendChild(card);
-          });
-        }
-      } catch (e) {
-        console.log('使用演示数据');
-      }
-    }
-
-    loadData();
+    // ============================================================
+    // 初始化
+    // ============================================================
+    loadUser();
+    updateAvatarUI();
+    switchPage('pageMarket');
   </script>
 </body>
 </html>
