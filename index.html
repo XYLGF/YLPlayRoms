@@ -90,8 +90,10 @@
       margin-bottom: 14px;
       display: flex; align-items: center; justify-content: center;
       background: #f7f7f7;
+      overflow: hidden;
     }
     .rom-logo-placeholder svg { width: 80px; height: 80px; }
+    .rom-logo-placeholder img { width: 100%; height: 100%; object-fit: contain; }
 
     .rom-bottom { display: flex; align-items: flex-end; justify-content: space-between; }
     .rom-bottom h3 { font-size: 22px; font-weight: 700; }
@@ -107,8 +109,10 @@
       display: flex; align-items: center; justify-content: center;
       border-bottom: 2px solid #111111;
       background: #f7f7f7;
+      overflow: hidden;
     }
     .detail-logo svg { width: 120px; height: 120px; }
+    .detail-logo img { width: 100%; height: 100%; object-fit: contain; }
 
     .detail-info {
       display: flex; justify-content: space-between;
@@ -345,6 +349,18 @@
       <div class="publish-field"><label>版本</label><input type="text" id="pubVersion"></div>
       <div class="publish-field"><label>开发者</label><input type="text" id="pubDeveloper"></div>
       <div class="publish-field"><label>下载地址</label><input type="text" id="pubUrl" placeholder="例如 example.com/rom.zip"></div>
+      
+      <!-- 新增：LOGO 上传 -->
+      <div class="publish-field">
+        <label>LOGO</label>
+        <div style="flex:1;">
+          <input type="file" id="pubLogo" accept="image/*" onchange="onLogoSelected(event)" style="display:none;">
+          <button type="button" class="btn" onclick="document.getElementById('pubLogo').click()">选择图片</button>
+          <span id="logoStatus" style="margin-left:10px;font-size:14px;color:#666;">未选择（可选）</span>
+          <div id="logoPreview" style="margin-top:10px;"></div>
+        </div>
+      </div>
+
       <div class="publish-field"><label>下载条件</label></div>
       <div class="publish-box">
         <div class="publish-options">
@@ -368,6 +384,7 @@
     let currentTab = 'published';
     let marketData = [];
     let publishCondition = 'free';
+    let currentLogoData = '';   // 新增：当前上传的 LOGO base64
 
     function normalizeUrl(url) {
       if (!url) return '';
@@ -453,6 +470,57 @@
       </svg>
     `;
 
+    // 新增：根据 ROM 是否有 logo 决定显示什么
+    function renderLogo(rom) {
+      if (rom && rom.logo) {
+        return `<img src="${rom.logo}" alt="">`;
+      }
+      return BOOK_SVG;
+    }
+
+    // ============================================================
+    // 新增：LOGO 选择 + 压缩
+    // ============================================================
+    function onLogoSelected(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      if (file.size > 1024 * 1024) {
+        showToast('图片不能超过 1MB');
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          const maxSize = 300;
+          let w = img.width, h = img.height;
+          if (w > h) {
+            if (w > maxSize) { h = h * maxSize / w; w = maxSize; }
+          } else {
+            if (h > maxSize) { w = w * maxSize / h; h = maxSize; }
+          }
+          canvas.width = w;
+          canvas.height = h;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, w, h);
+
+          currentLogoData = canvas.toDataURL('image/jpeg', 0.8);
+
+          document.getElementById('logoStatus').textContent = '已选择 ✅';
+          document.getElementById('logoPreview').innerHTML =
+            `<img src="${currentLogoData}" style="max-width:100px;max-height:100px;border:2px solid #111;border-radius:4px;">`;
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    // ============================================================
+    // 市场
+    // ============================================================
     async function loadMarket() {
       const list = document.getElementById('marketList');
       try {
@@ -472,7 +540,7 @@
       }
       list.innerHTML = data.map(rom => `
         <div class="rom-card" onclick="openDetailBySlug('${rom.slug}')">
-          <div class="rom-logo-placeholder">${BOOK_SVG}</div>
+          <div class="rom-logo-placeholder">${renderLogo(rom)}</div>
           <div class="rom-bottom">
             <div>
               <h3>${escapeHtml(rom.name)}</h3>
@@ -493,6 +561,9 @@
       renderMarket(filtered);
     }
 
+    // ============================================================
+    // 系统详情
+    // ============================================================
     async function openDetailBySlug(slug, updateUrl = true) {
       try {
         const res = await fetch(API_BASE + '/api/rom/by-slug/' + slug);
@@ -505,7 +576,7 @@
         }
         currentRom = rom;
 
-        document.getElementById('detailLogo').innerHTML = BOOK_SVG;
+        document.getElementById('detailLogo').innerHTML = renderLogo(rom);
         document.getElementById('detailName').textContent = rom.name;
         document.getElementById('detailVersion').textContent = rom.version || '';
         document.getElementById('detailDeveloper').textContent = rom.developer || '';
@@ -585,6 +656,9 @@
       } catch (e) { showToast('操作失败'); }
     }
 
+    // ============================================================
+    // 评论
+    // ============================================================
     async function loadComments(romId) {
       const list = document.getElementById('commentList');
       try {
@@ -632,6 +706,9 @@
       return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
     }
 
+    // ============================================================
+    // 登录 / 注册
+    // ============================================================
     async function handleLogin() {
       const username = document.getElementById('authUsername').value.trim();
       const password = document.getElementById('authPassword').value.trim();
@@ -670,6 +747,9 @@
       } catch (e) { showToast('网络错误'); }
     }
 
+    // ============================================================
+    // 个人中心
+    // ============================================================
     function switchTab(tab) {
       currentTab = tab;
       document.querySelectorAll('.tab').forEach((t, i) => {
@@ -720,7 +800,7 @@
         }
         list.innerHTML = data.map(rom => `
           <div class="rom-card" style="margin-bottom:16px;" onclick="openDetailBySlug('${rom.slug}')">
-            <div class="rom-logo-placeholder">${BOOK_SVG}</div>
+            <div class="rom-logo-placeholder">${renderLogo(rom)}</div>
             <div class="rom-bottom">
               <div>
                 <h3>${escapeHtml(rom.name)}</h3>
@@ -744,7 +824,7 @@
         }
         list.innerHTML = data.map(rom => `
           <div class="rom-card" style="margin-bottom:16px;" onclick="openDetailBySlug('${rom.slug}')">
-            <div class="rom-logo-placeholder">${BOOK_SVG}</div>
+            <div class="rom-logo-placeholder">${renderLogo(rom)}</div>
             <div class="rom-bottom">
               <div>
                 <h3>${escapeHtml(rom.name)}</h3>
@@ -756,6 +836,9 @@
       } catch (e) { list.innerHTML = '<div class="empty-tip">加载失败</div>'; }
     }
 
+    // ============================================================
+    // 发布
+    // ============================================================
     function selectPublishOption(type) {
       publishCondition = type;
       document.getElementById('optFree').classList.toggle('selected', type === 'free');
@@ -781,7 +864,8 @@
           body: JSON.stringify({
             name, version, developer, url, condition: publishCondition,
             code: publishCondition === 'code' ? code : '',
-            author: currentUser.username
+            author: currentUser.username,
+            logo: currentLogoData
           })
         });
         const data = await res.json();
@@ -792,6 +876,9 @@
           document.getElementById('pubDeveloper').value = '';
           document.getElementById('pubUrl').value = '';
           document.getElementById('pubCode').value = '';
+          currentLogoData = '';
+          document.getElementById('logoStatus').textContent = '未选择（可选）';
+          document.getElementById('logoPreview').innerHTML = '';
           switchPage('pageProfile');
         } else { showToast(data.message || '发布失败'); }
       } catch (e) { showToast('网络错误'); }
