@@ -16,7 +16,6 @@
       -webkit-font-smoothing: antialiased;
     }
 
-    /* ===== 顶部导航 ===== */
     .navbar {
       position: fixed;
       top: 0; left: 0; width: 100%; height: 56px;
@@ -28,9 +27,7 @@
       padding: 0 20px;
       z-index: 999;
     }
-
     .nav-logo { font-size: 18px; font-weight: 600; letter-spacing: 1px; }
-
     .nav-avatar {
       width: 34px; height: 34px;
       border: 2px solid #111111;
@@ -42,11 +39,9 @@
       text-transform: uppercase;
     }
 
-    /* ===== 页面 ===== */
     .page { display: none; padding-top: 56px; min-height: 100vh; }
     .page.active { display: block; }
 
-    /* ===== 按钮 ===== */
     .btn {
       display: inline-flex; align-items: center; justify-content: center;
       border: 2px solid #111111; background: transparent; color: #111111;
@@ -58,7 +53,6 @@
     .btn-block { width: 100%; display: flex; }
     .btn-sm { padding: 6px 16px; font-size: 14px; }
 
-    /* ===== 市场 ===== */
     .market-header {
       display: flex; align-items: center; justify-content: space-between;
       padding: 20px;
@@ -108,7 +102,6 @@
       font-size: 15px; line-height: 1.8;
     }
 
-    /* ===== 系统详情 ===== */
     .detail-logo {
       height: 220px;
       display: flex; align-items: center; justify-content: center;
@@ -127,7 +120,6 @@
     .detail-left .btn-row { display: flex; gap: 10px; }
     .detail-right { text-align: right; font-size: 14px; line-height: 1.9; color: #111111; }
 
-    /* ===== 评论区 ===== */
     .comment-section { padding: 20px; }
     .comment-section h2 { font-size: 24px; font-weight: 700; margin-bottom: 20px; }
 
@@ -164,7 +156,6 @@
     }
     .comment-send svg { width: 18px; height: 18px; }
 
-    /* ===== 登录 ===== */
     .auth-container { padding: 60px 24px; }
     .auth-title { font-size: 32px; font-weight: 700; margin-bottom: 32px; }
     .auth-box { border: 2px solid #111111; border-radius: 4px; padding: 28px 22px; }
@@ -179,7 +170,6 @@
     .auth-btn-row { display: flex; gap: 12px; margin-top: 20px; }
     .auth-btn-row .btn { flex: 1; }
 
-    /* ===== 个人中心 ===== */
     .profile-header {
       display: flex; flex-direction: column; align-items: center;
       padding: 40px 20px 28px; border-bottom: 2px solid #111111;
@@ -194,9 +184,7 @@
     .profile-name { font-size: 24px; font-weight: 700; margin-bottom: 4px; }
     .profile-level { font-size: 18px; font-weight: 300; color: #555; }
 
-    .tabs {
-      display: flex; border-bottom: 2px solid #111111;
-    }
+    .tabs { display: flex; border-bottom: 2px solid #111111; }
     .tab {
       flex: 1; text-align: center; padding: 16px;
       font-size: 17px; font-weight: 600; cursor: pointer;
@@ -207,7 +195,6 @@
     .tab-content { display: none; padding: 20px; }
     .tab-content.active { display: block; }
 
-    /* ===== 发布 ===== */
     .publish-container { padding: 24px; }
     .publish-title { font-size: 28px; font-weight: 700; margin-bottom: 24px; }
     .publish-field { display: flex; align-items: center; margin-bottom: 16px; gap: 14px; }
@@ -233,7 +220,6 @@
     }
     .publish-container .btn-block { margin-top: 24px; }
 
-    /* ===== Toast ===== */
     .toast {
       position: fixed; top: 50%; left: 50%;
       transform: translate(-50%, -50%);
@@ -245,7 +231,6 @@
     }
     .toast.show { opacity: 1; }
 
-    /* ===== 返回按钮 ===== */
     .back-bar {
       display: flex; align-items: center; gap: 12px;
       padding: 14px 20px; border-bottom: 2px solid #111111;
@@ -265,7 +250,6 @@
     <div class="nav-avatar" id="navAvatar" onclick="onAvatarClick()">?</div>
   </header>
 
-  <!-- ===== 市场（默认首页） ===== -->
   <div class="page active" id="pageMarket">
     <div class="market-header">
       <h1>Rom市场</h1>
@@ -281,7 +265,6 @@
     <div class="market-list" id="marketList"></div>
   </div>
 
-  <!-- ===== 系统详情 ===== -->
   <div class="page" id="pageDetail">
     <div class="back-bar">
       <button class="back-btn" onclick="goMarket()">←</button>
@@ -319,7 +302,6 @@
     </div>
   </div>
 
-  <!-- ===== 登录 ===== -->
   <div class="page" id="pageAuth">
     <div class="auth-container">
       <div class="auth-title">注册@登录</div>
@@ -335,7 +317,6 @@
     </div>
   </div>
 
-  <!-- ===== 个人中心 ===== -->
   <div class="page" id="pageProfile">
     <div class="profile-header">
       <div class="profile-avatar" id="profileAvatar">?</div>
@@ -357,7 +338,6 @@
     </div>
   </div>
 
-  <!-- ===== 发布 ===== -->
   <div class="page" id="pagePublish">
     <div class="publish-container">
       <div class="publish-title">发布Roms</div>
@@ -381,23 +361,14 @@
   <div class="toast" id="toast"></div>
 
   <script>
-    // ============================================================
-    // 配置
-    // ============================================================
     const API_BASE = 'https://roms.xylplay.top';
 
-    // ============================================================
-    // 状态
-    // ============================================================
     let currentUser = null;
     let currentRom = null;
     let currentTab = 'published';
     let marketData = [];
     let publishCondition = 'free';
 
-    // ============================================================
-    // URL 标准化 —— 修复跳转拼接到当前域名的问题
-    // ============================================================
     function normalizeUrl(url) {
       if (!url) return '';
       url = String(url).trim();
@@ -405,24 +376,15 @@
       return 'https://' + url;
     }
 
-    // ============================================================
-    // 本地持久化（只存"当前登录的是谁"，不存账号数据）
-    // ============================================================
     function saveUser() {
       if (currentUser) localStorage.setItem('yl_user', JSON.stringify(currentUser));
       else localStorage.removeItem('yl_user');
     }
-
     function loadUser() {
       const s = localStorage.getItem('yl_user');
-      if (s) {
-        try { currentUser = JSON.parse(s); } catch (e) { currentUser = null; }
-      }
+      if (s) { try { currentUser = JSON.parse(s); } catch (e) { currentUser = null; } }
     }
 
-    // ============================================================
-    // 页面切换
-    // ============================================================
     const pages = {
       pageMarket: 'Rom市场',
       pageDetail: '系统详情',
@@ -436,12 +398,10 @@
       const t = document.getElementById(id);
       if (t) { t.classList.add('active'); window.scrollTo(0, 0); }
       document.querySelector('.nav-logo').textContent = 'YL Play Roms' + (pages[id] ? ' · ' + pages[id] : '');
-
       if (id === 'pageMarket') loadMarket();
       if (id === 'pageProfile' && currentUser) loadProfile();
     }
 
-    // 强制跳回市场（绕过 switchPage 异步干扰）
     function forceGoMarket() {
       document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
       document.getElementById('pageMarket').classList.add('active');
@@ -450,28 +410,20 @@
       loadMarket();
     }
 
-    function goMarket() { forceGoMarket(); }
+    function goMarket() {
+      history.pushState({}, '', '/');
+      forceGoMarket();
+    }
 
-    // ============================================================
-    // 头像点击
-    // ============================================================
     function onAvatarClick() {
       if (currentUser) switchPage('pageProfile');
       else switchPage('pageAuth');
     }
-
     function onPublishClick() {
-      if (!currentUser) {
-        showToast('请先登录');
-        switchPage('pageAuth');
-        return;
-      }
+      if (!currentUser) { showToast('请先登录'); switchPage('pageAuth'); return; }
       switchPage('pagePublish');
     }
 
-    // ============================================================
-    // Toast
-    // ============================================================
     let toastTimer = null;
     function showToast(msg) {
       const t = document.getElementById('toast');
@@ -481,15 +433,11 @@
       toastTimer = setTimeout(() => t.classList.remove('show'), 1800);
     }
 
-    // ============================================================
-    // 工具
-    // ============================================================
     function escapeHtml(s) {
       const d = document.createElement('div');
       d.textContent = s == null ? '' : s;
       return d.innerHTML;
     }
-
     function updateAvatarUI() {
       const av = document.getElementById('navAvatar');
       av.textContent = currentUser ? currentUser.username.charAt(0).toUpperCase() : '?';
@@ -505,9 +453,6 @@
       </svg>
     `;
 
-    // ============================================================
-    // 市场
-    // ============================================================
     async function loadMarket() {
       const list = document.getElementById('marketList');
       try {
@@ -526,7 +471,7 @@
         return;
       }
       list.innerHTML = data.map(rom => `
-        <div class="rom-card" onclick="openDetail(${rom.id})">
+        <div class="rom-card" onclick="openDetailBySlug('${rom.slug}')">
           <div class="rom-logo-placeholder">${BOOK_SVG}</div>
           <div class="rom-bottom">
             <div>
@@ -548,15 +493,14 @@
       renderMarket(filtered);
     }
 
-    // ============================================================
-    // 系统详情
-    // ============================================================
-    async function openDetail(romId) {
+    async function openDetailBySlug(slug, updateUrl = true) {
       try {
-        const res = await fetch(API_BASE + '/api/rom/' + romId);
+        const res = await fetch(API_BASE + '/api/rom/by-slug/' + slug);
         const rom = await res.json();
         if (!rom || rom.success === false) {
           showToast('系统不存在');
+          history.pushState({}, '', '/');
+          forceGoMarket();
           return;
         }
         currentRom = rom;
@@ -571,7 +515,7 @@
 
         if (currentUser) {
           try {
-            const fRes = await fetch(API_BASE + '/api/favorite/check?username=' + encodeURIComponent(currentUser.username) + '&romId=' + romId);
+            const fRes = await fetch(API_BASE + '/api/favorite/check?username=' + encodeURIComponent(currentUser.username) + '&romId=' + rom.id);
             const fData = await fRes.json();
             document.getElementById('detailFavBtn').textContent = fData.favorited ? '已收藏' : '收藏';
           } catch (e) {
@@ -581,37 +525,31 @@
           document.getElementById('detailFavBtn').textContent = '收藏';
         }
 
-        loadComments(romId);
+        loadComments(rom.id);
         switchPage('pageDetail');
+
+        if (updateUrl) {
+          history.pushState({ slug }, '', '/system/' + slug);
+        }
       } catch (e) {
         showToast('加载失败');
+        history.pushState({}, '', '/');
+        forceGoMarket();
       }
     }
 
-    // ============================================================
-    // 下载 —— 修复跳转
-    // ============================================================
     function onDownloadClick() {
       if (!currentRom) return;
-
       const romId = currentRom.id;
       const finalUrl = normalizeUrl(currentRom.url);
-
-      if (!finalUrl) {
-        showToast('下载地址无效');
-        return;
-      }
+      if (!finalUrl) { showToast('下载地址无效'); return; }
 
       if (currentRom.condition === 'code') {
         const input = prompt('请输入激活码：');
         if (input === null) return;
-        if (input !== currentRom.code) {
-          showToast('激活码错误');
-          return;
-        }
+        if (input !== currentRom.code) { showToast('激活码错误'); return; }
       }
 
-      // 用 <a> 标签方式打开，保证绝对路径
       const a = document.createElement('a');
       a.href = finalUrl;
       a.target = '_blank';
@@ -620,7 +558,6 @@
       a.click();
       document.body.removeChild(a);
 
-      // 异步上报计数
       fetch(API_BASE + '/api/rom/download', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -628,15 +565,8 @@
       }).catch(() => {});
     }
 
-    // ============================================================
-    // 收藏
-    // ============================================================
     async function onFavoriteClick() {
-      if (!currentUser) {
-        showToast('请先登录');
-        switchPage('pageAuth');
-        return;
-      }
+      if (!currentUser) { showToast('请先登录'); switchPage('pageAuth'); return; }
       if (!currentRom) return;
       try {
         const res = await fetch(API_BASE + '/api/favorite', {
@@ -652,14 +582,9 @@
           const rom = await romRes.json();
           document.getElementById('detailFavs').textContent = rom.favorites_count || 0;
         }
-      } catch (e) {
-        showToast('操作失败');
-      }
+      } catch (e) { showToast('操作失败'); }
     }
 
-    // ============================================================
-    // 评论
-    // ============================================================
     async function loadComments(romId) {
       const list = document.getElementById('commentList');
       try {
@@ -684,11 +609,7 @@
     }
 
     async function sendComment() {
-      if (!currentUser) {
-        showToast('请先登录');
-        switchPage('pageAuth');
-        return;
-      }
+      if (!currentUser) { showToast('请先登录'); switchPage('pageAuth'); return; }
       if (!currentRom) return;
       const input = document.getElementById('commentInput');
       const content = input.value.trim();
@@ -702,9 +623,7 @@
         input.value = '';
         loadComments(currentRom.id);
         showToast('评论成功');
-      } catch (e) {
-        showToast('评论失败');
-      }
+      } catch (e) { showToast('评论失败'); }
     }
 
     function formatTime(ts) {
@@ -713,9 +632,6 @@
       return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
     }
 
-    // ============================================================
-    // 登录 / 注册
-    // ============================================================
     async function handleLogin() {
       const username = document.getElementById('authUsername').value.trim();
       const password = document.getElementById('authPassword').value.trim();
@@ -733,12 +649,8 @@
           updateAvatarUI();
           showToast('登录成功');
           switchPage('pageMarket');
-        } else {
-          showToast(data.message || '登录失败');
-        }
-      } catch (e) {
-        showToast('网络错误');
-      }
+        } else { showToast(data.message || '登录失败'); }
+      } catch (e) { showToast('网络错误'); }
     }
 
     async function handleRegister() {
@@ -753,19 +665,11 @@
           body: JSON.stringify({ username, password, email })
         });
         const data = await res.json();
-        if (data.success) {
-          showToast('注册成功，请登录');
-        } else {
-          showToast(data.message || '注册失败');
-        }
-      } catch (e) {
-        showToast('网络错误');
-      }
+        if (data.success) { showToast('注册成功，请登录'); }
+        else { showToast(data.message || '注册失败'); }
+      } catch (e) { showToast('网络错误'); }
     }
 
-    // ============================================================
-    // 个人中心
-    // ============================================================
     function switchTab(tab) {
       currentTab = tab;
       document.querySelectorAll('.tab').forEach((t, i) => {
@@ -794,7 +698,6 @@
       const name = currentUser.username;
       document.getElementById('profileName').textContent = name;
       document.getElementById('profileAvatar').textContent = name.charAt(0).toUpperCase();
-
       try {
         const res = await fetch(API_BASE + '/api/user/level?username=' + encodeURIComponent(name));
         const data = await res.json();
@@ -802,7 +705,6 @@
           document.getElementById('profileLevel').textContent = 'Lv.' + data.level;
         }
       } catch (e) {}
-
       loadMyRoms();
     }
 
@@ -817,7 +719,7 @@
           return;
         }
         list.innerHTML = data.map(rom => `
-          <div class="rom-card" style="margin-bottom:16px;" onclick="openDetail(${rom.id})">
+          <div class="rom-card" style="margin-bottom:16px;" onclick="openDetailBySlug('${rom.slug}')">
             <div class="rom-logo-placeholder">${BOOK_SVG}</div>
             <div class="rom-bottom">
               <div>
@@ -827,9 +729,7 @@
             </div>
           </div>
         `).join('');
-      } catch (e) {
-        list.innerHTML = '<div class="empty-tip">加载失败</div>';
-      }
+      } catch (e) { list.innerHTML = '<div class="empty-tip">加载失败</div>'; }
     }
 
     async function loadMyFavorites() {
@@ -843,7 +743,7 @@
           return;
         }
         list.innerHTML = data.map(rom => `
-          <div class="rom-card" style="margin-bottom:16px;" onclick="openDetail(${rom.id})">
+          <div class="rom-card" style="margin-bottom:16px;" onclick="openDetailBySlug('${rom.slug}')">
             <div class="rom-logo-placeholder">${BOOK_SVG}</div>
             <div class="rom-bottom">
               <div>
@@ -853,14 +753,9 @@
             </div>
           </div>
         `).join('');
-      } catch (e) {
-        list.innerHTML = '<div class="empty-tip">加载失败</div>';
-      }
+      } catch (e) { list.innerHTML = '<div class="empty-tip">加载失败</div>'; }
     }
 
-    // ============================================================
-    // 发布
-    // ============================================================
     function selectPublishOption(type) {
       publishCondition = type;
       document.getElementById('optFree').classList.toggle('selected', type === 'free');
@@ -877,7 +772,6 @@
       const code = document.getElementById('pubCode').value.trim();
 
       if (!name || !version || !developer || !url) { showToast('请填写完整信息'); return; }
-
       url = normalizeUrl(url);
 
       try {
@@ -899,20 +793,35 @@
           document.getElementById('pubUrl').value = '';
           document.getElementById('pubCode').value = '';
           switchPage('pageProfile');
-        } else {
-          showToast(data.message || '发布失败');
-        }
-      } catch (e) {
-        showToast('网络错误');
-      }
+        } else { showToast(data.message || '发布失败'); }
+      } catch (e) { showToast('网络错误'); }
     }
 
     // ============================================================
-    // 初始化
+    // 初始化 + 路由
     // ============================================================
     loadUser();
     updateAvatarUI();
-    switchPage('pageMarket');
+
+    (function initRoute() {
+      const path = window.location.pathname;
+      const match = path.match(/^\/system\/(\d+)$/);
+      if (match) {
+        openDetailBySlug(match[1], false);
+      } else {
+        switchPage('pageMarket');
+      }
+    })();
+
+    window.addEventListener('popstate', () => {
+      const path = window.location.pathname;
+      const match = path.match(/^\/system\/(\d+)$/);
+      if (match) {
+        openDetailBySlug(match[1], false);
+      } else {
+        forceGoMarket();
+      }
+    });
   </script>
 </body>
 </html>
