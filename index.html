@@ -147,7 +147,6 @@
       white-space: pre-wrap;
     }
 
-    /* ===== 管理员操作 ===== */
     .admin-btn {
       border: 2px solid #cc0044;
       color: #cc0044;
@@ -360,43 +359,22 @@
       border: 2px solid #ddd;
     }
 
-    /* ===================================================== */
-    /* 主题：Material Design 3                              */
-    /* ===================================================== */
     body.theme-md3 {
       background: #fef7ff;
       color: #1d1b20;
       font-family: 'PingFang SC', 'Microsoft YaHei', 'Roboto', sans-serif;
     }
-    body.theme-md3 .navbar {
-      background: #f3edf7;
-      border-bottom: none;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
-      height: 64px;
-    }
+    body.theme-md3 .navbar { background: #f3edf7; border-bottom: none; box-shadow: 0 1px 3px rgba(0,0,0,0.08); height: 64px; }
     body.theme-md3 .nav-logo { color: #6750a4; font-weight: 600; }
     body.theme-md3 .nav-avatar { background: #6750a4; color: #ffffff; border: none; font-weight: 600; }
-    body.theme-md3 .btn {
-      background: #6750a4; color: #ffffff; border: none;
-      border-radius: 20px; padding: 10px 24px; font-weight: 500;
-      box-shadow: 0 1px 3px rgba(103,80,164,0.3);
-    }
+    body.theme-md3 .btn { background: #6750a4; color: #ffffff; border: none; border-radius: 20px; padding: 10px 24px; font-weight: 500; box-shadow: 0 1px 3px rgba(103,80,164,0.3); }
     body.theme-md3 .btn:active { background: #4f378a; }
-    body.theme-md3 .search-bar {
-      border: none; border-radius: 28px; background: #f3edf7; padding: 12px 20px;
-    }
-    body.theme-md3 .rom-card {
-      border: none; border-radius: 16px; background: #ffffff;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.08); padding: 20px;
-    }
+    body.theme-md3 .search-bar { border: none; border-radius: 28px; background: #f3edf7; padding: 12px 20px; }
+    body.theme-md3 .rom-card { border: none; border-radius: 16px; background: #ffffff; box-shadow: 0 2px 6px rgba(0,0,0,0.08); padding: 20px; }
     body.theme-md3 .rom-logo-placeholder { border: none; border-radius: 12px; background: #ede8f3; }
     body.theme-md3 .rom-bottom h3 { color: #1d1b20; }
     body.theme-md3 .rom-bottom p { color: #6750a4; }
-    body.theme-md3 .profile-header {
-      border-bottom: none;
-      background: linear-gradient(135deg, #e8def8 0%, #f3edf7 100%);
-      border-radius: 0 0 32px 32px;
-    }
+    body.theme-md3 .profile-header { border-bottom: none; background: linear-gradient(135deg, #e8def8 0%, #f3edf7 100%); border-radius: 0 0 32px 32px; }
     body.theme-md3 .profile-avatar { background: #6750a4; color: #ffffff; border: none; }
     body.theme-md3 .tabs { border-bottom: none; }
     body.theme-md3 .tab { color: #999; }
@@ -506,9 +484,14 @@
         <div class="auth-field"><label>用户名</label><input type="text" id="authUsername" autocomplete="username"></div>
         <div class="auth-field"><label>密码</label><input type="password" id="authPassword" autocomplete="current-password"></div>
         <div class="auth-field"><span class="optional">邮箱(非必填)</span><input type="email" id="authEmail"></div>
+        <div class="auth-field" id="emailCodeField" style="display:none;">
+          <label>验证码</label>
+          <input type="text" id="authCode" placeholder="6 位数字" maxlength="6">
+        </div>
         <div class="auth-btn-row">
-          <button class="btn" onclick="handleLogin()">登录</button>
-          <button class="btn" onclick="handleRegister()">注册</button>
+          <button class="btn" id="loginBtn" onclick="handleLogin()">登录</button>
+          <button class="btn" id="registerBtn" onclick="handleRegister()">注册</button>
+          <button class="btn" id="verifyBtn" onclick="handleVerifyEmail()" style="display:none;">验证并注册</button>
         </div>
       </div>
     </div>
@@ -554,21 +537,11 @@
         <div class="settings-group">
           <h3>字体颜色</h3>
           <div class="settings-options">
-            <div class="settings-option" id="color-default" onclick="setTextColor('default')">
-              <span class="color-dot" style="background:#111111;"></span>默认
-            </div>
-            <div class="settings-option" id="color-blue" onclick="setTextColor('blue')">
-              <span class="color-dot" style="background:#0044cc;"></span>蓝
-            </div>
-            <div class="settings-option" id="color-red" onclick="setTextColor('red')">
-              <span class="color-dot" style="background:#cc0044;"></span>红
-            </div>
-            <div class="settings-option" id="color-green" onclick="setTextColor('green')">
-              <span class="color-dot" style="background:#008844;"></span>绿
-            </div>
-            <div class="settings-option" id="color-purple" onclick="setTextColor('purple')">
-              <span class="color-dot" style="background:#8800cc;"></span>紫
-            </div>
+            <div class="settings-option" id="color-default" onclick="setTextColor('default')"><span class="color-dot" style="background:#111111;"></span>默认</div>
+            <div class="settings-option" id="color-blue" onclick="setTextColor('blue')"><span class="color-dot" style="background:#0044cc;"></span>蓝</div>
+            <div class="settings-option" id="color-red" onclick="setTextColor('red')"><span class="color-dot" style="background:#cc0044;"></span>红</div>
+            <div class="settings-option" id="color-green" onclick="setTextColor('green')"><span class="color-dot" style="background:#008844;"></span>绿</div>
+            <div class="settings-option" id="color-purple" onclick="setTextColor('purple')"><span class="color-dot" style="background:#8800cc;"></span>紫</div>
           </div>
         </div>
       </div>
@@ -630,7 +603,7 @@
     let currentLogoData = '';
 
     // ============================================================
-    // 设置：主题 / 字体大小 / 字体颜色（存 localStorage）
+    // 设置
     // ============================================================
     function applySettings() {
       const theme = localStorage.getItem('yl_theme') || 'yl';
@@ -666,21 +639,9 @@
       }, 0);
     }
 
-    function setTheme(t) {
-      localStorage.setItem('yl_theme', t);
-      applySettings();
-      showToast('主题已切换');
-    }
-    function setFontSize(s) {
-      localStorage.setItem('yl_fontsize', s);
-      applySettings();
-      showToast('字体大小已修改');
-    }
-    function setTextColor(c) {
-      localStorage.setItem('yl_textcolor', c);
-      applySettings();
-      showToast('字体颜色已修改');
-    }
+    function setTheme(t) { localStorage.setItem('yl_theme', t); applySettings(); showToast('主题已切换'); }
+    function setFontSize(s) { localStorage.setItem('yl_fontsize', s); applySettings(); showToast('字体大小已修改'); }
+    function setTextColor(c) { localStorage.setItem('yl_textcolor', c); applySettings(); showToast('字体颜色已修改'); }
 
     // ============================================================
     // 工具函数
@@ -776,17 +737,12 @@
     }
 
     // ============================================================
-    // LOGO 选择 + 自动压缩
+    // LOGO 上传（5MB 上限，压缩 400px）
     // ============================================================
     function onLogoSelected(event) {
       const file = event.target.files[0];
       if (!file) return;
-
-      if (file.size > 5 * 1024 * 1024) {
-        showToast('图片不能超过 5MB');
-        return;
-      }
-
+      if (file.size > 5 * 1024 * 1024) { showToast('图片不能超过 5MB'); return; }
       const reader = new FileReader();
       reader.onload = (e) => {
         const img = new Image();
@@ -794,18 +750,12 @@
           const canvas = document.createElement('canvas');
           const maxSize = 400;
           let w = img.width, h = img.height;
-          if (w > h) {
-            if (w > maxSize) { h = h * maxSize / w; w = maxSize; }
-          } else {
-            if (h > maxSize) { w = w * maxSize / h; h = maxSize; }
-          }
-          canvas.width = w;
-          canvas.height = h;
+          if (w > h) { if (w > maxSize) { h = h * maxSize / w; w = maxSize; } }
+          else { if (h > maxSize) { w = w * maxSize / h; h = maxSize; } }
+          canvas.width = w; canvas.height = h;
           const ctx = canvas.getContext('2d');
           ctx.drawImage(img, 0, 0, w, h);
-
           currentLogoData = canvas.toDataURL('image/jpeg', 0.75);
-
           document.getElementById('logoStatus').textContent = '已选择 ✅';
           document.getElementById('logoPreview').innerHTML =
             `<img src="${currentLogoData}" style="max-width:100px;max-height:100px;border:2px solid #111;border-radius:4px;">`;
@@ -961,9 +911,7 @@
           const romRes = await fetch(API_BASE + '/api/rom/' + currentRom.id);
           const rom = await romRes.json();
           document.getElementById('detailFavs').textContent = rom.favorites_count || 0;
-        } else {
-          showToast(data.message || '操作失败');
-        }
+        } else { showToast(data.message || '操作失败'); }
       } catch (e) { showToast('操作失败'); }
     }
 
@@ -1010,13 +958,8 @@
           body: JSON.stringify({ romId: currentRom.id, username: currentUser.username, content })
         });
         const data = await res.json();
-        if (data.success) {
-          input.value = '';
-          loadComments(currentRom.id);
-          showToast('评论成功');
-        } else {
-          showToast(data.message || '评论失败');
-        }
+        if (data.success) { input.value = ''; loadComments(currentRom.id); showToast('评论成功'); }
+        else { showToast(data.message || '评论失败'); }
       } catch (e) { showToast('评论失败'); }
     }
 
@@ -1027,8 +970,16 @@
     }
 
     // ============================================================
-    // 登录 / 注册
+    // 登录 / 注册 / 邮箱验证
     // ============================================================
+    function resetAuthUI() {
+      document.getElementById('emailCodeField').style.display = 'none';
+      document.getElementById('loginBtn').style.display = 'flex';
+      document.getElementById('registerBtn').style.display = 'flex';
+      document.getElementById('verifyBtn').style.display = 'none';
+      document.getElementById('authCode').value = '';
+    }
+
     async function handleLogin() {
       const username = document.getElementById('authUsername').value.trim();
       const password = document.getElementById('authPassword').value.trim();
@@ -1051,9 +1002,7 @@
             showToast('登录成功');
           }
           switchPage('pageMarket');
-        } else {
-          showToast(data.message || '登录失败');
-        }
+        } else { showToast(data.message || '登录失败'); }
       } catch (e) { showToast('网络错误'); }
     }
 
@@ -1069,8 +1018,36 @@
           body: JSON.stringify({ username, password, email })
         });
         const data = await res.json();
-        if (data.success) { showToast('注册成功，请登录'); }
-        else { showToast(data.message || '注册失败'); }
+        if (data.success && data.needVerify) {
+          showToast('验证码已发送，请查收邮箱');
+          document.getElementById('emailCodeField').style.display = 'flex';
+          document.getElementById('loginBtn').style.display = 'none';
+          document.getElementById('registerBtn').style.display = 'none';
+          document.getElementById('verifyBtn').style.display = 'flex';
+        } else if (data.success) {
+          showToast('注册成功，请登录');
+          resetAuthUI();
+        } else {
+          showToast(data.message || '注册失败');
+        }
+      } catch (e) { showToast('网络错误'); }
+    }
+
+    async function handleVerifyEmail() {
+      const email = document.getElementById('authEmail').value.trim();
+      const code = document.getElementById('authCode').value.trim();
+      if (!code) { showToast('请输入验证码'); return; }
+      try {
+        const res = await fetch(API_BASE + '/api/verify-email', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, code })
+        });
+        const data = await res.json();
+        if (data.success) {
+          showToast('注册成功，请登录');
+          resetAuthUI();
+        } else { showToast(data.message || '验证失败'); }
       } catch (e) { showToast('网络错误'); }
     }
 
@@ -1084,19 +1061,10 @@
         t.classList.toggle('active', tabs[i] === tab);
       });
       document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-      if (tab === 'published') {
-        document.getElementById('tabPublished').classList.add('active');
-        loadMyRoms();
-      } else if (tab === 'favorites') {
-        document.getElementById('tabFavorites').classList.add('active');
-        loadMyFavorites();
-      } else if (tab === 'settings') {
-        document.getElementById('tabSettings').classList.add('active');
-        applySettings();
-      } else if (tab === 'admin') {
-        document.getElementById('tabAdmin').classList.add('active');
-        loadAdminUsers();
-      }
+      if (tab === 'published') { document.getElementById('tabPublished').classList.add('active'); loadMyRoms(); }
+      else if (tab === 'favorites') { document.getElementById('tabFavorites').classList.add('active'); loadMyFavorites(); }
+      else if (tab === 'settings') { document.getElementById('tabSettings').classList.add('active'); applySettings(); }
+      else if (tab === 'admin') { document.getElementById('tabAdmin').classList.add('active'); loadAdminUsers(); }
     }
 
     function handleLogout() {
@@ -1116,9 +1084,7 @@
       try {
         const res = await fetch(API_BASE + '/api/user/level?username=' + encodeURIComponent(name));
         const data = await res.json();
-        if (data.success) {
-          document.getElementById('profileLevel').textContent = 'Lv.' + data.level;
-        }
+        if (data.success) document.getElementById('profileLevel').textContent = 'Lv.' + data.level;
       } catch (e) {}
       loadMyRoms();
       updateAdminUI();
@@ -1130,19 +1096,14 @@
       try {
         const res = await fetch(API_BASE + '/api/roms/my?username=' + encodeURIComponent(currentUser.username));
         const data = await res.json();
-        if (!data || data.length === 0) {
-          list.innerHTML = '<div class="empty-tip">还没有发布过系统</div>';
-          return;
-        }
+        if (!data || data.length === 0) { list.innerHTML = '<div class="empty-tip">还没有发布过系统</div>'; return; }
         list.innerHTML = data.map(rom => `
           <div class="rom-card" style="margin-bottom:16px;" onclick="openDetailBySlug('${rom.slug}')">
             <div class="rom-logo-placeholder">${renderLogo(rom)}</div>
-            <div class="rom-bottom">
-              <div>
-                <h3>${escapeHtml(rom.name)}</h3>
-                <p>${escapeHtml(rom.developer || '')}</p>
-              </div>
-            </div>
+            <div class="rom-bottom"><div>
+              <h3>${escapeHtml(rom.name)}</h3>
+              <p>${escapeHtml(rom.developer || '')}</p>
+            </div></div>
           </div>
         `).join('');
       } catch (e) { list.innerHTML = '<div class="empty-tip">加载失败</div>'; }
@@ -1154,19 +1115,14 @@
       try {
         const res = await fetch(API_BASE + '/api/favorites/my?username=' + encodeURIComponent(currentUser.username));
         const data = await res.json();
-        if (!data || data.length === 0) {
-          list.innerHTML = '<div class="empty-tip">还没有收藏任何系统</div>';
-          return;
-        }
+        if (!data || data.length === 0) { list.innerHTML = '<div class="empty-tip">还没有收藏任何系统</div>'; return; }
         list.innerHTML = data.map(rom => `
           <div class="rom-card" style="margin-bottom:16px;" onclick="openDetailBySlug('${rom.slug}')">
             <div class="rom-logo-placeholder">${renderLogo(rom)}</div>
-            <div class="rom-bottom">
-              <div>
-                <h3>${escapeHtml(rom.name)}</h3>
-                <p>${escapeHtml(rom.developer || '')}</p>
-              </div>
-            </div>
+            <div class="rom-bottom"><div>
+              <h3>${escapeHtml(rom.name)}</h3>
+              <p>${escapeHtml(rom.developer || '')}</p>
+            </div></div>
           </div>
         `).join('');
       } catch (e) { list.innerHTML = '<div class="empty-tip">加载失败</div>'; }
@@ -1227,15 +1183,9 @@
     // ============================================================
     // 管理员功能
     // ============================================================
-    function isAdmin() {
-      return currentUser && (currentUser.role === 'super' || currentUser.role === 'root');
-    }
-    function isRoot() {
-      return currentUser && currentUser.role === 'root';
-    }
-    function isBanned() {
-      return currentUser && currentUser.banned === 1;
-    }
+    function isAdmin() { return currentUser && (currentUser.role === 'super' || currentUser.role === 'root'); }
+    function isRoot() { return currentUser && currentUser.role === 'root'; }
+    function isBanned() { return currentUser && currentUser.banned === 1; }
 
     function updateAdminUI() {
       const adminTab = document.getElementById('tabAdminBtn');
@@ -1254,10 +1204,8 @@
           body: JSON.stringify({ requester: currentUser.username, commentId })
         });
         const data = await res.json();
-        if (data.success) {
-          showToast('评论已删除');
-          if (currentRom) loadComments(currentRom.id);
-        } else showToast(data.message || '删除失败');
+        if (data.success) { showToast('评论已删除'); if (currentRom) loadComments(currentRom.id); }
+        else showToast(data.message || '删除失败');
       } catch (e) { showToast('网络错误'); }
     }
 
@@ -1271,10 +1219,8 @@
           body: JSON.stringify({ requester: currentUser.username, romId: currentRom.id })
         });
         const data = await res.json();
-        if (data.success) {
-          showToast('系统已删除');
-          goMarket();
-        } else showToast(data.message || '删除失败');
+        if (data.success) { showToast('系统已删除'); goMarket(); }
+        else showToast(data.message || '删除失败');
       } catch (e) { showToast('网络错误'); }
     }
 
@@ -1285,10 +1231,7 @@
       try {
         const res = await fetch(API_BASE + '/api/admin/list-users?requester=' + encodeURIComponent(currentUser.username));
         const data = await res.json();
-        if (!Array.isArray(data)) {
-          list.innerHTML = '<div style="color:#999;padding:20px;">加载失败</div>';
-          return;
-        }
+        if (!Array.isArray(data)) { list.innerHTML = '<div style="color:#999;padding:20px;">加载失败</div>'; return; }
         list.innerHTML = data.map(u => {
           const roleTag = u.role === 'root' ? '<span class="admin-role-tag root">超级管理员</span>' :
                           u.role === 'super' ? '<span class="admin-role-tag super">管理员</span>' : '';
@@ -1306,20 +1249,15 @@
             ? `<button class="admin-btn" onclick="adminSetRole('${u.username}','super')">设为管理员</button>` : '';
           const setUserBtn = (isRoot() && !isMe && u.role === 'super')
             ? `<button class="admin-btn" onclick="adminSetRole('${u.username}','user')">取消管理员</button>` : '';
-
           return `
             <div class="admin-user-item">
               <h4>${escapeHtml(u.username)} ${roleTag} ${bannedTag}</h4>
               <p>注册于 ${formatTime(u.created_at)}${u.banned === 1 ? ' · 封禁原因：' + escapeHtml(u.ban_reason || '违规') : ''}</p>
-              <div class="admin-actions">
-                ${banBtn}${setSuperBtn}${setUserBtn}${deleteBtn}
-              </div>
+              <div class="admin-actions">${banBtn}${setSuperBtn}${setUserBtn}${deleteBtn}</div>
             </div>
           `;
         }).join('');
-      } catch (e) {
-        list.innerHTML = '<div style="color:#999;padding:20px;">加载失败</div>';
-      }
+      } catch (e) { list.innerHTML = '<div style="color:#999;padding:20px;">加载失败</div>'; }
     }
 
     async function adminBan(username) {
@@ -1381,7 +1319,7 @@
     }
 
     // ============================================================
-    // 初始化 + 路由
+    // 初始化
     // ============================================================
     loadUser();
     updateAvatarUI();
@@ -1391,21 +1329,15 @@
     (function initRoute() {
       const path = window.location.pathname;
       const match = path.match(/^\/system\/(\d+)$/);
-      if (match) {
-        openDetailBySlug(match[1], false);
-      } else {
-        switchPage('pageMarket');
-      }
+      if (match) openDetailBySlug(match[1], false);
+      else switchPage('pageMarket');
     })();
 
     window.addEventListener('popstate', () => {
       const path = window.location.pathname;
       const match = path.match(/^\/system\/(\d+)$/);
-      if (match) {
-        openDetailBySlug(match[1], false);
-      } else {
-        forceGoMarket();
-      }
+      if (match) openDetailBySlug(match[1], false);
+      else forceGoMarket();
     });
   </script>
 </body>
