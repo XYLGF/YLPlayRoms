@@ -7,13 +7,19 @@
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
+    :root {
+      --font-scale: 1;
+      --text-color: #111111;
+    }
+
     body {
       font-family: 'PingFang SC', 'Microsoft YaHei', 'Helvetica Neue', sans-serif;
       background: #ffffff;
-      color: #111111;
+      color: var(--text-color);
       font-weight: 300;
       overflow-x: hidden;
       -webkit-font-smoothing: antialiased;
+      font-size: calc(15px * var(--font-scale));
     }
 
     .navbar {
@@ -27,13 +33,13 @@
       padding: 0 20px;
       z-index: 999;
     }
-    .nav-logo { font-size: 18px; font-weight: 600; letter-spacing: 1px; }
+    .nav-logo { font-size: calc(18px * var(--font-scale)); font-weight: 600; letter-spacing: 1px; }
     .nav-avatar {
       width: 34px; height: 34px;
       border: 2px solid #111111;
       border-radius: 50%;
       display: flex; align-items: center; justify-content: center;
-      font-size: 14px; font-weight: 600;
+      font-size: calc(14px * var(--font-scale)); font-weight: 600;
       cursor: pointer;
       background: transparent;
       text-transform: uppercase;
@@ -45,19 +51,19 @@
     .btn {
       display: inline-flex; align-items: center; justify-content: center;
       border: 2px solid #111111; background: transparent; color: #111111;
-      font-size: 15px; font-weight: 500; padding: 10px 24px;
+      font-size: calc(15px * var(--font-scale)); font-weight: 500; padding: 10px 24px;
       border-radius: 4px; cursor: pointer; transition: all 0.15s;
       letter-spacing: 1px; font-family: inherit;
     }
     .btn:active { background: #111111; color: #ffffff; }
     .btn-block { width: 100%; display: flex; }
-    .btn-sm { padding: 6px 16px; font-size: 14px; }
+    .btn-sm { padding: 6px 16px; font-size: calc(14px * var(--font-scale)); }
 
     .market-header {
       display: flex; align-items: center; justify-content: space-between;
       padding: 20px;
     }
-    .market-header h1 { font-size: 28px; font-weight: 700; }
+    .market-header h1 { font-size: calc(28px * var(--font-scale)); font-weight: 700; }
 
     .search-bar {
       display: flex; align-items: center;
@@ -67,7 +73,7 @@
     }
     .search-bar input {
       flex: 1; border: none; outline: none;
-      font-size: 15px; font-family: inherit;
+      font-size: calc(15px * var(--font-scale)); font-family: inherit;
       background: transparent; color: #111111;
     }
     .search-bar input::placeholder { color: #999; }
@@ -96,12 +102,12 @@
     .rom-logo-placeholder img { width: 100%; height: 100%; object-fit: contain; }
 
     .rom-bottom { display: flex; align-items: flex-end; justify-content: space-between; }
-    .rom-bottom h3 { font-size: 22px; font-weight: 700; }
-    .rom-bottom p { font-size: 15px; color: #555; margin-top: 2px; }
+    .rom-bottom h3 { font-size: calc(22px * var(--font-scale)); font-weight: 700; }
+    .rom-bottom p { font-size: calc(15px * var(--font-scale)); color: #555; margin-top: 2px; }
 
     .empty-tip {
       text-align: center; color: #999; padding: 80px 20px;
-      font-size: 15px; line-height: 1.8;
+      font-size: calc(15px * var(--font-scale)); line-height: 1.8;
     }
 
     .detail-logo {
@@ -118,28 +124,99 @@
       display: flex; justify-content: space-between;
       padding: 20px; border-bottom: 2px solid #111111;
     }
-    .detail-left h3 { font-size: 24px; font-weight: 700; margin-bottom: 6px; }
-    .detail-left p { font-size: 16px; color: #333; line-height: 1.6; }
+    .detail-left h3 { font-size: calc(24px * var(--font-scale)); font-weight: 700; margin-bottom: 6px; }
+    .detail-left p { font-size: calc(16px * var(--font-scale)); color: #333; line-height: 1.6; }
     .detail-left .btn { margin-top: 12px; }
     .detail-left .btn-row { display: flex; gap: 10px; }
-    .detail-right { text-align: right; font-size: 14px; line-height: 1.9; color: #111111; }
+    .detail-right { text-align: right; font-size: calc(14px * var(--font-scale)); line-height: 1.9; color: #111111; }
+
+    /* ===== 简介区域 ===== */
+    .intro-section {
+      padding: 20px;
+      border-bottom: 2px solid #111111;
+    }
+    .intro-section h2 {
+      font-size: calc(22px * var(--font-scale));
+      font-weight: 700;
+      margin-bottom: 14px;
+    }
+    .intro-content {
+      font-size: calc(15px * var(--font-scale));
+      line-height: 1.8;
+      color: #222;
+      word-break: break-word;
+      white-space: pre-wrap;
+    }
+
+    /* ===== 设置页面 ===== */
+    .settings-container { padding: 24px; }
+    .settings-title {
+      font-size: calc(28px * var(--font-scale));
+      font-weight: 700;
+      margin-bottom: 24px;
+    }
+    .settings-group {
+      border: 2px solid #111111;
+      border-radius: 4px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+    .settings-group h3 {
+      font-size: calc(18px * var(--font-scale));
+      font-weight: 700;
+      margin-bottom: 14px;
+    }
+    .settings-options {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .settings-option {
+      flex: 1;
+      min-width: 90px;
+      border: 2px solid #111111;
+      border-radius: 4px;
+      padding: 14px 10px;
+      text-align: center;
+      font-size: calc(15px * var(--font-scale));
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .settings-option.selected {
+      background: #111111;
+      color: #ffffff;
+    }
+    .settings-desc {
+      font-size: calc(13px * var(--font-scale));
+      color: #666;
+      margin-top: 10px;
+    }
+    .color-dot {
+      display: inline-block;
+      width: 18px; height: 18px;
+      border-radius: 50%;
+      margin-right: 6px;
+      vertical-align: middle;
+      border: 2px solid #ddd;
+    }
 
     .comment-section { padding: 20px; }
-    .comment-section h2 { font-size: 24px; font-weight: 700; margin-bottom: 20px; }
+    .comment-section h2 { font-size: calc(24px * var(--font-scale)); font-weight: 700; margin-bottom: 20px; }
 
     .comment-item { display: flex; gap: 12px; margin-bottom: 20px; }
     .comment-avatar {
       width: 44px; height: 44px;
       border: 2px solid #111111; border-radius: 50%;
       display: flex; align-items: center; justify-content: center;
-      font-size: 16px; font-weight: 600; flex-shrink: 0;
+      font-size: calc(16px * var(--font-scale)); font-weight: 600; flex-shrink: 0;
       text-transform: uppercase;
     }
     .comment-body { flex: 1; }
-    .comment-meta { font-size: 14px; font-weight: 500; margin-bottom: 8px; }
+    .comment-meta { font-size: calc(14px * var(--font-scale)); font-weight: 500; margin-bottom: 8px; }
     .comment-content {
       border: 2px solid #111111; border-radius: 4px;
-      padding: 12px 14px; font-size: 15px;
+      padding: 12px 14px; font-size: calc(15px * var(--font-scale));
     }
 
     .comment-input-bar {
@@ -149,7 +226,7 @@
     }
     .comment-input-bar input {
       flex: 1; border: 2px solid #111111; border-radius: 4px;
-      padding: 10px 14px; font-size: 15px; font-family: inherit;
+      padding: 10px 14px; font-size: calc(15px * var(--font-scale)); font-family: inherit;
       outline: none; background: transparent;
     }
     .comment-send {
@@ -161,16 +238,16 @@
     .comment-send svg { width: 18px; height: 18px; }
 
     .auth-container { padding: 60px 24px; }
-    .auth-title { font-size: 32px; font-weight: 700; margin-bottom: 32px; }
+    .auth-title { font-size: calc(32px * var(--font-scale)); font-weight: 700; margin-bottom: 32px; }
     .auth-box { border: 2px solid #111111; border-radius: 4px; padding: 28px 22px; }
     .auth-field { display: flex; align-items: center; margin-bottom: 20px; gap: 14px; }
-    .auth-field label { font-size: 18px; font-weight: 600; width: 80px; text-align: right; flex-shrink: 0; }
+    .auth-field label { font-size: calc(18px * var(--font-scale)); font-weight: 600; width: 80px; text-align: right; flex-shrink: 0; }
     .auth-field input {
       flex: 1; border: 2px solid #111111; border-radius: 4px;
-      padding: 10px 12px; font-size: 15px; font-family: inherit;
+      padding: 10px 12px; font-size: calc(15px * var(--font-scale)); font-family: inherit;
       outline: none; background: transparent;
     }
-    .auth-field .optional { font-size: 13px; font-weight: 400; color: #666; width: 80px; text-align: right; flex-shrink: 0; }
+    .auth-field .optional { font-size: calc(13px * var(--font-scale)); font-weight: 400; color: #666; width: 80px; text-align: right; flex-shrink: 0; }
     .auth-btn-row { display: flex; gap: 12px; margin-top: 20px; }
     .auth-btn-row .btn { flex: 1; }
 
@@ -182,16 +259,16 @@
       width: 110px; height: 110px;
       border: 3px solid #111111; border-radius: 50%;
       display: flex; align-items: center; justify-content: center;
-      font-size: 44px; font-weight: 700; margin-bottom: 18px;
+      font-size: calc(44px * var(--font-scale)); font-weight: 700; margin-bottom: 18px;
       text-transform: uppercase;
     }
-    .profile-name { font-size: 24px; font-weight: 700; margin-bottom: 4px; }
-    .profile-level { font-size: 18px; font-weight: 300; color: #555; }
+    .profile-name { font-size: calc(24px * var(--font-scale)); font-weight: 700; margin-bottom: 4px; }
+    .profile-level { font-size: calc(18px * var(--font-scale)); font-weight: 300; color: #555; }
 
     .tabs { display: flex; border-bottom: 2px solid #111111; }
     .tab {
       flex: 1; text-align: center; padding: 16px;
-      font-size: 17px; font-weight: 600; cursor: pointer;
+      font-size: calc(17px * var(--font-scale)); font-weight: 600; cursor: pointer;
       color: #999;
     }
     .tab.active { color: #111111; border-bottom: 4px solid #111111; margin-bottom: -2px; }
@@ -200,26 +277,28 @@
     .tab-content.active { display: block; }
 
     .publish-container { padding: 24px; }
-    .publish-title { font-size: 28px; font-weight: 700; margin-bottom: 24px; }
-    .publish-field { display: flex; align-items: center; margin-bottom: 16px; gap: 14px; }
-    .publish-field label { font-size: 17px; font-weight: 600; width: 90px; text-align: right; flex-shrink: 0; }
-    .publish-field input {
+    .publish-title { font-size: calc(28px * var(--font-scale)); font-weight: 700; margin-bottom: 24px; }
+    .publish-field { display: flex; margin-bottom: 16px; gap: 14px; }
+    .publish-field > label { font-size: calc(17px * var(--font-scale)); font-weight: 600; width: 90px; text-align: right; flex-shrink: 0; padding-top: 10px; }
+    .publish-field input, .publish-field textarea {
       flex: 1; border: 2px solid #111111; border-radius: 4px;
-      padding: 10px 12px; font-size: 15px; font-family: inherit;
+      padding: 10px 12px; font-size: calc(15px * var(--font-scale)); font-family: inherit;
       outline: none; background: transparent;
+      resize: vertical;
     }
+    .publish-field textarea { min-height: 100px; }
     .publish-box { border: 2px solid #111111; border-radius: 4px; padding: 18px; margin-top: 20px; }
     .publish-options { display: flex; gap: 14px; margin-bottom: 14px; }
     .publish-option {
       flex: 1; border: 2px solid #111111; border-radius: 4px;
-      padding: 12px; text-align: center; font-size: 18px; font-weight: 600;
+      padding: 12px; text-align: center; font-size: calc(18px * var(--font-scale)); font-weight: 600;
       cursor: pointer;
     }
     .publish-option.selected { background: #111111; color: #ffffff; }
-    .publish-hint { font-size: 13px; color: #555; margin-bottom: 10px; }
+    .publish-hint { font-size: calc(13px * var(--font-scale)); color: #555; margin-bottom: 10px; }
     .publish-code-input {
       width: 100%; border: 2px solid #111111; border-radius: 4px;
-      padding: 10px 12px; font-size: 15px; font-family: inherit;
+      padding: 10px 12px; font-size: calc(15px * var(--font-scale)); font-family: inherit;
       outline: none; background: transparent;
     }
     .publish-container .btn-block { margin-top: 24px; }
@@ -228,7 +307,7 @@
       position: fixed; top: 50%; left: 50%;
       transform: translate(-50%, -50%);
       background: #111111; color: #fff;
-      font-size: 15px; padding: 14px 32px;
+      font-size: calc(15px * var(--font-scale)); padding: 14px 32px;
       border-radius: 6px; z-index: 9999;
       opacity: 0; pointer-events: none;
       transition: opacity 0.3s;
@@ -240,11 +319,180 @@
       padding: 14px 20px; border-bottom: 2px solid #111111;
     }
     .back-btn {
-      font-size: 22px; cursor: pointer;
+      font-size: calc(22px * var(--font-scale)); cursor: pointer;
       font-weight: 600; line-height: 1;
       background: transparent; border: none;
     }
-    .back-title { font-size: 17px; font-weight: 600; }
+    .back-title { font-size: calc(17px * var(--font-scale)); font-weight: 600; }
+
+    /* ===================================================== */
+    /* 主题：Material Design 3                              */
+    /* ===================================================== */
+    body.theme-md3 {
+      background: #fef7ff;
+      color: #1d1b20;
+      font-family: 'PingFang SC', 'Microsoft YaHei', 'Roboto', sans-serif;
+    }
+    body.theme-md3 .navbar {
+      background: #f3edf7;
+      border-bottom: none;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+      height: 64px;
+    }
+    body.theme-md3 .nav-logo {
+      color: #6750a4;
+      font-weight: 600;
+    }
+    body.theme-md3 .nav-avatar {
+      background: #6750a4;
+      color: #ffffff;
+      border: none;
+      font-weight: 600;
+    }
+    body.theme-md3 .btn {
+      background: #6750a4;
+      color: #ffffff;
+      border: none;
+      border-radius: 20px;
+      padding: 10px 24px;
+      font-weight: 500;
+      box-shadow: 0 1px 3px rgba(103,80,164,0.3);
+    }
+    body.theme-md3 .btn:active {
+      background: #4f378a;
+    }
+    body.theme-md3 .search-bar {
+      border: none;
+      border-radius: 28px;
+      background: #f3edf7;
+      padding: 12px 20px;
+    }
+    body.theme-md3 .rom-card {
+      border: none;
+      border-radius: 16px;
+      background: #ffffff;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+      padding: 20px;
+    }
+    body.theme-md3 .rom-logo-placeholder {
+      border: none;
+      border-radius: 12px;
+      background: #ede8f3;
+    }
+    body.theme-md3 .rom-bottom h3 { color: #1d1b20; }
+    body.theme-md3 .rom-bottom p { color: #6750a4; }
+    body.theme-md3 .profile-header {
+      border-bottom: none;
+      background: linear-gradient(135deg, #e8def8 0%, #f3edf7 100%);
+      border-radius: 0 0 32px 32px;
+    }
+    body.theme-md3 .profile-avatar {
+      background: #6750a4;
+      color: #ffffff;
+      border: none;
+    }
+    body.theme-md3 .tabs { border-bottom: none; }
+    body.theme-md3 .tab { color: #999; }
+    body.theme-md3 .tab.active {
+      color: #6750a4;
+      border-bottom: 3px solid #6750a4;
+      font-weight: 700;
+    }
+    body.theme-md3 .comment-content {
+      border: none;
+      background: #f3edf7;
+      border-radius: 12px;
+    }
+    body.theme-md3 .comment-avatar {
+      border: none;
+      background: #6750a4;
+      color: #ffffff;
+    }
+    body.theme-md3 .comment-input-bar {
+      border-top: none;
+      box-shadow: 0 -1px 3px rgba(0,0,0,0.05);
+      background: #fef7ff;
+    }
+    body.theme-md3 .comment-input-bar input {
+      border: none;
+      background: #f3edf7;
+      border-radius: 20px;
+      padding: 12px 16px;
+    }
+    body.theme-md3 .comment-send {
+      background: #6750a4;
+      color: #ffffff;
+      border: none;
+    }
+    body.theme-md3 .auth-box {
+      border: none;
+      background: #ffffff;
+      border-radius: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+    body.theme-md3 .auth-field input {
+      border: none;
+      background: #f3edf7;
+      border-radius: 12px;
+      padding: 14px;
+    }
+    body.theme-md3 .auth-field label { color: #6750a4; }
+    body.theme-md3 .auth-title { color: #6750a4; }
+    body.theme-md3 .settings-group {
+      border: none;
+      background: #f3edf7;
+      border-radius: 16px;
+    }
+    body.theme-md3 .settings-option {
+      border: 2px solid transparent;
+      background: #ffffff;
+      border-radius: 12px;
+    }
+    body.theme-md3 .settings-option.selected {
+      background: #6750a4;
+      color: #ffffff;
+    }
+    body.theme-md3 .detail-logo {
+      border-bottom: none;
+      background: #ede8f3;
+    }
+    body.theme-md3 .detail-info {
+      border-bottom: none;
+    }
+    body.theme-md3 .detail-left h3 { color: #1d1b20; }
+    body.theme-md3 .intro-section {
+      border-bottom: none;
+    }
+    body.theme-md3 .back-bar {
+      border-bottom: none;
+      background: #f3edf7;
+    }
+    body.theme-md3 .back-btn { color: #6750a4; }
+    body.theme-md3 .back-title { color: #1d1b20; }
+    body.theme-md3 .publish-box {
+      border: none;
+      background: #f3edf7;
+      border-radius: 16px;
+    }
+    body.theme-md3 .publish-option {
+      border: 2px solid transparent;
+      background: #ffffff;
+      border-radius: 12px;
+    }
+    body.theme-md3 .publish-option.selected {
+      background: #6750a4;
+      color: #ffffff;
+    }
+    body.theme-md3 .publish-field input,
+    body.theme-md3 .publish-field textarea,
+    body.theme-md3 .publish-code-input {
+      border: none;
+      background: #f3edf7;
+      border-radius: 12px;
+      padding: 14px;
+    }
+    body.theme-md3 .publish-field > label { color: #6750a4; }
+    body.theme-md3 .toast { background: #1d1b20; border-radius: 12px; }
   </style>
 </head>
 <body>
@@ -254,6 +502,7 @@
     <div class="nav-avatar" id="navAvatar" onclick="onAvatarClick()">?</div>
   </header>
 
+  <!-- ===== 市场 ===== -->
   <div class="page active" id="pageMarket">
     <div class="market-header">
       <h1>Rom市场</h1>
@@ -269,6 +518,7 @@
     <div class="market-list" id="marketList"></div>
   </div>
 
+  <!-- ===== 系统详情 ===== -->
   <div class="page" id="pageDetail">
     <div class="back-bar">
       <button class="back-btn" onclick="goMarket()">←</button>
@@ -291,6 +541,13 @@
         <div>收藏人数:<span id="detailFavs">0</span></div>
       </div>
     </div>
+
+    <!-- 简介（在下载栏下方，评论区上方） -->
+    <div class="intro-section" id="introSection" style="display:none;">
+      <h2>简介</h2>
+      <div class="intro-content" id="introContent"></div>
+    </div>
+
     <div class="comment-section">
       <h2>评论区</h2>
       <div id="commentList"></div>
@@ -306,6 +563,7 @@
     </div>
   </div>
 
+  <!-- ===== 登录 ===== -->
   <div class="page" id="pageAuth">
     <div class="auth-container">
       <div class="auth-title">注册@登录</div>
@@ -321,6 +579,7 @@
     </div>
   </div>
 
+  <!-- ===== 个人中心 ===== -->
   <div class="page" id="pageProfile">
     <div class="profile-header">
       <div class="profile-avatar" id="profileAvatar">?</div>
@@ -330,6 +589,7 @@
     <div class="tabs">
       <div class="tab active" onclick="switchTab('published')">我发布的</div>
       <div class="tab" onclick="switchTab('favorites')">我的收藏</div>
+      <div class="tab" onclick="switchTab('settings')">设置</div>
     </div>
     <div class="tab-content active" id="tabPublished">
       <div id="myRomList"></div>
@@ -337,11 +597,53 @@
     <div class="tab-content" id="tabFavorites">
       <div id="myFavList"></div>
     </div>
+    <div class="tab-content" id="tabSettings">
+      <div class="settings-container" style="padding:0;">
+        <div class="settings-group">
+          <h3>主题风格</h3>
+          <div class="settings-options">
+            <div class="settings-option" id="theme-yl" onclick="setTheme('yl')">YL Design</div>
+            <div class="settings-option" id="theme-md3" onclick="setTheme('md3')">Material 3</div>
+          </div>
+          <div class="settings-desc">YL Design：黑白线条风格；Material 3：谷歌 MD3 风格</div>
+        </div>
+        <div class="settings-group">
+          <h3>字体大小</h3>
+          <div class="settings-options">
+            <div class="settings-option" id="fs-s" onclick="setFontSize('s')">小</div>
+            <div class="settings-option" id="fs-m" onclick="setFontSize('m')">中</div>
+            <div class="settings-option" id="fs-l" onclick="setFontSize('l')">大</div>
+            <div class="settings-option" id="fs-xl" onclick="setFontSize('xl')">特大</div>
+          </div>
+        </div>
+        <div class="settings-group">
+          <h3>字体颜色</h3>
+          <div class="settings-options">
+            <div class="settings-option" id="color-default" onclick="setTextColor('default')">
+              <span class="color-dot" style="background:#111111;"></span>默认
+            </div>
+            <div class="settings-option" id="color-blue" onclick="setTextColor('blue')">
+              <span class="color-dot" style="background:#0044cc;"></span>蓝
+            </div>
+            <div class="settings-option" id="color-red" onclick="setTextColor('red')">
+              <span class="color-dot" style="background:#cc0044;"></span>红
+            </div>
+            <div class="settings-option" id="color-green" onclick="setTextColor('green')">
+              <span class="color-dot" style="background:#008844;"></span>绿
+            </div>
+            <div class="settings-option" id="color-purple" onclick="setTextColor('purple')">
+              <span class="color-dot" style="background:#8800cc;"></span>紫
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
     <div style="padding: 20px;">
       <button class="btn btn-block" onclick="handleLogout()">退出登录</button>
     </div>
   </div>
 
+  <!-- ===== 发布 ===== -->
   <div class="page" id="pagePublish">
     <div class="publish-container">
       <div class="publish-title">发布Roms</div>
@@ -349,6 +651,12 @@
       <div class="publish-field"><label>版本</label><input type="text" id="pubVersion"></div>
       <div class="publish-field"><label>开发者</label><input type="text" id="pubDeveloper"></div>
       <div class="publish-field"><label>下载地址</label><input type="text" id="pubUrl" placeholder="例如 example.com/rom.zip"></div>
+
+      <!-- 简介（纯文本） -->
+      <div class="publish-field">
+        <label>简介</label>
+        <textarea id="pubIntro" placeholder="简单介绍一下这个系统（可选）"></textarea>
+      </div>
 
       <!-- LOGO 上传 -->
       <div class="publish-field">
@@ -386,6 +694,66 @@
     let publishCondition = 'free';
     let currentLogoData = '';
 
+    // ============================================================
+    // 设置：主题 / 字体大小 / 字体颜色（存 localStorage）
+    // ============================================================
+    function applySettings() {
+      const theme = localStorage.getItem('yl_theme') || 'yl';
+      const fs = localStorage.getItem('yl_fontsize') || 'm';
+      const color = localStorage.getItem('yl_textcolor') || 'default';
+
+      // 主题
+      document.body.classList.toggle('theme-md3', theme === 'md3');
+
+      // 字体大小
+      const scaleMap = { s: 0.85, m: 1, l: 1.15, xl: 1.3 };
+      document.documentElement.style.setProperty('--font-scale', scaleMap[fs] || 1);
+
+      // 字体颜色
+      const colorMap = {
+        default: '#111111',
+        blue: '#0044cc',
+        red: '#cc0044',
+        green: '#008844',
+        purple: '#8800cc'
+      };
+      document.documentElement.style.setProperty('--text-color', colorMap[color] || '#111111');
+
+      // 更新设置页选中状态
+      setTimeout(() => {
+        document.getElementById('theme-yl')?.classList.toggle('selected', theme === 'yl');
+        document.getElementById('theme-md3')?.classList.toggle('selected', theme === 'md3');
+        document.getElementById('fs-s')?.classList.toggle('selected', fs === 's');
+        document.getElementById('fs-m')?.classList.toggle('selected', fs === 'm');
+        document.getElementById('fs-l')?.classList.toggle('selected', fs === 'l');
+        document.getElementById('fs-xl')?.classList.toggle('selected', fs === 'xl');
+        document.getElementById('color-default')?.classList.toggle('selected', color === 'default');
+        document.getElementById('color-blue')?.classList.toggle('selected', color === 'blue');
+        document.getElementById('color-red')?.classList.toggle('selected', color === 'red');
+        document.getElementById('color-green')?.classList.toggle('selected', color === 'green');
+        document.getElementById('color-purple')?.classList.toggle('selected', color === 'purple');
+      }, 0);
+    }
+
+    function setTheme(t) {
+      localStorage.setItem('yl_theme', t);
+      applySettings();
+      showToast('主题已切换');
+    }
+    function setFontSize(s) {
+      localStorage.setItem('yl_fontsize', s);
+      applySettings();
+      showToast('字体大小已修改');
+    }
+    function setTextColor(c) {
+      localStorage.setItem('yl_textcolor', c);
+      applySettings();
+      showToast('字体颜色已修改');
+    }
+
+    // ============================================================
+    // 工具函数
+    // ============================================================
     function normalizeUrl(url) {
       if (!url) return '';
       url = String(url).trim();
@@ -478,13 +846,12 @@
     }
 
     // ============================================================
-    // LOGO 选择 + 自动压缩（5MB 上限，压缩到 400px，JPEG 75%）
+    // LOGO 选择 + 自动压缩
     // ============================================================
     function onLogoSelected(event) {
       const file = event.target.files[0];
       if (!file) return;
 
-      // 放宽到 5MB
       if (file.size > 5 * 1024 * 1024) {
         showToast('图片不能超过 5MB');
         return;
@@ -494,7 +861,6 @@
       reader.onload = (e) => {
         const img = new Image();
         img.onload = () => {
-          // 压缩：最长边缩到 400px
           const canvas = document.createElement('canvas');
           const maxSize = 400;
           let w = img.width, h = img.height;
@@ -508,7 +874,6 @@
           const ctx = canvas.getContext('2d');
           ctx.drawImage(img, 0, 0, w, h);
 
-          // 转 JPEG 质量 0.75，体积更小
           currentLogoData = canvas.toDataURL('image/jpeg', 0.75);
 
           document.getElementById('logoStatus').textContent = '已选择 ✅';
@@ -585,6 +950,17 @@
         document.getElementById('detailDownloads').textContent = rom.downloads || 0;
         document.getElementById('detailViews').textContent = rom.views || 0;
         document.getElementById('detailFavs').textContent = rom.favorites_count || 0;
+
+        // 简介显示
+        const introSection = document.getElementById('introSection');
+        const introContent = document.getElementById('introContent');
+        if (rom.intro && rom.intro.trim()) {
+          introSection.style.display = 'block';
+          introContent.textContent = rom.intro;
+        } else {
+          introSection.style.display = 'none';
+          introContent.textContent = '';
+        }
 
         if (currentUser) {
           try {
@@ -754,8 +1130,9 @@
     // ============================================================
     function switchTab(tab) {
       currentTab = tab;
+      const tabs = ['published', 'favorites', 'settings'];
       document.querySelectorAll('.tab').forEach((t, i) => {
-        t.classList.toggle('active', ['published', 'favorites'][i] === tab);
+        t.classList.toggle('active', tabs[i] === tab);
       });
       document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
       if (tab === 'published') {
@@ -764,6 +1141,9 @@
       } else if (tab === 'favorites') {
         document.getElementById('tabFavorites').classList.add('active');
         loadMyFavorites();
+      } else if (tab === 'settings') {
+        document.getElementById('tabSettings').classList.add('active');
+        applySettings();
       }
     }
 
@@ -855,6 +1235,7 @@
       const developer = document.getElementById('pubDeveloper').value.trim();
       let url = document.getElementById('pubUrl').value.trim();
       const code = document.getElementById('pubCode').value.trim();
+      const intro = document.getElementById('pubIntro').value.trim();
 
       if (!name || !version || !developer || !url) { showToast('请填写完整信息'); return; }
       url = normalizeUrl(url);
@@ -867,7 +1248,8 @@
             name, version, developer, url, condition: publishCondition,
             code: publishCondition === 'code' ? code : '',
             author: currentUser.username,
-            logo: currentLogoData
+            logo: currentLogoData,
+            intro
           })
         });
         const data = await res.json();
@@ -878,6 +1260,7 @@
           document.getElementById('pubDeveloper').value = '';
           document.getElementById('pubUrl').value = '';
           document.getElementById('pubCode').value = '';
+          document.getElementById('pubIntro').value = '';
           currentLogoData = '';
           document.getElementById('logoStatus').textContent = '未选择（可选）';
           document.getElementById('logoPreview').innerHTML = '';
@@ -891,6 +1274,7 @@
     // ============================================================
     loadUser();
     updateAvatarUI();
+    applySettings();
 
     (function initRoute() {
       const path = window.location.pathname;
