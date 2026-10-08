@@ -130,7 +130,6 @@
     .detail-left .btn-row { display: flex; gap: 10px; }
     .detail-right { text-align: right; font-size: calc(14px * var(--font-scale)); line-height: 1.9; color: #111111; }
 
-    /* ===== 简介区域 ===== */
     .intro-section {
       padding: 20px;
       border-bottom: 2px solid #111111;
@@ -148,58 +147,61 @@
       white-space: pre-wrap;
     }
 
-    /* ===== 设置页面 ===== */
-    .settings-container { padding: 24px; }
-    .settings-title {
-      font-size: calc(28px * var(--font-scale));
-      font-weight: 700;
-      margin-bottom: 24px;
-    }
-    .settings-group {
-      border: 2px solid #111111;
+    /* ===== 管理员操作 ===== */
+    .admin-btn {
+      border: 2px solid #cc0044;
+      color: #cc0044;
+      background: transparent;
+      font-size: 12px;
+      padding: 4px 10px;
       border-radius: 4px;
-      padding: 20px;
-      margin-bottom: 20px;
-    }
-    .settings-group h3 {
-      font-size: calc(18px * var(--font-scale));
-      font-weight: 700;
-      margin-bottom: 14px;
-    }
-    .settings-options {
-      display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
-    }
-    .settings-option {
-      flex: 1;
-      min-width: 90px;
-      border: 2px solid #111111;
-      border-radius: 4px;
-      padding: 14px 10px;
-      text-align: center;
-      font-size: calc(15px * var(--font-scale));
-      font-weight: 600;
       cursor: pointer;
-      transition: all 0.15s;
+      font-family: inherit;
+      font-weight: 600;
+      margin-left: 8px;
     }
-    .settings-option.selected {
-      background: #111111;
-      color: #ffffff;
+    .admin-btn:active { background: #cc0044; color: #ffffff; }
+    .admin-panel-btn {
+      border: 2px solid #cc0044;
+      color: #cc0044;
+      background: transparent;
+      font-size: 13px;
+      font-weight: 600;
+      padding: 6px 14px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-family: inherit;
     }
-    .settings-desc {
-      font-size: calc(13px * var(--font-scale));
+    .admin-user-item {
+      border: 2px solid #111111;
+      border-radius: 4px;
+      padding: 14px;
+      margin-bottom: 12px;
+    }
+    .admin-user-item h4 {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    .admin-user-item p {
+      font-size: 13px;
       color: #666;
-      margin-top: 10px;
+      margin-bottom: 8px;
     }
-    .color-dot {
+    .admin-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+    .admin-role-tag {
       display: inline-block;
-      width: 18px; height: 18px;
-      border-radius: 50%;
-      margin-right: 6px;
-      vertical-align: middle;
-      border: 2px solid #ddd;
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 10px;
+      background: #111;
+      color: #fff;
+      margin-left: 6px;
+      font-weight: 500;
     }
+    .admin-role-tag.root { background: #cc0044; }
+    .admin-role-tag.super { background: #0044cc; }
+    .admin-role-tag.banned { background: #666; }
 
     .comment-section { padding: 20px; }
     .comment-section h2 { font-size: calc(24px * var(--font-scale)); font-weight: 700; margin-bottom: 20px; }
@@ -325,6 +327,39 @@
     }
     .back-title { font-size: calc(17px * var(--font-scale)); font-weight: 600; }
 
+    .settings-container { padding: 0; }
+    .settings-title { font-size: calc(28px * var(--font-scale)); font-weight: 700; margin-bottom: 24px; }
+    .settings-group {
+      border: 2px solid #111111;
+      border-radius: 4px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+    .settings-group h3 { font-size: calc(18px * var(--font-scale)); font-weight: 700; margin-bottom: 14px; }
+    .settings-options { display: flex; gap: 12px; flex-wrap: wrap; }
+    .settings-option {
+      flex: 1;
+      min-width: 90px;
+      border: 2px solid #111111;
+      border-radius: 4px;
+      padding: 14px 10px;
+      text-align: center;
+      font-size: calc(15px * var(--font-scale));
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .settings-option.selected { background: #111111; color: #ffffff; }
+    .settings-desc { font-size: calc(13px * var(--font-scale)); color: #666; margin-top: 10px; }
+    .color-dot {
+      display: inline-block;
+      width: 18px; height: 18px;
+      border-radius: 50%;
+      margin-right: 6px;
+      vertical-align: middle;
+      border: 2px solid #ddd;
+    }
+
     /* ===================================================== */
     /* 主题：Material Design 3                              */
     /* ===================================================== */
@@ -339,46 +374,22 @@
       box-shadow: 0 1px 3px rgba(0,0,0,0.08);
       height: 64px;
     }
-    body.theme-md3 .nav-logo {
-      color: #6750a4;
-      font-weight: 600;
-    }
-    body.theme-md3 .nav-avatar {
-      background: #6750a4;
-      color: #ffffff;
-      border: none;
-      font-weight: 600;
-    }
+    body.theme-md3 .nav-logo { color: #6750a4; font-weight: 600; }
+    body.theme-md3 .nav-avatar { background: #6750a4; color: #ffffff; border: none; font-weight: 600; }
     body.theme-md3 .btn {
-      background: #6750a4;
-      color: #ffffff;
-      border: none;
-      border-radius: 20px;
-      padding: 10px 24px;
-      font-weight: 500;
+      background: #6750a4; color: #ffffff; border: none;
+      border-radius: 20px; padding: 10px 24px; font-weight: 500;
       box-shadow: 0 1px 3px rgba(103,80,164,0.3);
     }
-    body.theme-md3 .btn:active {
-      background: #4f378a;
-    }
+    body.theme-md3 .btn:active { background: #4f378a; }
     body.theme-md3 .search-bar {
-      border: none;
-      border-radius: 28px;
-      background: #f3edf7;
-      padding: 12px 20px;
+      border: none; border-radius: 28px; background: #f3edf7; padding: 12px 20px;
     }
     body.theme-md3 .rom-card {
-      border: none;
-      border-radius: 16px;
-      background: #ffffff;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
-      padding: 20px;
+      border: none; border-radius: 16px; background: #ffffff;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08); padding: 20px;
     }
-    body.theme-md3 .rom-logo-placeholder {
-      border: none;
-      border-radius: 12px;
-      background: #ede8f3;
-    }
+    body.theme-md3 .rom-logo-placeholder { border: none; border-radius: 12px; background: #ede8f3; }
     body.theme-md3 .rom-bottom h3 { color: #1d1b20; }
     body.theme-md3 .rom-bottom p { color: #6750a4; }
     body.theme-md3 .profile-header {
@@ -386,111 +397,35 @@
       background: linear-gradient(135deg, #e8def8 0%, #f3edf7 100%);
       border-radius: 0 0 32px 32px;
     }
-    body.theme-md3 .profile-avatar {
-      background: #6750a4;
-      color: #ffffff;
-      border: none;
-    }
+    body.theme-md3 .profile-avatar { background: #6750a4; color: #ffffff; border: none; }
     body.theme-md3 .tabs { border-bottom: none; }
     body.theme-md3 .tab { color: #999; }
-    body.theme-md3 .tab.active {
-      color: #6750a4;
-      border-bottom: 3px solid #6750a4;
-      font-weight: 700;
-    }
-    body.theme-md3 .comment-content {
-      border: none;
-      background: #f3edf7;
-      border-radius: 12px;
-    }
-    body.theme-md3 .comment-avatar {
-      border: none;
-      background: #6750a4;
-      color: #ffffff;
-    }
-    body.theme-md3 .comment-input-bar {
-      border-top: none;
-      box-shadow: 0 -1px 3px rgba(0,0,0,0.05);
-      background: #fef7ff;
-    }
-    body.theme-md3 .comment-input-bar input {
-      border: none;
-      background: #f3edf7;
-      border-radius: 20px;
-      padding: 12px 16px;
-    }
-    body.theme-md3 .comment-send {
-      background: #6750a4;
-      color: #ffffff;
-      border: none;
-    }
-    body.theme-md3 .auth-box {
-      border: none;
-      background: #ffffff;
-      border-radius: 20px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-    }
-    body.theme-md3 .auth-field input {
-      border: none;
-      background: #f3edf7;
-      border-radius: 12px;
-      padding: 14px;
-    }
+    body.theme-md3 .tab.active { color: #6750a4; border-bottom: 3px solid #6750a4; font-weight: 700; }
+    body.theme-md3 .comment-content { border: none; background: #f3edf7; border-radius: 12px; }
+    body.theme-md3 .comment-avatar { border: none; background: #6750a4; color: #ffffff; }
+    body.theme-md3 .comment-input-bar { border-top: none; box-shadow: 0 -1px 3px rgba(0,0,0,0.05); background: #fef7ff; }
+    body.theme-md3 .comment-input-bar input { border: none; background: #f3edf7; border-radius: 20px; padding: 12px 16px; }
+    body.theme-md3 .comment-send { background: #6750a4; color: #ffffff; border: none; }
+    body.theme-md3 .auth-box { border: none; background: #ffffff; border-radius: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+    body.theme-md3 .auth-field input { border: none; background: #f3edf7; border-radius: 12px; padding: 14px; }
     body.theme-md3 .auth-field label { color: #6750a4; }
     body.theme-md3 .auth-title { color: #6750a4; }
-    body.theme-md3 .settings-group {
-      border: none;
-      background: #f3edf7;
-      border-radius: 16px;
-    }
-    body.theme-md3 .settings-option {
-      border: 2px solid transparent;
-      background: #ffffff;
-      border-radius: 12px;
-    }
-    body.theme-md3 .settings-option.selected {
-      background: #6750a4;
-      color: #ffffff;
-    }
-    body.theme-md3 .detail-logo {
-      border-bottom: none;
-      background: #ede8f3;
-    }
-    body.theme-md3 .detail-info {
-      border-bottom: none;
-    }
+    body.theme-md3 .settings-group { border: none; background: #f3edf7; border-radius: 16px; }
+    body.theme-md3 .settings-option { border: 2px solid transparent; background: #ffffff; border-radius: 12px; }
+    body.theme-md3 .settings-option.selected { background: #6750a4; color: #ffffff; }
+    body.theme-md3 .detail-logo { border-bottom: none; background: #ede8f3; }
+    body.theme-md3 .detail-info { border-bottom: none; }
     body.theme-md3 .detail-left h3 { color: #1d1b20; }
-    body.theme-md3 .intro-section {
-      border-bottom: none;
-    }
-    body.theme-md3 .back-bar {
-      border-bottom: none;
-      background: #f3edf7;
-    }
+    body.theme-md3 .intro-section { border-bottom: none; }
+    body.theme-md3 .back-bar { border-bottom: none; background: #f3edf7; }
     body.theme-md3 .back-btn { color: #6750a4; }
     body.theme-md3 .back-title { color: #1d1b20; }
-    body.theme-md3 .publish-box {
-      border: none;
-      background: #f3edf7;
-      border-radius: 16px;
-    }
-    body.theme-md3 .publish-option {
-      border: 2px solid transparent;
-      background: #ffffff;
-      border-radius: 12px;
-    }
-    body.theme-md3 .publish-option.selected {
-      background: #6750a4;
-      color: #ffffff;
-    }
+    body.theme-md3 .publish-box { border: none; background: #f3edf7; border-radius: 16px; }
+    body.theme-md3 .publish-option { border: 2px solid transparent; background: #ffffff; border-radius: 12px; }
+    body.theme-md3 .publish-option.selected { background: #6750a4; color: #ffffff; }
     body.theme-md3 .publish-field input,
     body.theme-md3 .publish-field textarea,
-    body.theme-md3 .publish-code-input {
-      border: none;
-      background: #f3edf7;
-      border-radius: 12px;
-      padding: 14px;
-    }
+    body.theme-md3 .publish-code-input { border: none; background: #f3edf7; border-radius: 12px; padding: 14px; }
     body.theme-md3 .publish-field > label { color: #6750a4; }
     body.theme-md3 .toast { background: #1d1b20; border-radius: 12px; }
   </style>
@@ -502,7 +437,6 @@
     <div class="nav-avatar" id="navAvatar" onclick="onAvatarClick()">?</div>
   </header>
 
-  <!-- ===== 市场 ===== -->
   <div class="page active" id="pageMarket">
     <div class="market-header">
       <h1>Rom市场</h1>
@@ -518,7 +452,6 @@
     <div class="market-list" id="marketList"></div>
   </div>
 
-  <!-- ===== 系统详情 ===== -->
   <div class="page" id="pageDetail">
     <div class="back-bar">
       <button class="back-btn" onclick="goMarket()">←</button>
@@ -542,7 +475,10 @@
       </div>
     </div>
 
-    <!-- 简介（在下载栏下方，评论区上方） -->
+    <div id="romAdminBar" style="display:none; padding: 12px 20px; border-bottom: 2px solid #111111;">
+      <button class="admin-panel-btn" onclick="adminDeleteRom()">删除这个系统</button>
+    </div>
+
     <div class="intro-section" id="introSection" style="display:none;">
       <h2>简介</h2>
       <div class="intro-content" id="introContent"></div>
@@ -563,7 +499,6 @@
     </div>
   </div>
 
-  <!-- ===== 登录 ===== -->
   <div class="page" id="pageAuth">
     <div class="auth-container">
       <div class="auth-title">注册@登录</div>
@@ -579,7 +514,6 @@
     </div>
   </div>
 
-  <!-- ===== 个人中心 ===== -->
   <div class="page" id="pageProfile">
     <div class="profile-header">
       <div class="profile-avatar" id="profileAvatar">?</div>
@@ -590,6 +524,7 @@
       <div class="tab active" onclick="switchTab('published')">我发布的</div>
       <div class="tab" onclick="switchTab('favorites')">我的收藏</div>
       <div class="tab" onclick="switchTab('settings')">设置</div>
+      <div class="tab" id="tabAdminBtn" style="display:none;" onclick="switchTab('admin')">管理</div>
     </div>
     <div class="tab-content active" id="tabPublished">
       <div id="myRomList"></div>
@@ -598,7 +533,7 @@
       <div id="myFavList"></div>
     </div>
     <div class="tab-content" id="tabSettings">
-      <div class="settings-container" style="padding:0;">
+      <div class="settings-container">
         <div class="settings-group">
           <h3>主题风格</h3>
           <div class="settings-options">
@@ -638,12 +573,15 @@
         </div>
       </div>
     </div>
+    <div class="tab-content" id="tabAdmin">
+      <h3 style="font-size:18px;margin-bottom:12px;">用户管理</h3>
+      <div id="adminUserList"></div>
+    </div>
     <div style="padding: 20px;">
       <button class="btn btn-block" onclick="handleLogout()">退出登录</button>
     </div>
   </div>
 
-  <!-- ===== 发布 ===== -->
   <div class="page" id="pagePublish">
     <div class="publish-container">
       <div class="publish-title">发布Roms</div>
@@ -652,13 +590,11 @@
       <div class="publish-field"><label>开发者</label><input type="text" id="pubDeveloper"></div>
       <div class="publish-field"><label>下载地址</label><input type="text" id="pubUrl" placeholder="例如 example.com/rom.zip"></div>
 
-      <!-- 简介（纯文本） -->
       <div class="publish-field">
         <label>简介</label>
         <textarea id="pubIntro" placeholder="简单介绍一下这个系统（可选）"></textarea>
       </div>
 
-      <!-- LOGO 上传 -->
       <div class="publish-field">
         <label>LOGO</label>
         <div style="flex:1;">
@@ -683,7 +619,6 @@
   </div>
 
   <div class="toast" id="toast"></div>
-
   <script>
     const API_BASE = 'https://roms.xylplay.top';
 
@@ -702,14 +637,11 @@
       const fs = localStorage.getItem('yl_fontsize') || 'm';
       const color = localStorage.getItem('yl_textcolor') || 'default';
 
-      // 主题
       document.body.classList.toggle('theme-md3', theme === 'md3');
 
-      // 字体大小
       const scaleMap = { s: 0.85, m: 1, l: 1.15, xl: 1.3 };
       document.documentElement.style.setProperty('--font-scale', scaleMap[fs] || 1);
 
-      // 字体颜色
       const colorMap = {
         default: '#111111',
         blue: '#0044cc',
@@ -719,7 +651,6 @@
       };
       document.documentElement.style.setProperty('--text-color', colorMap[color] || '#111111');
 
-      // 更新设置页选中状态
       setTimeout(() => {
         document.getElementById('theme-yl')?.classList.toggle('selected', theme === 'yl');
         document.getElementById('theme-md3')?.classList.toggle('selected', theme === 'md3');
@@ -806,6 +737,7 @@
     }
     function onPublishClick() {
       if (!currentUser) { showToast('请先登录'); switchPage('pageAuth'); return; }
+      if (isBanned()) { showToast('您已被封禁，无法发布'); return; }
       switchPage('pagePublish');
     }
 
@@ -839,9 +771,7 @@
     `;
 
     function renderLogo(rom) {
-      if (rom && rom.logo) {
-        return `<img src="${rom.logo}" alt="">`;
-      }
+      if (rom && rom.logo) return `<img src="${rom.logo}" alt="">`;
       return BOOK_SVG;
     }
 
@@ -951,7 +881,6 @@
         document.getElementById('detailViews').textContent = rom.views || 0;
         document.getElementById('detailFavs').textContent = rom.favorites_count || 0;
 
-        // 简介显示
         const introSection = document.getElementById('introSection');
         const introContent = document.getElementById('introContent');
         if (rom.intro && rom.intro.trim()) {
@@ -975,6 +904,7 @@
         }
 
         loadComments(rom.id);
+        updateAdminUI();
         switchPage('pageDetail');
 
         if (updateUrl) {
@@ -1016,6 +946,7 @@
 
     async function onFavoriteClick() {
       if (!currentUser) { showToast('请先登录'); switchPage('pageAuth'); return; }
+      if (isBanned()) { showToast('您已被封禁，无法收藏'); return; }
       if (!currentRom) return;
       try {
         const res = await fetch(API_BASE + '/api/favorite', {
@@ -1030,6 +961,8 @@
           const romRes = await fetch(API_BASE + '/api/rom/' + currentRom.id);
           const rom = await romRes.json();
           document.getElementById('detailFavs').textContent = rom.favorites_count || 0;
+        } else {
+          showToast(data.message || '操作失败');
         }
       } catch (e) { showToast('操作失败'); }
     }
@@ -1050,7 +983,10 @@
           <div class="comment-item">
             <div class="comment-avatar">${escapeHtml((c.username || '?').charAt(0))}</div>
             <div class="comment-body">
-              <div class="comment-meta">${escapeHtml(c.username)} · ${formatTime(c.created_at)}</div>
+              <div class="comment-meta">
+                ${escapeHtml(c.username)} · ${formatTime(c.created_at)}
+                ${isAdmin() ? `<button class="admin-btn" onclick="adminDeleteComment(${c.id})">删除</button>` : ''}
+              </div>
               <div class="comment-content">${escapeHtml(c.content)}</div>
             </div>
           </div>
@@ -1062,19 +998,25 @@
 
     async function sendComment() {
       if (!currentUser) { showToast('请先登录'); switchPage('pageAuth'); return; }
+      if (isBanned()) { showToast('您已被封禁，无法评论'); return; }
       if (!currentRom) return;
       const input = document.getElementById('commentInput');
       const content = input.value.trim();
       if (!content) { showToast('请输入评论内容'); return; }
       try {
-        await fetch(API_BASE + '/api/comments', {
+        const res = await fetch(API_BASE + '/api/comments', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ romId: currentRom.id, username: currentUser.username, content })
         });
-        input.value = '';
-        loadComments(currentRom.id);
-        showToast('评论成功');
+        const data = await res.json();
+        if (data.success) {
+          input.value = '';
+          loadComments(currentRom.id);
+          showToast('评论成功');
+        } else {
+          showToast(data.message || '评论失败');
+        }
       } catch (e) { showToast('评论失败'); }
     }
 
@@ -1102,9 +1044,16 @@
           currentUser = data.user;
           saveUser();
           updateAvatarUI();
-          showToast('登录成功');
+          updateAdminUI();
+          if (data.user.banned === 1) {
+            showToast('您已被封禁，无法发布/评论/收藏');
+          } else {
+            showToast('登录成功');
+          }
           switchPage('pageMarket');
-        } else { showToast(data.message || '登录失败'); }
+        } else {
+          showToast(data.message || '登录失败');
+        }
       } catch (e) { showToast('网络错误'); }
     }
 
@@ -1130,7 +1079,7 @@
     // ============================================================
     function switchTab(tab) {
       currentTab = tab;
-      const tabs = ['published', 'favorites', 'settings'];
+      const tabs = ['published', 'favorites', 'settings', 'admin'];
       document.querySelectorAll('.tab').forEach((t, i) => {
         t.classList.toggle('active', tabs[i] === tab);
       });
@@ -1144,6 +1093,9 @@
       } else if (tab === 'settings') {
         document.getElementById('tabSettings').classList.add('active');
         applySettings();
+      } else if (tab === 'admin') {
+        document.getElementById('tabAdmin').classList.add('active');
+        loadAdminUsers();
       }
     }
 
@@ -1151,6 +1103,7 @@
       currentUser = null;
       saveUser();
       updateAvatarUI();
+      updateAdminUI();
       forceGoMarket();
       showToast('已退出登录');
     }
@@ -1168,6 +1121,7 @@
         }
       } catch (e) {}
       loadMyRoms();
+      updateAdminUI();
     }
 
     async function loadMyRoms() {
@@ -1230,6 +1184,7 @@
 
     async function handlePublish() {
       if (!currentUser) { showToast('请先登录'); switchPage('pageAuth'); return; }
+      if (isBanned()) { showToast('您已被封禁，无法发布'); return; }
       const name = document.getElementById('pubName').value.trim();
       const version = document.getElementById('pubVersion').value.trim();
       const developer = document.getElementById('pubDeveloper').value.trim();
@@ -1270,10 +1225,167 @@
     }
 
     // ============================================================
+    // 管理员功能
+    // ============================================================
+    function isAdmin() {
+      return currentUser && (currentUser.role === 'super' || currentUser.role === 'root');
+    }
+    function isRoot() {
+      return currentUser && currentUser.role === 'root';
+    }
+    function isBanned() {
+      return currentUser && currentUser.banned === 1;
+    }
+
+    function updateAdminUI() {
+      const adminTab = document.getElementById('tabAdminBtn');
+      if (adminTab) adminTab.style.display = isAdmin() ? '' : 'none';
+      const romAdminBar = document.getElementById('romAdminBar');
+      if (romAdminBar) romAdminBar.style.display = isAdmin() ? 'block' : 'none';
+    }
+
+    async function adminDeleteComment(commentId) {
+      if (!isAdmin()) return;
+      if (!confirm('确定删除这条评论？')) return;
+      try {
+        const res = await fetch(API_BASE + '/api/admin/delete-comment', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ requester: currentUser.username, commentId })
+        });
+        const data = await res.json();
+        if (data.success) {
+          showToast('评论已删除');
+          if (currentRom) loadComments(currentRom.id);
+        } else showToast(data.message || '删除失败');
+      } catch (e) { showToast('网络错误'); }
+    }
+
+    async function adminDeleteRom() {
+      if (!isAdmin() || !currentRom) return;
+      if (!confirm('确定删除这个系统？所有评论、收藏、下载记录都会一并删除。')) return;
+      try {
+        const res = await fetch(API_BASE + '/api/admin/delete-rom', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ requester: currentUser.username, romId: currentRom.id })
+        });
+        const data = await res.json();
+        if (data.success) {
+          showToast('系统已删除');
+          goMarket();
+        } else showToast(data.message || '删除失败');
+      } catch (e) { showToast('网络错误'); }
+    }
+
+    async function loadAdminUsers() {
+      if (!isAdmin()) return;
+      const list = document.getElementById('adminUserList');
+      list.innerHTML = '<div style="color:#999;padding:20px;">加载中...</div>';
+      try {
+        const res = await fetch(API_BASE + '/api/admin/list-users?requester=' + encodeURIComponent(currentUser.username));
+        const data = await res.json();
+        if (!Array.isArray(data)) {
+          list.innerHTML = '<div style="color:#999;padding:20px;">加载失败</div>';
+          return;
+        }
+        list.innerHTML = data.map(u => {
+          const roleTag = u.role === 'root' ? '<span class="admin-role-tag root">超级管理员</span>' :
+                          u.role === 'super' ? '<span class="admin-role-tag super">管理员</span>' : '';
+          const bannedTag = u.banned === 1 ? '<span class="admin-role-tag banned">已封禁</span>' : '';
+          const isMe = currentUser.username === u.username;
+          const canBan = !isMe && u.role !== 'root' && !(currentUser.role === 'super' && u.role === 'super');
+          const banBtn = canBan
+            ? (u.banned === 1
+              ? `<button class="admin-btn" onclick="adminUnban('${u.username}')">解封</button>`
+              : `<button class="admin-btn" onclick="adminBan('${u.username}')">封禁</button>`)
+            : '';
+          const deleteBtn = (isRoot() && !isMe && u.role !== 'root')
+            ? `<button class="admin-btn" onclick="adminDeleteUser('${u.username}')">彻底删除</button>` : '';
+          const setSuperBtn = (isRoot() && !isMe && u.role === 'user')
+            ? `<button class="admin-btn" onclick="adminSetRole('${u.username}','super')">设为管理员</button>` : '';
+          const setUserBtn = (isRoot() && !isMe && u.role === 'super')
+            ? `<button class="admin-btn" onclick="adminSetRole('${u.username}','user')">取消管理员</button>` : '';
+
+          return `
+            <div class="admin-user-item">
+              <h4>${escapeHtml(u.username)} ${roleTag} ${bannedTag}</h4>
+              <p>注册于 ${formatTime(u.created_at)}${u.banned === 1 ? ' · 封禁原因：' + escapeHtml(u.ban_reason || '违规') : ''}</p>
+              <div class="admin-actions">
+                ${banBtn}${setSuperBtn}${setUserBtn}${deleteBtn}
+              </div>
+            </div>
+          `;
+        }).join('');
+      } catch (e) {
+        list.innerHTML = '<div style="color:#999;padding:20px;">加载失败</div>';
+      }
+    }
+
+    async function adminBan(username) {
+      const reason = prompt('封禁原因（可留空）：', '违反社区条约');
+      if (reason === null) return;
+      try {
+        const res = await fetch(API_BASE + '/api/admin/ban', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ requester: currentUser.username, target: username, reason: reason || '违反社区条约' })
+        });
+        const data = await res.json();
+        if (data.success) { showToast('已封禁'); loadAdminUsers(); }
+        else showToast(data.message || '操作失败');
+      } catch (e) { showToast('网络错误'); }
+    }
+
+    async function adminUnban(username) {
+      if (!confirm('确定解封 ' + username + '？')) return;
+      try {
+        const res = await fetch(API_BASE + '/api/admin/unban', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ requester: currentUser.username, target: username })
+        });
+        const data = await res.json();
+        if (data.success) { showToast('已解封'); loadAdminUsers(); }
+        else showToast(data.message || '操作失败');
+      } catch (e) { showToast('网络错误'); }
+    }
+
+    async function adminDeleteUser(username) {
+      if (!confirm('确定彻底删除 ' + username + '？所有数据将被永久删除！')) return;
+      try {
+        const res = await fetch(API_BASE + '/api/admin/delete-user', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ requester: currentUser.username, target: username })
+        });
+        const data = await res.json();
+        if (data.success) { showToast('用户已彻底删除'); loadAdminUsers(); }
+        else showToast(data.message || '操作失败');
+      } catch (e) { showToast('网络错误'); }
+    }
+
+    async function adminSetRole(username, role) {
+      const roleName = role === 'super' ? '管理员' : '普通用户';
+      if (!confirm('确定将 ' + username + ' 设为' + roleName + '？')) return;
+      try {
+        const res = await fetch(API_BASE + '/api/admin/set-role', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ requester: currentUser.username, target: username, role })
+        });
+        const data = await res.json();
+        if (data.success) { showToast('已设为' + roleName); loadAdminUsers(); }
+        else showToast(data.message || '操作失败');
+      } catch (e) { showToast('网络错误'); }
+    }
+
+    // ============================================================
     // 初始化 + 路由
     // ============================================================
     loadUser();
     updateAvatarUI();
+    updateAdminUI();
     applySettings();
 
     (function initRoute() {
