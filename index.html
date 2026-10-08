@@ -11,7 +11,7 @@
       --font-scale: 1;
       --text-color: #111111;
       --btn-press-scale: 0.96;
-      --anim-speed: 0.28s;
+      --anim-speed: 0.3s;
       --anim-easing: cubic-bezier(0.22, 0.9, 0.34, 1);
     }
 
@@ -25,44 +25,78 @@
       font-size: calc(15px * var(--font-scale));
     }
 
-    /* ===== 高级材质：默认关闭 ===== */
-    /* 只有 body.material-on 时，才会应用动效 */
-
+    /* ===== 高级材质：默认关闭，只有 body.material-on 时启用动效 ===== */
     body.material-on .navbar {
       backdrop-filter: blur(14px);
       -webkit-backdrop-filter: blur(14px);
       background: rgba(255, 255, 255, 0.78);
     }
-
     body.material-on .comment-input-bar {
       backdrop-filter: blur(14px);
       -webkit-backdrop-filter: blur(14px);
       background: rgba(255, 255, 255, 0.78);
     }
-
     body.material-on .btn {
       transition: transform var(--anim-speed) var(--anim-easing),
-                  background 0.15s,
-                  color 0.15s;
+                  background 0.15s, color 0.15s;
     }
-    body.material-on .btn:active {
-      transform: scale(var(--btn-press-scale));
+    body.material-on .btn:active { transform: scale(var(--btn-press-scale)); }
+    body.material-on .tab { transition: color 0.25s; }
+    body.material-on .rom-card { transition: transform 0.2s var(--anim-easing); }
+    body.material-on .rom-card:active { transform: scale(0.97); }
+    body.material-on .nav-avatar { transition: transform 0.2s var(--anim-easing); }
+    body.material-on .nav-avatar:active { transform: scale(0.9); }
+
+    /* ===== 页面滑入动画 ===== */
+    @keyframes pageSlideInRight {
+      from { transform: translateX(40px); opacity: 0; }
+      to   { transform: translateX(0);    opacity: 1; }
+    }
+    @keyframes cardExpandFromRight {
+      0%   { transform: translateX(80px) scale(0.96); opacity: 0; }
+      100% { transform: translateX(0)    scale(1);    opacity: 1; }
+    }
+    @keyframes commentBarRise {
+      from { transform: translateY(20px); opacity: 0; }
+      to   { transform: translateY(0);    opacity: 1; }
+    }
+    @keyframes commentItemRise {
+      from { transform: translateY(8px); opacity: 0; }
+      to   { transform: translateY(0);   opacity: 1; }
     }
 
-    body.material-on .tab {
-      transition: color 0.2s;
+    body.material-on .page.active {
+      animation: pageSlideInRight 0.3s cubic-bezier(0.22, 0.9, 0.34, 1);
     }
-    body.material-on .tab-underline {
-      display: block;
+    body.material-on #pageDetail.active {
+      animation: cardExpandFromRight 0.3s cubic-bezier(0.22, 0.9, 0.34, 1);
+      transform-origin: right center;
+    }
+    body.material-on .comment-input-bar {
+      animation: commentBarRise 0.3s cubic-bezier(0.22, 0.9, 0.34, 1);
+    }
+    body.material-on .comment-item {
+      animation: commentItemRise 0.25s ease-out;
     }
 
-    body.material-on .rom-card {
-      transition: transform 0.2s var(--anim-easing);
+    /* ===== MD3 主题 + 材质模糊兼容 ===== */
+    body.material-on.theme-md3 .navbar {
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      background: rgba(243, 237, 247, 0.85);
     }
-    body.material-on .rom-card:active {
-      transform: scale(0.98);
+    body.material-on.theme-md3 .comment-input-bar {
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      background: rgba(254, 247, 255, 0.85);
+    }
+    body.material-on.theme-md3 .back-bar {
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      background: rgba(243, 237, 247, 0.85);
     }
 
+    /* ===== 基础样式 ===== */
     .navbar {
       position: fixed;
       top: 0; left: 0; width: 100%; height: 56px;
@@ -84,10 +118,6 @@
       cursor: pointer;
       background: transparent;
       text-transform: uppercase;
-      transition: transform 0.2s var(--anim-easing);
-    }
-    body.material-on .nav-avatar:active {
-      transform: scale(0.9);
     }
 
     .page { display: none; padding-top: 56px; min-height: 100vh; }
@@ -309,7 +339,6 @@
     .profile-name { font-size: calc(24px * var(--font-scale)); font-weight: 700; margin-bottom: 4px; }
     .profile-level { font-size: calc(18px * var(--font-scale)); font-weight: 300; color: #555; }
 
-    /* ===== Tabs：小横条拉伸动画 ===== */
     .tabs {
       display: flex;
       border-bottom: 2px solid #111111;
@@ -324,7 +353,6 @@
     }
     .tab.active { color: #111111; }
 
-    /* 小横条 */
     .tab-underline {
       display: none;
       position: absolute;
@@ -336,8 +364,12 @@
                   width var(--anim-speed) var(--anim-easing);
       pointer-events: none;
     }
-    /* 没有材质时，用即时样式 */
+    body.material-on .tab-underline { display: block; }
     .tabs:not(.material-on) .tab.active {
+      border-bottom: 4px solid #111111;
+      margin-bottom: -2px;
+    }
+    body:not(.material-on) .tab.active {
       border-bottom: 4px solid #111111;
       margin-bottom: -2px;
     }
@@ -427,7 +459,6 @@
       border: 2px solid #ddd;
     }
 
-    /* ===== 高级材质开关（iOS 风格 toggle） ===== */
     .material-toggle {
       display: flex;
       align-items: center;
@@ -464,14 +495,8 @@
       border-radius: 50%;
       box-shadow: 0 2px 4px rgba(0,0,0,0.2);
     }
-    .switch input:checked + .slider {
-      background: #111111;
-    }
-    .switch input:checked + .slider:before {
-      transform: translateX(22px);
-    }
-
-    /* ===== MD3 主题下的材质开关配色 ===== */
+    .switch input:checked + .slider { background: #111111; }
+    .switch input:checked + .slider:before { transform: translateX(22px); }
     body.theme-md3 .switch input:checked + .slider { background: #6750a4; }
 
     /* ===== MD3 主题 ===== */
@@ -741,7 +766,6 @@
       document.body.classList.toggle('material-on', on);
       const sw = document.getElementById('materialSwitch');
       if (sw) sw.checked = on;
-      // 更新 tab 下划线
       setTimeout(updateTabUnderline, 50);
     }
 
@@ -822,7 +846,11 @@
     function switchPage(id) {
       document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
       const t = document.getElementById(id);
-      if (t) { t.classList.add('active'); window.scrollTo(0, 0); }
+      if (t) {
+        void t.offsetWidth;  // 强制重绘，让动画重新触发
+        t.classList.add('active');
+        window.scrollTo(0, 0);
+      }
       document.querySelector('.nav-logo').textContent = 'YL Play Roms' + (pages[id] ? ' · ' + pages[id] : '');
       if (id === 'pageMarket') loadMarket();
       if (id === 'pageProfile' && currentUser) loadProfile();
@@ -830,8 +858,12 @@
 
     function forceGoMarket() {
       document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-      document.getElementById('pageMarket').classList.add('active');
-      window.scrollTo(0, 0);
+      const t = document.getElementById('pageMarket');
+      if (t) {
+        void t.offsetWidth;
+        t.classList.add('active');
+        window.scrollTo(0, 0);
+      }
       document.querySelector('.nav-logo').textContent = 'YL Play Roms · Rom市场';
       loadMarket();
     }
@@ -886,7 +918,7 @@
     }
 
     // ============================================================
-    // LOGO 上传
+    // LOGO 上传（5MB 上限，压缩 400px）
     // ============================================================
     function onLogoSelected(event) {
       const file = event.target.files[0];
@@ -1223,7 +1255,6 @@
       document.querySelectorAll('.tab').forEach((t, i) => {
         t.classList.toggle('active', tabs[i] === tab);
       });
-      // 移动小横条
       setTimeout(updateTabUnderline, 0);
       document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
       if (tab === 'published') { document.getElementById('tabPublished').classList.add('active'); loadMyRoms(); }
@@ -1253,7 +1284,6 @@
       } catch (e) {}
       loadMyRoms();
       updateAdminUI();
-      // 更新小横条
       setTimeout(updateTabUnderline, 50);
     }
 
@@ -1494,7 +1524,6 @@
     applySettings();
     applyMaterial();
 
-    // 窗口变化时更新小横条位置
     window.addEventListener('resize', () => {
       updateTabUnderline();
     });
