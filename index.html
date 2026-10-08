@@ -10,6 +10,9 @@
     :root {
       --font-scale: 1;
       --text-color: #111111;
+      --btn-press-scale: 0.96;
+      --anim-speed: 0.28s;
+      --anim-easing: cubic-bezier(0.22, 0.9, 0.34, 1);
     }
 
     body {
@@ -20,6 +23,44 @@
       overflow-x: hidden;
       -webkit-font-smoothing: antialiased;
       font-size: calc(15px * var(--font-scale));
+    }
+
+    /* ===== 高级材质：默认关闭 ===== */
+    /* 只有 body.material-on 时，才会应用动效 */
+
+    body.material-on .navbar {
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      background: rgba(255, 255, 255, 0.78);
+    }
+
+    body.material-on .comment-input-bar {
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      background: rgba(255, 255, 255, 0.78);
+    }
+
+    body.material-on .btn {
+      transition: transform var(--anim-speed) var(--anim-easing),
+                  background 0.15s,
+                  color 0.15s;
+    }
+    body.material-on .btn:active {
+      transform: scale(var(--btn-press-scale));
+    }
+
+    body.material-on .tab {
+      transition: color 0.2s;
+    }
+    body.material-on .tab-underline {
+      display: block;
+    }
+
+    body.material-on .rom-card {
+      transition: transform 0.2s var(--anim-easing);
+    }
+    body.material-on .rom-card:active {
+      transform: scale(0.98);
     }
 
     .navbar {
@@ -43,6 +84,10 @@
       cursor: pointer;
       background: transparent;
       text-transform: uppercase;
+      transition: transform 0.2s var(--anim-easing);
+    }
+    body.material-on .nav-avatar:active {
+      transform: scale(0.9);
     }
 
     .page { display: none; padding-top: 56px; min-height: 100vh; }
@@ -52,7 +97,7 @@
       display: inline-flex; align-items: center; justify-content: center;
       border: 2px solid #111111; background: transparent; color: #111111;
       font-size: calc(15px * var(--font-scale)); font-weight: 500; padding: 10px 24px;
-      border-radius: 4px; cursor: pointer; transition: all 0.15s;
+      border-radius: 4px; cursor: pointer;
       letter-spacing: 1px; font-family: inherit;
     }
     .btn:active { background: #111111; color: #ffffff; }
@@ -86,9 +131,7 @@
     .rom-card {
       border: 2px solid #111111; border-radius: 4px;
       padding: 16px; cursor: pointer;
-      transition: transform 0.1s;
     }
-    .rom-card:active { transform: scale(0.99); }
 
     .rom-logo-placeholder {
       height: 160px;
@@ -266,13 +309,38 @@
     .profile-name { font-size: calc(24px * var(--font-scale)); font-weight: 700; margin-bottom: 4px; }
     .profile-level { font-size: calc(18px * var(--font-scale)); font-weight: 300; color: #555; }
 
-    .tabs { display: flex; border-bottom: 2px solid #111111; }
+    /* ===== Tabs：小横条拉伸动画 ===== */
+    .tabs {
+      display: flex;
+      border-bottom: 2px solid #111111;
+      position: relative;
+    }
     .tab {
       flex: 1; text-align: center; padding: 16px;
       font-size: calc(17px * var(--font-scale)); font-weight: 600; cursor: pointer;
       color: #999;
+      position: relative;
+      transition: color 0.25s;
     }
-    .tab.active { color: #111111; border-bottom: 4px solid #111111; margin-bottom: -2px; }
+    .tab.active { color: #111111; }
+
+    /* 小横条 */
+    .tab-underline {
+      display: none;
+      position: absolute;
+      bottom: -2px;
+      height: 4px;
+      background: #111111;
+      border-radius: 2px;
+      transition: left var(--anim-speed) var(--anim-easing),
+                  width var(--anim-speed) var(--anim-easing);
+      pointer-events: none;
+    }
+    /* 没有材质时，用即时样式 */
+    .tabs:not(.material-on) .tab.active {
+      border-bottom: 4px solid #111111;
+      margin-bottom: -2px;
+    }
 
     .tab-content { display: none; padding: 20px; }
     .tab-content.active { display: block; }
@@ -359,6 +427,54 @@
       border: 2px solid #ddd;
     }
 
+    /* ===== 高级材质开关（iOS 风格 toggle） ===== */
+    .material-toggle {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+    }
+    .material-toggle-label {
+      font-size: calc(15px * var(--font-scale));
+      font-weight: 500;
+    }
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 52px;
+      height: 30px;
+      flex-shrink: 0;
+    }
+    .switch input { opacity: 0; width: 0; height: 0; }
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: #ccc;
+      transition: background 0.3s;
+      border-radius: 30px;
+    }
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 22px; width: 22px;
+      left: 4px; bottom: 4px;
+      background: #fff;
+      transition: transform 0.3s var(--anim-easing);
+      border-radius: 50%;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+    .switch input:checked + .slider {
+      background: #111111;
+    }
+    .switch input:checked + .slider:before {
+      transform: translateX(22px);
+    }
+
+    /* ===== MD3 主题下的材质开关配色 ===== */
+    body.theme-md3 .switch input:checked + .slider { background: #6750a4; }
+
+    /* ===== MD3 主题 ===== */
     body.theme-md3 {
       background: #fef7ff;
       color: #1d1b20;
@@ -378,7 +494,8 @@
     body.theme-md3 .profile-avatar { background: #6750a4; color: #ffffff; border: none; }
     body.theme-md3 .tabs { border-bottom: none; }
     body.theme-md3 .tab { color: #999; }
-    body.theme-md3 .tab.active { color: #6750a4; border-bottom: 3px solid #6750a4; font-weight: 700; }
+    body.theme-md3 .tab.active { color: #6750a4; }
+    body.theme-md3 .tab-underline { background: #6750a4; }
     body.theme-md3 .comment-content { border: none; background: #f3edf7; border-radius: 12px; }
     body.theme-md3 .comment-avatar { border: none; background: #6750a4; color: #ffffff; }
     body.theme-md3 .comment-input-bar { border-top: none; box-shadow: 0 -1px 3px rgba(0,0,0,0.05); background: #fef7ff; }
@@ -503,11 +620,12 @@
       <div class="profile-name" id="profileName">-</div>
       <div class="profile-level" id="profileLevel">Lv.0</div>
     </div>
-    <div class="tabs">
-      <div class="tab active" onclick="switchTab('published')">我发布的</div>
-      <div class="tab" onclick="switchTab('favorites')">我的收藏</div>
-      <div class="tab" onclick="switchTab('settings')">设置</div>
-      <div class="tab" id="tabAdminBtn" style="display:none;" onclick="switchTab('admin')">管理</div>
+    <div class="tabs" id="profileTabs">
+      <div class="tab active" data-tab="published" onclick="switchTab('published')">我发布的</div>
+      <div class="tab" data-tab="favorites" onclick="switchTab('favorites')">我的收藏</div>
+      <div class="tab" data-tab="settings" onclick="switchTab('settings')">设置</div>
+      <div class="tab" id="tabAdminBtn" style="display:none;" data-tab="admin" onclick="switchTab('admin')">管理</div>
+      <div class="tab-underline" id="tabUnderline"></div>
     </div>
     <div class="tab-content active" id="tabPublished">
       <div id="myRomList"></div>
@@ -517,6 +635,19 @@
     </div>
     <div class="tab-content" id="tabSettings">
       <div class="settings-container">
+        <div class="settings-group">
+          <h3>高级材质</h3>
+          <div class="material-toggle">
+            <div>
+              <div class="material-toggle-label">启用动效与模糊</div>
+              <div class="settings-desc">开启后按钮点击有回弹、菜单栏模糊、切换更流畅</div>
+            </div>
+            <label class="switch">
+              <input type="checkbox" id="materialSwitch" onchange="toggleMaterial(this.checked)">
+              <span class="slider"></span>
+            </label>
+          </div>
+        </div>
         <div class="settings-group">
           <h3>主题风格</h3>
           <div class="settings-options">
@@ -601,6 +732,24 @@
     let marketData = [];
     let publishCondition = 'free';
     let currentLogoData = '';
+
+    // ============================================================
+    // 高级材质开关
+    // ============================================================
+    function applyMaterial() {
+      const on = localStorage.getItem('yl_material') === 'on';
+      document.body.classList.toggle('material-on', on);
+      const sw = document.getElementById('materialSwitch');
+      if (sw) sw.checked = on;
+      // 更新 tab 下划线
+      setTimeout(updateTabUnderline, 50);
+    }
+
+    function toggleMaterial(on) {
+      localStorage.setItem('yl_material', on ? 'on' : 'off');
+      applyMaterial();
+      showToast(on ? '高级材质已开启' : '高级材质已关闭');
+    }
 
     // ============================================================
     // 设置
@@ -737,7 +886,7 @@
     }
 
     // ============================================================
-    // LOGO 上传（5MB 上限，压缩 400px）
+    // LOGO 上传
     // ============================================================
     function onLogoSelected(event) {
       const file = event.target.files[0];
@@ -1052,18 +1201,34 @@
     }
 
     // ============================================================
-    // 个人中心
+    // 个人中心 Tabs（含小横条动画）
     // ============================================================
+    function updateTabUnderline() {
+      const tabsEl = document.getElementById('profileTabs');
+      const underline = document.getElementById('tabUnderline');
+      if (!tabsEl || !underline) return;
+      if (!document.body.classList.contains('material-on')) {
+        underline.style.width = '0';
+        return;
+      }
+      const activeTab = tabsEl.querySelector('.tab.active');
+      if (!activeTab) return;
+      underline.style.left = activeTab.offsetLeft + 'px';
+      underline.style.width = activeTab.offsetWidth + 'px';
+    }
+
     function switchTab(tab) {
       currentTab = tab;
       const tabs = ['published', 'favorites', 'settings', 'admin'];
       document.querySelectorAll('.tab').forEach((t, i) => {
         t.classList.toggle('active', tabs[i] === tab);
       });
+      // 移动小横条
+      setTimeout(updateTabUnderline, 0);
       document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
       if (tab === 'published') { document.getElementById('tabPublished').classList.add('active'); loadMyRoms(); }
       else if (tab === 'favorites') { document.getElementById('tabFavorites').classList.add('active'); loadMyFavorites(); }
-      else if (tab === 'settings') { document.getElementById('tabSettings').classList.add('active'); applySettings(); }
+      else if (tab === 'settings') { document.getElementById('tabSettings').classList.add('active'); applySettings(); applyMaterial(); }
       else if (tab === 'admin') { document.getElementById('tabAdmin').classList.add('active'); loadAdminUsers(); }
     }
 
@@ -1088,6 +1253,8 @@
       } catch (e) {}
       loadMyRoms();
       updateAdminUI();
+      // 更新小横条
+      setTimeout(updateTabUnderline, 50);
     }
 
     async function loadMyRoms() {
@@ -1325,6 +1492,12 @@
     updateAvatarUI();
     updateAdminUI();
     applySettings();
+    applyMaterial();
+
+    // 窗口变化时更新小横条位置
+    window.addEventListener('resize', () => {
+      updateTabUnderline();
+    });
 
     (function initRoute() {
       const path = window.location.pathname;
