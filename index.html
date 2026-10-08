@@ -25,7 +25,7 @@
       font-size: calc(15px * var(--font-scale));
     }
 
-    /* ===== 高级材质：默认关闭，只有 body.material-on 时启用动效 ===== */
+    /* ===== 高级材质 ===== */
     body.material-on .navbar {
       backdrop-filter: blur(14px);
       -webkit-backdrop-filter: blur(14px);
@@ -47,7 +47,7 @@
     body.material-on .nav-avatar { transition: transform 0.2s var(--anim-easing); }
     body.material-on .nav-avatar:active { transform: scale(0.9); }
 
-    /* ===== 页面滑入动画 ===== */
+    /* ===== 页面动画 ===== */
     @keyframes pageSlideInRight {
       from { transform: translateX(40px); opacity: 0; }
       to   { transform: translateX(0);    opacity: 1; }
@@ -79,7 +79,7 @@
       animation: commentItemRise 0.25s ease-out;
     }
 
-    /* ===== MD3 主题 + 材质模糊兼容 ===== */
+    /* ===== MD3 + 材质 ===== */
     body.material-on.theme-md3 .navbar {
       backdrop-filter: blur(14px);
       -webkit-backdrop-filter: blur(14px);
@@ -365,10 +365,6 @@
       pointer-events: none;
     }
     body.material-on .tab-underline { display: block; }
-    .tabs:not(.material-on) .tab.active {
-      border-bottom: 4px solid #111111;
-      margin-bottom: -2px;
-    }
     body:not(.material-on) .tab.active {
       border-bottom: 4px solid #111111;
       margin-bottom: -2px;
@@ -498,6 +494,7 @@
     .switch input:checked + .slider { background: #111111; }
     .switch input:checked + .slider:before { transform: translateX(22px); }
     body.theme-md3 .switch input:checked + .slider { background: #6750a4; }
+    body.theme-ios .switch input:checked + .slider { background: #34C759; }
 
     /* ===== MD3 主题 ===== */
     body.theme-md3 {
@@ -548,6 +545,236 @@
     body.theme-md3 .publish-code-input { border: none; background: #f3edf7; border-radius: 12px; padding: 14px; }
     body.theme-md3 .publish-field > label { color: #6750a4; }
     body.theme-md3 .toast { background: #1d1b20; border-radius: 12px; }
+
+    /* ===================================================== */
+    /* 主题：iOS 风格                                        */
+    /* ===================================================== */
+    body.theme-ios {
+      background: #F2F2F7;
+      color: #000000;
+      font-family: -apple-system, 'SF Pro Text', 'PingFang SC', 'Helvetica Neue', sans-serif;
+    }
+    body.theme-ios .navbar {
+      background: rgba(249, 249, 249, 0.94);
+      border-bottom: 0.5px solid rgba(0, 0, 0, 0.12);
+      height: 56px;
+    }
+    body.theme-ios .nav-logo {
+      color: #000000;
+      font-weight: 600;
+      letter-spacing: -0.3px;
+    }
+    body.theme-ios .nav-avatar {
+      background: #007AFF;
+      color: #ffffff;
+      border: none;
+      font-weight: 500;
+    }
+    body.theme-ios .btn {
+      background: #007AFF;
+      color: #ffffff;
+      border: none;
+      border-radius: 12px;
+      padding: 11px 24px;
+      font-weight: 500;
+      box-shadow: none;
+    }
+    body.theme-ios .btn:active {
+      background: #0062CC;
+    }
+    body.theme-ios .search-bar {
+      border: none;
+      border-radius: 10px;
+      background: #E3E3E8;
+      padding: 10px 14px;
+    }
+    body.theme-ios .search-bar input {
+      color: #000000;
+    }
+    body.theme-ios .rom-card {
+      border: none;
+      border-radius: 14px;
+      background: #ffffff;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+      padding: 18px;
+    }
+    body.theme-ios .rom-card:active {
+      background: #F2F2F7;
+    }
+    body.theme-ios .rom-logo-placeholder {
+      border: none;
+      border-radius: 10px;
+      background: #F2F2F7;
+    }
+    body.theme-ios .rom-bottom h3 { color: #000000; }
+    body.theme-ios .rom-bottom p { color: #8E8E93; }
+    body.theme-ios .profile-header {
+      border-bottom: none;
+      background: #ffffff;
+      border-radius: 0 0 20px 20px;
+      padding-bottom: 32px;
+    }
+    body.theme-ios .profile-avatar {
+      background: #007AFF;
+      color: #ffffff;
+      border: none;
+      font-weight: 500;
+    }
+    body.theme-ios .profile-name { color: #000000; }
+    body.theme-ios .profile-level { color: #8E8E93; }
+    body.theme-ios .tabs { border-bottom: 0.5px solid #C6C6C8; background: transparent; }
+    body.theme-ios .tab { color: #8E8E93; }
+    body.theme-ios .tab.active { color: #007AFF; }
+    body.theme-ios .tab-underline { background: #007AFF; border-radius: 2px; }
+    body.theme-ios .comment-content {
+      border: none;
+      background: #ffffff;
+      border-radius: 12px;
+      padding: 14px 16px;
+    }
+    body.theme-ios .comment-avatar {
+      border: none;
+      background: #007AFF;
+      color: #ffffff;
+    }
+    body.theme-ios .comment-input-bar {
+      border-top: 0.5px solid #C6C6C8;
+      background: rgba(249, 249, 249, 0.94);
+    }
+    body.theme-ios .comment-input-bar input {
+      border: none;
+      background: #ffffff;
+      border-radius: 20px;
+      padding: 10px 16px;
+    }
+    body.theme-ios .comment-send {
+      background: #007AFF;
+      color: #ffffff;
+      border: none;
+    }
+    body.theme-ios .auth-box {
+      border: none;
+      background: #ffffff;
+      border-radius: 14px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+      padding: 28px 22px;
+    }
+    body.theme-ios .auth-field input {
+      border: none;
+      background: #F2F2F7;
+      border-radius: 10px;
+      padding: 13px 14px;
+    }
+    body.theme-ios .auth-field label { color: #007AFF; }
+    body.theme-ios .auth-title { color: #000000; }
+    body.theme-ios .settings-group {
+      border: none;
+      background: #ffffff;
+      border-radius: 14px;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+      padding: 20px;
+    }
+    body.theme-ios .settings-group h3 { color: #000000; }
+    body.theme-ios .settings-option {
+      border: none;
+      background: #F2F2F7;
+      border-radius: 10px;
+      font-weight: 500;
+    }
+    body.theme-ios .settings-option.selected {
+      background: #007AFF;
+      color: #ffffff;
+    }
+    body.theme-ios .detail-logo {
+      border-bottom: none;
+      background: #F2F2F7;
+    }
+    body.theme-ios .detail-info { border-bottom: none; }
+    body.theme-ios .detail-left h3 { color: #000000; }
+    body.theme-ios .detail-left p { color: #8E8E93; }
+    body.theme-ios .intro-section { border-bottom: none; }
+    body.theme-ios .back-bar {
+      border-bottom: 0.5px solid #C6C6C8;
+      background: rgba(249, 249, 249, 0.94);
+    }
+    body.theme-ios .back-btn { color: #007AFF; }
+    body.theme-ios .back-title { color: #000000; }
+    body.theme-ios .publish-box {
+      border: none;
+      background: #ffffff;
+      border-radius: 14px;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+    }
+    body.theme-ios .publish-option {
+      border: none;
+      background: #F2F2F7;
+      border-radius: 10px;
+      font-weight: 500;
+    }
+    body.theme-ios .publish-option.selected {
+      background: #007AFF;
+      color: #ffffff;
+    }
+    body.theme-ios .publish-field input,
+    body.theme-ios .publish-field textarea,
+    body.theme-ios .publish-code-input {
+      border: none;
+      background: #F2F2F7;
+      border-radius: 10px;
+      padding: 13px 14px;
+    }
+    body.theme-ios .publish-field > label { color: #007AFF; }
+    body.theme-ios .toast {
+      background: rgba(0, 0, 0, 0.82);
+      border-radius: 14px;
+    }
+    body.theme-ios .empty-tip { color: #8E8E93; }
+    body.theme-ios .admin-user-item {
+      border: none;
+      background: #ffffff;
+      border-radius: 12px;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+    }
+    body.theme-ios .admin-btn {
+      border: none;
+      background: #FFEBEB;
+      color: #FF3B30;
+      border-radius: 8px;
+      padding: 5px 10px;
+    }
+    body.theme-ios .admin-btn:active {
+      background: #FF3B30;
+      color: #ffffff;
+    }
+    body.theme-ios .admin-panel-btn {
+      border: none;
+      background: #FFEBEB;
+      color: #FF3B30;
+      border-radius: 10px;
+    }
+    body.theme-ios .admin-role-tag {
+      border-radius: 8px;
+      font-weight: 500;
+    }
+    body.theme-ios .admin-role-tag.root { background: #FF3B30; }
+    body.theme-ios .admin-role-tag.super { background: #007AFF; }
+
+    /* iOS + 材质模糊 */
+    body.material-on.theme-ios .navbar {
+      backdrop-filter: blur(20px) saturate(180%);
+      -webkit-backdrop-filter: blur(20px) saturate(180%);
+      background: rgba(249, 249, 249, 0.72);
+    }
+    body.material-on.theme-ios .comment-input-bar {
+      backdrop-filter: blur(20px) saturate(180%);
+      -webkit-backdrop-filter: blur(20px) saturate(180%);
+      background: rgba(249, 249, 249, 0.78);
+    }
+    body.material-on.theme-ios .back-bar {
+      backdrop-filter: blur(20px) saturate(180%);
+      -webkit-backdrop-filter: blur(20px) saturate(180%);
+      background: rgba(249, 249, 249, 0.78);
+    }
   </style>
 </head>
 <body>
@@ -678,8 +905,9 @@
           <div class="settings-options">
             <div class="settings-option" id="theme-yl" onclick="setTheme('yl')">YL Design</div>
             <div class="settings-option" id="theme-md3" onclick="setTheme('md3')">Material 3</div>
+            <div class="settings-option" id="theme-ios" onclick="setTheme('ios')">iOS</div>
           </div>
-          <div class="settings-desc">YL Design：黑白线条风格；Material 3：谷歌 MD3 风格</div>
+          <div class="settings-desc">YL Design：黑白线条；Material 3：谷歌 MD3；iOS：苹果风格</div>
         </div>
         <div class="settings-group">
           <h3>字体大小</h3>
@@ -779,11 +1007,17 @@
     // 设置
     // ============================================================
     function applySettings() {
-      const theme = localStorage.getItem('yl_theme') || 'yl';
+      let theme = localStorage.getItem('yl_theme') || 'yl';
+      // 兼容旧数据：miui / hyperos → ios
+      if (theme === 'miui' || theme === 'hyperos') {
+        theme = 'ios';
+        localStorage.setItem('yl_theme', 'ios');
+      }
       const fs = localStorage.getItem('yl_fontsize') || 'm';
       const color = localStorage.getItem('yl_textcolor') || 'default';
 
       document.body.classList.toggle('theme-md3', theme === 'md3');
+      document.body.classList.toggle('theme-ios', theme === 'ios');
 
       const scaleMap = { s: 0.85, m: 1, l: 1.15, xl: 1.3 };
       document.documentElement.style.setProperty('--font-scale', scaleMap[fs] || 1);
@@ -800,6 +1034,7 @@
       setTimeout(() => {
         document.getElementById('theme-yl')?.classList.toggle('selected', theme === 'yl');
         document.getElementById('theme-md3')?.classList.toggle('selected', theme === 'md3');
+        document.getElementById('theme-ios')?.classList.toggle('selected', theme === 'ios');
         document.getElementById('fs-s')?.classList.toggle('selected', fs === 's');
         document.getElementById('fs-m')?.classList.toggle('selected', fs === 'm');
         document.getElementById('fs-l')?.classList.toggle('selected', fs === 'l');
@@ -847,7 +1082,7 @@
       document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
       const t = document.getElementById(id);
       if (t) {
-        void t.offsetWidth;  // 强制重绘，让动画重新触发
+        void t.offsetWidth;
         t.classList.add('active');
         window.scrollTo(0, 0);
       }
@@ -918,7 +1153,7 @@
     }
 
     // ============================================================
-    // LOGO 上传（5MB 上限，压缩 400px）
+    // LOGO 上传
     // ============================================================
     function onLogoSelected(event) {
       const file = event.target.files[0];
@@ -1233,7 +1468,7 @@
     }
 
     // ============================================================
-    // 个人中心 Tabs（含小横条动画）
+    // 个人中心 Tabs
     // ============================================================
     function updateTabUnderline() {
       const tabsEl = document.getElementById('profileTabs');
