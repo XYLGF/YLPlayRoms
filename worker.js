@@ -190,11 +190,11 @@ export default {
       }
 
       // ========================================================
-      // 发布 ROM（已加 logo 字段）
+      // 发布 ROM（已加 intro）
       // ========================================================
       if (path === '/api/roms' && method === 'POST') {
         const body = await request.json();
-        const { name, version, developer, url: romUrl, condition, code, author, logo } = body;
+        const { name, version, developer, url: romUrl, condition, code, author, logo, intro } = body;
         if (!name || !version || !developer || !romUrl || !author) {
           return json({ success: false, message: '请填写完整信息' }, 400, cors);
         }
@@ -211,8 +211,8 @@ export default {
 
         const now = Date.now();
         await env.DB.prepare(
-          'INSERT INTO roms (name, version, developer, url, condition, code, author, slug, logo, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
-        ).bind(name, version, developer, romUrl, condition, code || '', author, slug, logo || '', now).run();
+          'INSERT INTO roms (name, version, developer, url, condition, code, author, slug, logo, intro, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
+        ).bind(name, version, developer, romUrl, condition, code || '', author, slug, logo || '', intro || '', now).run();
 
         return json({ success: true, slug }, 200, cors);
       }
