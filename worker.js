@@ -34,6 +34,18 @@ function json(data, status = 200, headers = {}) {
 }
 
 // ============================================================
+// 工具：查用户角色
+// ============================================================
+async function getUserRole(env, username) {
+  if (!username) return 'guest';
+  const user = await env.DB.prepare('SELECT role, banned FROM users WHERE username = ?')
+    .bind(username).first();
+  if (!user) return 'guest';
+  if (user.banned === 1) return 'banned';
+  return user.role || 'user';
+}
+
+// ============================================================
 // 主入口
 // ============================================================
 export default {
@@ -76,6 +88,9 @@ export default {
         if (password.length < 4) {
           return json({ success: false, message: '密码至少 4 位' }, 400, cors);
         }
+        if (username === 'super' || username === 'root' || username === 'admin') {
+          return json({ success: false, message: '该用户名不可注册' }, 403, cors);
+        }
 
         const exist = await env.DB.prepare('SELECT id FROM users WHERE username = ?')
           .bind(username).first();
@@ -88,8 +103,8 @@ export default {
         const now = Date.now();
 
         await env.DB.prepare(
-          'INSERT INTO users (username, password, salt, email, created_at) VALUES (?, ?, ?, ?, ?)'
-        ).bind(username, hashed, salt, email || '', now).run();
+          'INSERT INTO users (username, password, salt, email, role, banned, created_at) VALUES (?, ?, ?, ?, ?, 0, ?)'
+        ).bind(username, hashed, salt, email || '', 'user', now).run();
 
         return json({ success: true, message: '注册成功' }, 200, cors);
       }
@@ -131,7 +146,14 @@ export default {
 
         return json({
           success: true,
-          user: { username: user.username, email: user.email, created_at: user.created_at }
+          user: {
+            username: user.username,
+            email: user.email,
+            created_at: user.created_at,
+            role: user.role || 'user',
+            banned: user.banned || 0,
+            ban_reason: user.ban_reason || ''
+          }
         }, 200, cors);
       }
 
@@ -190,13 +212,18 @@ export default {
       }
 
       // ========================================================
-      // 发布 ROM（已加 intro）
+      // 发布 ROM
       // ========================================================
       if (path === '/api/roms' && method === 'POST') {
         const body = await request.json();
         const { name, version, developer, url: romUrl, condition, code, author, logo, intro } = body;
         if (!name || !version || !developer || !romUrl || !author) {
           return json({ success: false, message: '请填写完整信息' }, 400, cors);
+        }
+
+        const role = await getUserRole(env, author);
+        if (role === 'banned') {
+          return json({ success: false, message: '您已被封禁，无法发布', banned: true }, 403, cors);
         }
 
         let slug = null;
@@ -250,6 +277,11 @@ export default {
       if (path === '/api/favorite' && method === 'POST') {
         const { romId, username } = await request.json();
         if (!romId || !username) return json({ success: false, message: '参数缺失' }, 400, cors);
+
+        const role = await getUserRole(env, username);
+        if (role === 'banned') {
+          return json({ success: false, message: '您已被封禁，无法收藏', banned: true }, 403, cors);
+        }
 
         const exist = await env.DB.prepare(
           'SELECT id FROM favorites WHERE username = ? AND rom_id = ?'
@@ -316,10 +348,130 @@ export default {
         if (!romId || !username || !content) {
           return json({ success: false, message: '参数缺失' }, 400, cors);
         }
+
+        const role = await getUserRole(env, username);
+        if (role === 'banned') {
+          return json({ success: false, message: '您已被封禁，无法评论', banned: true }, 403, cors);
+        }
+
         await env.DB.prepare(
           'INSERT INTO comments (rom_id, username, content, created_at) VALUES (?, ?, ?, ?)'
         ).bind(romId, username, content, Date.now()).run();
         return json({ success: true }, 200, cors);
+      }
+
+      // ========================================================
+      // 管理接口
+      // ========================================================
+      async function checkAdmin(requester) {
+        const role = await getUserRole(env, requester);
+        if (role !== 'super' && role !== 'root') return null;
+        return role;
+      }
+
+      // 封禁用户
+      if (path === '/api/admin/ban' && method === 'POST') {
+        const { requester, target, reason } = await request.json();
+        const adminRole = await checkAdmin(requester);
+        if (!adminRole) return json({ success: false, message: '无权限' }, 403, cors);
+
+        const targetUser = await env.DB.prepare('SELECT role FROM users WHERE username = ?').bind(target).first();
+        if (!targetUser) return json({ success: false, message: '用户不存在' }, 404, cors);
+        if (targetUser.role === 'root') return json({ success: false, message: '不能封禁超级管理员' }, 403, cors);
+        if (adminRole === 'super' && targetUser.role === 'super') {
+          return json({ success: false, message: '普通管理员不能封禁其他管理员' }, 403, cors);
+        }
+
+        await env.DB.prepare('UPDATE users SET banned = 1, ban_reason = ? WHERE username = ?')
+          .bind(reason || '违反社区条约', target).run();
+        return json({ success: true }, 200, cors);
+      }
+
+      // 解封用户
+      if (path === '/api/admin/unban' && method === 'POST') {
+        const { requester, target } = await request.json();
+        const adminRole = await checkAdmin(requester);
+        if (!adminRole) return json({ success: false, message: '无权限' }, 403, cors);
+
+        await env.DB.prepare('UPDATE users SET banned = 0, ban_reason = "" WHERE username = ?')
+          .bind(target).run();
+        return json({ success: true }, 200, cors);
+      }
+
+      // 删除评论
+      if (path === '/api/admin/delete-comment' && method === 'POST') {
+        const { requester, commentId } = await request.json();
+        const adminRole = await checkAdmin(requester);
+        if (!adminRole) return json({ success: false, message: '无权限' }, 403, cors);
+
+        await env.DB.prepare('DELETE FROM comments WHERE id = ?').bind(commentId).run();
+        return json({ success: true }, 200, cors);
+      }
+
+      // 删除系统
+      if (path === '/api/admin/delete-rom' && method === 'POST') {
+        const { requester, romId } = await request.json();
+        const adminRole = await checkAdmin(requester);
+        if (!adminRole) return json({ success: false, message: '无权限' }, 403, cors);
+
+        await env.DB.prepare('DELETE FROM comments WHERE rom_id = ?').bind(romId).run();
+        await env.DB.prepare('DELETE FROM favorites WHERE rom_id = ?').bind(romId).run();
+        await env.DB.prepare('DELETE FROM download_logs WHERE rom_id = ?').bind(romId).run();
+        await env.DB.prepare('DELETE FROM roms WHERE id = ?').bind(romId).run();
+        return json({ success: true }, 200, cors);
+      }
+
+      // 彻底删除账号（仅 root）
+      if (path === '/api/admin/delete-user' && method === 'POST') {
+        const { requester, target } = await request.json();
+        const adminRole = await checkAdmin(requester);
+        if (adminRole !== 'root') return json({ success: false, message: '仅超级管理员可删号' }, 403, cors);
+
+        const targetUser = await env.DB.prepare('SELECT id, role FROM users WHERE username = ?').bind(target).first();
+        if (!targetUser) return json({ success: false, message: '用户不存在' }, 404, cors);
+        if (targetUser.role === 'root') return json({ success: false, message: '不能删除超级管理员' }, 403, cors);
+
+        const { results: userRoms } = await env.DB.prepare('SELECT id FROM roms WHERE author = ?').bind(target).all();
+        for (const r of userRoms) {
+          await env.DB.prepare('DELETE FROM comments WHERE rom_id = ?').bind(r.id).run();
+          await env.DB.prepare('DELETE FROM favorites WHERE rom_id = ?').bind(r.id).run();
+          await env.DB.prepare('DELETE FROM download_logs WHERE rom_id = ?').bind(r.id).run();
+        }
+        await env.DB.prepare('DELETE FROM roms WHERE author = ?').bind(target).run();
+        await env.DB.prepare('DELETE FROM comments WHERE username = ?').bind(target).run();
+        await env.DB.prepare('DELETE FROM favorites WHERE username = ?').bind(target).run();
+        await env.DB.prepare('DELETE FROM users WHERE username = ?').bind(target).run();
+
+        return json({ success: true }, 200, cors);
+      }
+
+      // 设置角色（仅 root）
+      if (path === '/api/admin/set-role' && method === 'POST') {
+        const { requester, target, role } = await request.json();
+        const adminRole = await checkAdmin(requester);
+        if (adminRole !== 'root') return json({ success: false, message: '仅超级管理员可操作' }, 403, cors);
+
+        if (!['user', 'super', 'root'].includes(role)) {
+          return json({ success: false, message: '角色无效' }, 400, cors);
+        }
+
+        const targetUser = await env.DB.prepare('SELECT id FROM users WHERE username = ?').bind(target).first();
+        if (!targetUser) return json({ success: false, message: '用户不存在' }, 404, cors);
+
+        await env.DB.prepare('UPDATE users SET role = ? WHERE username = ?').bind(role, target).run();
+        return json({ success: true }, 200, cors);
+      }
+
+      // 用户列表
+      if (path === '/api/admin/list-users' && method === 'GET') {
+        const requester = url.searchParams.get('requester');
+        const adminRole = await checkAdmin(requester);
+        if (!adminRole) return json({ success: false, message: '无权限' }, 403, cors);
+
+        const { results } = await env.DB.prepare(
+          'SELECT username, role, banned, ban_reason, created_at FROM users ORDER BY created_at DESC'
+        ).all();
+        return json(results, 200, cors);
       }
 
       return json({ success: false, message: 'Not Found' }, 404, cors);
