@@ -25,6 +25,11 @@
       font-size: calc(15px * var(--font-scale));
     }
 
+    @keyframes ylheSpin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
     /* ===== 高级材质 ===== */
     body.material-on .navbar {
       backdrop-filter: blur(14px);
@@ -206,7 +211,6 @@
     .detail-left .btn-row { display: flex; gap: 10px; }
     .detail-right { text-align: right; font-size: calc(14px * var(--font-scale)); line-height: 1.9; color: #111111; }
 
-    /* 创建人 */
     .detail-author {
       display: flex; align-items: center; gap: 8px;
       padding: 12px 20px;
@@ -489,7 +493,6 @@
       border: 2px solid #ddd;
     }
 
-    /* 版本号 */
     .settings-version {
       text-align: center;
       padding: 24px 0 40px;
@@ -500,9 +503,7 @@
       transition: color 0.2s;
       user-select: none;
     }
-    .settings-version:active {
-      color: #666;
-    }
+    .settings-version:active { color: #666; }
 
     .material-toggle {
       display: flex;
@@ -548,7 +549,6 @@
       background: linear-gradient(135deg, #4F8BFF 0%, #A855F7 100%);
     }
 
-    /* ===== 用户主页 ===== */
     .user-profile-header {
       display: flex; flex-direction: column; align-items: center;
       padding: 40px 20px 28px;
@@ -587,18 +587,10 @@
       z-index: 99999;
       padding: 20px;
     }
-    .mac-modal-mask.show {
-      display: flex;
-    }
+    .mac-modal-mask.show { display: flex; }
     @keyframes macPopIn {
-      from {
-        transform: scale(0.85);
-        opacity: 0;
-      }
-      to {
-        transform: scale(1);
-        opacity: 1;
-      }
+      from { transform: scale(0.85); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
     }
     .mac-modal {
       width: 100%;
@@ -670,9 +662,7 @@
       text-decoration: underline;
       font-weight: 500;
     }
-    .mac-modal-link:active {
-      color: #0055CC;
-    }
+    .mac-modal-link:active { color: #0055CC; }
     .mac-creators {
       text-align: left;
       width: 100%;
@@ -693,9 +683,7 @@
       color: #333;
       border-bottom: 1px solid #e0e0e0;
     }
-    .mac-creator-item:last-child {
-      border-bottom: none;
-    }
+    .mac-creator-item:last-child { border-bottom: none; }
     .mac-creator-item strong {
       color: #007AFF;
       font-weight: 600;
@@ -1141,6 +1129,28 @@
 </head>
 <body>
 
+  <!-- ===== 访客验证页 ===== -->
+  <div id="visitorGate" style="position:fixed;inset:0;background:#fff;z-index:999999;display:flex;flex-direction:column;justify-content:center;padding:40px 32px;box-sizing:border-box;">
+    <div style="font-family:'PingFang SC','Microsoft YaHei',sans-serif;">
+      <div style="font-size:22px;font-weight:600;color:#111;margin-bottom:8px;">roms.xylplay.top</div>
+      <div style="font-size:15px;color:#111;margin-bottom:28px;">如需继续访问请完成验证</div>
+      <div id="ylheBox" onclick="doVerify()" style="border:2px solid #111;padding:16px 20px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;max-width:420px;">
+        <div>
+          <div style="font-size:34px;font-weight:700;color:#111;letter-spacing:1px;line-height:1;">YLHe</div>
+          <div style="font-size:13px;color:#111;margin-top:8px;">Powered by YL human examination</div>
+        </div>
+        <div id="ylheCircle" style="width:48px;height:48px;border:2.5px solid #111;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <div id="ylheSpinner" style="display:none;width:24px;height:24px;border:2.5px solid #ddd;border-top-color:#111;border-radius:50%;animation:ylheSpin 0.8s linear infinite;"></div>
+          <div id="ylheCheck" style="display:none;font-size:26px;color:#111;font-weight:700;">✓</div>
+          <div id="ylheBlock" style="display:none;font-size:24px;color:#cc0044;font-weight:700;">✕</div>
+        </div>
+      </div>
+      <div id="ylheStuck" style="display:none;margin-top:20px;font-size:14px;color:#666;max-width:420px;">
+        卡住了吗？<span onclick="forcePass()" style="color:#007AFF;text-decoration:underline;cursor:pointer;">点击通过</span>
+      </div>
+    </div>
+  </div>
+
   <header class="navbar">
     <div class="nav-logo">YL Play Roms</div>
     <div class="nav-avatar" id="navAvatar" onclick="onAvatarClick()">?</div>
@@ -1186,7 +1196,6 @@
       </div>
     </div>
 
-    <!-- 创建人 -->
     <div class="detail-author" id="detailAuthor" onclick="onAuthorClick()">
       <div class="detail-author-avatar" id="detailAuthorAvatar">?</div>
       <div class="detail-author-name" id="detailAuthorName">-</div>
@@ -1393,7 +1402,104 @@
     let marketData = [];
     let publishCondition = 'free';
     let currentLogoData = '';
-    let previousPage = 'pageMarket';
+
+    // ============================================================
+    // 访客验证
+    // ============================================================
+    let visitorPassed = false;
+    let stuckTimer = null;
+
+    function collectDeviceInfo() {
+      return {
+        webdriver: navigator.webdriver || false,
+        hardwareConcurrency: navigator.hardwareConcurrency || 0,
+        deviceMemory: navigator.deviceMemory || 0,
+        language: navigator.language || '',
+        platform: navigator.platform || '',
+        screenWidth: screen.width || 0,
+        screenHeight: screen.height || 0,
+        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone || ''
+      };
+    }
+
+    async function initVisitorGate() {
+      if (sessionStorage.getItem('yl_visitor_passed') === '1') {
+        document.getElementById('visitorGate').style.display = 'none';
+        visitorPassed = true;
+        return;
+      }
+      try {
+        const res = await fetch(API_BASE + '/api/visitor/check', { method: 'POST' });
+        const data = await res.json();
+        if (data.status === 'passed') {
+          document.getElementById('visitorGate').style.display = 'none';
+          sessionStorage.setItem('yl_visitor_passed', '1');
+          visitorPassed = true;
+        } else if (data.status === 'blocked') {
+          document.getElementById('ylheSpinner').style.display = 'none';
+          document.getElementById('ylheBlock').style.display = 'block';
+          document.getElementById('ylheBox').style.cursor = 'not-allowed';
+          document.getElementById('ylheBox').onclick = null;
+        }
+      } catch (e) { console.error(e); }
+    }
+
+    async function doVerify() {
+      if (visitorPassed) return;
+      const spinner = document.getElementById('ylheSpinner');
+      const check = document.getElementById('ylheCheck');
+      const block = document.getElementById('ylheBlock');
+
+      spinner.style.display = 'block';
+      check.style.display = 'none';
+      block.style.display = 'none';
+
+      clearTimeout(stuckTimer);
+      stuckTimer = setTimeout(() => {
+        document.getElementById('ylheStuck').style.display = 'block';
+      }, 8000);
+
+      try {
+        const res = await fetch(API_BASE + '/api/visitor/verify', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ deviceInfo: collectDeviceInfo() })
+        });
+        const data = await res.json();
+
+        if (data.status === 'passed') {
+          clearTimeout(stuckTimer);
+          await new Promise(r => setTimeout(r, 800));
+          spinner.style.display = 'none';
+          check.style.display = 'block';
+          sessionStorage.setItem('yl_visitor_passed', '1');
+          visitorPassed = true;
+          setTimeout(() => {
+            document.getElementById('visitorGate').style.display = 'none';
+          }, 500);
+        } else if (data.status === 'blocked') {
+          clearTimeout(stuckTimer);
+          spinner.style.display = 'none';
+          block.style.display = 'block';
+          document.getElementById('ylheBox').style.cursor = 'not-allowed';
+          document.getElementById('ylheBox').onclick = null;
+          document.getElementById('ylheStuck').style.display = 'none';
+        } else if (data.status === 'suspicious') {
+          // 一直转，8 秒后出现"卡住了吗"
+        }
+      } catch (e) {
+        console.error('验证失败', e);
+      }
+    }
+
+    async function forcePass() {
+      try {
+        await fetch(API_BASE + '/api/visitor/force-pass', { method: 'POST' });
+        sessionStorage.setItem('yl_visitor_passed', '1');
+        visitorPassed = true;
+        document.getElementById('visitorGate').style.display = 'none';
+      } catch (e) { console.error(e); }
+    }
 
     // ============================================================
     // 高级材质开关
@@ -2347,6 +2453,7 @@
     updateAdminUI();
     applySettings();
     applyMaterial();
+    initVisitorGate();
 
     window.addEventListener('resize', () => {
       updateTabUnderline();
