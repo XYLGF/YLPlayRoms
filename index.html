@@ -68,7 +68,8 @@
     body.material-on .page.active {
       animation: pageSlideInRight 0.3s cubic-bezier(0.22, 0.9, 0.34, 1);
     }
-    body.material-on #pageDetail.active {
+    body.material-on #pageDetail.active,
+    body.material-on #pageUserProfile.active {
       animation: cardExpandFromRight 0.3s cubic-bezier(0.22, 0.9, 0.34, 1);
       transform-origin: right center;
     }
@@ -118,7 +119,9 @@
       cursor: pointer;
       background: transparent;
       text-transform: uppercase;
+      overflow: hidden;
     }
+    .nav-avatar img { width: 100%; height: 100%; object-fit: cover; }
 
     .page { display: none; padding-top: 56px; min-height: 100vh; }
     .page.active { display: block; }
@@ -203,6 +206,27 @@
     .detail-left .btn-row { display: flex; gap: 10px; }
     .detail-right { text-align: right; font-size: calc(14px * var(--font-scale)); line-height: 1.9; color: #111111; }
 
+    /* 创建人 */
+    .detail-author {
+      display: flex; align-items: center; gap: 8px;
+      padding: 12px 20px;
+      border-bottom: 2px solid #111111;
+      cursor: pointer;
+      font-size: calc(14px * var(--font-scale));
+    }
+    .detail-author:hover { background: #f7f7f7; }
+    .detail-author-avatar {
+      width: 28px; height: 28px;
+      border-radius: 50%;
+      border: 2px solid #111111;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px; font-weight: 600;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+    .detail-author-avatar img { width: 100%; height: 100%; object-fit: cover; }
+    .detail-author-name { font-weight: 500; }
+
     .intro-section {
       padding: 20px;
       border-bottom: 2px solid #111111;
@@ -285,9 +309,17 @@
       display: flex; align-items: center; justify-content: center;
       font-size: calc(16px * var(--font-scale)); font-weight: 600; flex-shrink: 0;
       text-transform: uppercase;
+      overflow: hidden;
+      cursor: pointer;
     }
+    .comment-avatar img { width: 100%; height: 100%; object-fit: cover; }
     .comment-body { flex: 1; }
-    .comment-meta { font-size: calc(14px * var(--font-scale)); font-weight: 500; margin-bottom: 8px; }
+    .comment-meta {
+      font-size: calc(14px * var(--font-scale)); font-weight: 500; margin-bottom: 8px;
+      display: flex; align-items: center; gap: 4px; flex-wrap: wrap;
+    }
+    .comment-meta-name { cursor: pointer; }
+    .comment-meta-name:hover { text-decoration: underline; }
     .comment-content {
       border: 2px solid #111111; border-radius: 4px;
       padding: 12px 14px; font-size: calc(15px * var(--font-scale));
@@ -335,7 +367,9 @@
       display: flex; align-items: center; justify-content: center;
       font-size: calc(44px * var(--font-scale)); font-weight: 700; margin-bottom: 18px;
       text-transform: uppercase;
+      overflow: hidden;
     }
+    .profile-avatar img { width: 100%; height: 100%; object-fit: cover; }
     .profile-name { font-size: calc(24px * var(--font-scale)); font-weight: 700; margin-bottom: 4px; }
     .profile-level { font-size: calc(18px * var(--font-scale)); font-weight: 300; color: #555; }
 
@@ -495,8 +529,37 @@
     .switch input:checked + .slider:before { transform: translateX(22px); }
     body.theme-md3 .switch input:checked + .slider { background: #6750a4; }
     body.theme-ios .switch input:checked + .slider { background: #34C759; }
+    body.theme-ai .switch input:checked + .slider {
+      background: linear-gradient(135deg, #4F8BFF 0%, #A855F7 100%);
+    }
 
-    /* ===== MD3 主题 ===== */
+    /* ===== 用户主页（公开） ===== */
+    .user-profile-header {
+      display: flex; flex-direction: column; align-items: center;
+      padding: 40px 20px 28px;
+      border-bottom: 2px solid #111111;
+    }
+    .user-profile-avatar {
+      width: 110px; height: 110px;
+      border: 3px solid #111111; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: calc(44px * var(--font-scale)); font-weight: 700; margin-bottom: 18px;
+      text-transform: uppercase;
+      overflow: hidden;
+    }
+    .user-profile-avatar img { width: 100%; height: 100%; object-fit: cover; }
+    .user-profile-name { font-size: calc(24px * var(--font-scale)); font-weight: 700; margin-bottom: 4px; }
+    .user-profile-level { font-size: calc(18px * var(--font-scale)); font-weight: 300; color: #555; }
+    .user-profile-section-title {
+      font-size: calc(22px * var(--font-scale)); font-weight: 700;
+      padding: 20px 20px 12px;
+    }
+    .user-profile-roms {
+      padding: 0 20px 40px;
+      display: flex; flex-direction: column; gap: 20px;
+    }
+
+    /* ===== 主题：MD3 ===== */
     body.theme-md3 {
       background: #fef7ff;
       color: #1d1b20;
@@ -512,8 +575,10 @@
     body.theme-md3 .rom-logo-placeholder { border: none; border-radius: 12px; background: #ede8f3; }
     body.theme-md3 .rom-bottom h3 { color: #1d1b20; }
     body.theme-md3 .rom-bottom p { color: #6750a4; }
-    body.theme-md3 .profile-header { border-bottom: none; background: linear-gradient(135deg, #e8def8 0%, #f3edf7 100%); border-radius: 0 0 32px 32px; }
-    body.theme-md3 .profile-avatar { background: #6750a4; color: #ffffff; border: none; }
+    body.theme-md3 .profile-header,
+    body.theme-md3 .user-profile-header { border-bottom: none; background: linear-gradient(135deg, #e8def8 0%, #f3edf7 100%); border-radius: 0 0 32px 32px; }
+    body.theme-md3 .profile-avatar,
+    body.theme-md3 .user-profile-avatar { background: #6750a4; color: #ffffff; border: none; }
     body.theme-md3 .tabs { border-bottom: none; }
     body.theme-md3 .tab { color: #999; }
     body.theme-md3 .tab.active { color: #6750a4; }
@@ -531,8 +596,10 @@
     body.theme-md3 .settings-option { border: 2px solid transparent; background: #ffffff; border-radius: 12px; }
     body.theme-md3 .settings-option.selected { background: #6750a4; color: #ffffff; }
     body.theme-md3 .detail-logo { border-bottom: none; background: #ede8f3; }
-    body.theme-md3 .detail-info { border-bottom: none; }
+    body.theme-md3 .detail-info,
+    body.theme-md3 .detail-author { border-bottom: none; }
     body.theme-md3 .detail-left h3 { color: #1d1b20; }
+    body.theme-md3 .detail-author-avatar { border: none; background: #6750a4; color: #fff; }
     body.theme-md3 .intro-section { border-bottom: none; }
     body.theme-md3 .back-bar { border-bottom: none; background: #f3edf7; }
     body.theme-md3 .back-btn { color: #6750a4; }
@@ -546,329 +613,7 @@
     body.theme-md3 .publish-field > label { color: #6750a4; }
     body.theme-md3 .toast { background: #1d1b20; border-radius: 12px; }
 
-/* ===================================================== */
-/* 主题：AI（蓝紫渐变，科技感）                          */
-/* ===================================================== */
-body.theme-ai {
-  background: linear-gradient(180deg, #0A0E27 0%, #1A0B2E 100%);
-  background-attachment: fixed;
-  color: #E8E9F3;
-  font-family: 'PingFang SC', 'Microsoft YaHei', 'Helvetica Neue', sans-serif;
-  min-height: 100vh;
-}
-body.theme-ai .navbar {
-  background: rgba(10, 14, 39, 0.75);
-  border-bottom: 1px solid rgba(120, 140, 255, 0.15);
-  height: 60px;
-}
-body.theme-ai .nav-logo {
-  font-weight: 600;
-  background: linear-gradient(135deg, #4F8BFF 0%, #A855F7 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-body.theme-ai .nav-avatar {
-  background: linear-gradient(135deg, #4F8BFF 0%, #A855F7 100%);
-  color: #ffffff;
-  border: none;
-  font-weight: 600;
-  box-shadow: 0 0 20px rgba(120, 140, 255, 0.5);
-}
-body.theme-ai .btn {
-  background: linear-gradient(135deg, #4F8BFF 0%, #A855F7 100%);
-  color: #ffffff;
-  border: none;
-  border-radius: 12px;
-  padding: 11px 26px;
-  font-weight: 500;
-  box-shadow: 0 4px 20px rgba(79, 139, 255, 0.35);
-  transition: all 0.2s;
-}
-body.theme-ai .btn:active {
-  transform: scale(0.97);
-  box-shadow: 0 2px 12px rgba(168, 85, 247, 0.5);
-}
-body.theme-ai .search-bar {
-  border: 1px solid rgba(120, 140, 255, 0.2);
-  border-radius: 14px;
-  background: rgba(255, 255, 255, 0.04);
-  padding: 12px 18px;
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-}
-body.theme-ai .search-bar input {
-  color: #E8E9F3;
-}
-body.theme-ai .search-bar input::placeholder {
-  color: rgba(232, 233, 243, 0.4);
-}
-body.theme-ai .search-bar svg {
-  stroke: rgba(232, 233, 243, 0.6);
-}
-body.theme-ai .market-header h1 {
-  background: linear-gradient(135deg, #4F8BFF 0%, #A855F7 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-body.theme-ai .rom-card {
-  border: 1px solid rgba(120, 140, 255, 0.15);
-  border-radius: 18px;
-  background: rgba(255, 255, 255, 0.04);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  padding: 18px;
-  transition: all 0.25s;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-}
-body.theme-ai .rom-card:active {
-  transform: scale(0.98);
-  border-color: rgba(120, 140, 255, 0.4);
-  box-shadow: 0 8px 30px rgba(79, 139, 255, 0.25);
-}
-body.theme-ai .rom-logo-placeholder {
-  border: 1px solid rgba(120, 140, 255, 0.15);
-  border-radius: 14px;
-  background: linear-gradient(135deg, rgba(79, 139, 255, 0.1) 0%, rgba(168, 85, 247, 0.1) 100%);
-}
-body.theme-ai .rom-logo-placeholder svg {
-  stroke: #A8B5FF;
-}
-body.theme-ai .rom-bottom h3 { color: #E8E9F3; }
-body.theme-ai .rom-bottom p {
-  background: linear-gradient(135deg, #4F8BFF 0%, #A855F7 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  font-weight: 500;
-}
-body.theme-ai .profile-header {
-  border-bottom: 1px solid rgba(120, 140, 255, 0.15);
-  background: linear-gradient(135deg, rgba(79, 139, 255, 0.1) 0%, rgba(168, 85, 247, 0.1) 100%);
-}
-body.theme-ai .profile-avatar {
-  background: linear-gradient(135deg, #4F8BFF 0%, #A855F7 100%);
-  color: #ffffff;
-  border: none;
-  box-shadow: 0 0 30px rgba(79, 139, 255, 0.5);
-}
-body.theme-ai .profile-name { color: #E8E9F3; }
-body.theme-ai .profile-level {
-  background: linear-gradient(135deg, #4F8BFF 0%, #A855F7 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-body.theme-ai .tabs { border-bottom: 1px solid rgba(120, 140, 255, 0.15); }
-body.theme-ai .tab { color: rgba(232, 233, 243, 0.4); }
-body.theme-ai .tab.active {
-  color: #A8B5FF;
-  text-shadow: 0 0 12px rgba(120, 140, 255, 0.6);
-}
-body.theme-ai .tab-underline {
-  background: linear-gradient(90deg, #4F8BFF 0%, #A855F7 100%);
-  border-radius: 4px;
-  height: 3px;
-  box-shadow: 0 0 12px rgba(120, 140, 255, 0.6);
-}
-body.theme-ai .comment-section h2 { color: #E8E9F3; }
-body.theme-ai .comment-content {
-  border: 1px solid rgba(120, 140, 255, 0.15);
-  background: rgba(255, 255, 255, 0.04);
-  border-radius: 14px;
-  color: #E8E9F3;
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-}
-body.theme-ai .comment-avatar {
-  border: none;
-  background: linear-gradient(135deg, #4F8BFF 0%, #A855F7 100%);
-  color: #ffffff;
-}
-body.theme-ai .comment-meta { color: rgba(232, 233, 243, 0.7); }
-body.theme-ai .comment-input-bar {
-  border-top: 1px solid rgba(120, 140, 255, 0.15);
-  background: rgba(10, 14, 39, 0.85);
-}
-body.theme-ai .comment-input-bar input {
-  border: 1px solid rgba(120, 140, 255, 0.2);
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 14px;
-  color: #E8E9F3;
-  padding: 11px 16px;
-}
-body.theme-ai .comment-input-bar input::placeholder {
-  color: rgba(232, 233, 243, 0.4);
-}
-body.theme-ai .comment-send {
-  background: linear-gradient(135deg, #4F8BFF 0%, #A855F7 100%);
-  color: #ffffff;
-  border: none;
-  box-shadow: 0 4px 16px rgba(79, 139, 255, 0.4);
-}
-body.theme-ai .auth-box {
-  border: 1px solid rgba(120, 140, 255, 0.2);
-  background: rgba(255, 255, 255, 0.04);
-  border-radius: 22px;
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.3);
-}
-body.theme-ai .auth-field input {
-  border: 1px solid rgba(120, 140, 255, 0.2);
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 12px;
-  color: #E8E9F3;
-  padding: 12px 14px;
-}
-body.theme-ai .auth-field input::placeholder {
-  color: rgba(232, 233, 243, 0.35);
-}
-body.theme-ai .auth-field label { color: #A8B5FF; }
-body.theme-ai .auth-title {
-  background: linear-gradient(135deg, #4F8BFF 0%, #A855F7 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-body.theme-ai .settings-group {
-  border: 1px solid rgba(120, 140, 255, 0.18);
-  background: rgba(255, 255, 255, 0.04);
-  border-radius: 18px;
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  padding: 20px;
-}
-body.theme-ai .settings-group h3 { color: #E8E9F3; }
-body.theme-ai .settings-option {
-  border: 1px solid rgba(120, 140, 255, 0.2);
-  background: rgba(255, 255, 255, 0.03);
-  border-radius: 12px;
-  color: #E8E9F3;
-  font-weight: 500;
-}
-body.theme-ai .settings-option.selected {
-  background: linear-gradient(135deg, #4F8BFF 0%, #A855F7 100%);
-  color: #ffffff;
-  border-color: transparent;
-  box-shadow: 0 4px 20px rgba(79, 139, 255, 0.4);
-}
-body.theme-ai .settings-desc { color: rgba(232, 233, 243, 0.5); }
-body.theme-ai .material-toggle-label { color: #E8E9F3; }
-body.theme-ai .switch .slider { background: rgba(255, 255, 255, 0.15); }
-body.theme-ai .switch input:checked + .slider {
-  background: linear-gradient(135deg, #4F8BFF 0%, #A855F7 100%);
-}
-body.theme-ai .detail-logo {
-  border-bottom: 1px solid rgba(120, 140, 255, 0.15);
-  background: linear-gradient(135deg, rgba(79, 139, 255, 0.08) 0%, rgba(168, 85, 247, 0.08) 100%);
-}
-body.theme-ai .detail-info { border-bottom: 1px solid rgba(120, 140, 255, 0.15); }
-body.theme-ai .detail-left h3 { color: #E8E9F3; }
-body.theme-ai .detail-left p { color: rgba(232, 233, 243, 0.7); }
-body.theme-ai .detail-right { color: rgba(232, 233, 243, 0.7); }
-body.theme-ai .intro-section { border-bottom: 1px solid rgba(120, 140, 255, 0.15); }
-body.theme-ai .intro-section h2 { color: #E8E9F3; }
-body.theme-ai .intro-content { color: rgba(232, 233, 243, 0.85); }
-body.theme-ai .back-bar {
-  border-bottom: 1px solid rgba(120, 140, 255, 0.15);
-  background: rgba(10, 14, 39, 0.85);
-}
-body.theme-ai .back-btn { color: #A8B5FF; }
-body.theme-ai .back-title { color: #E8E9F3; }
-body.theme-ai .publish-box {
-  border: 1px solid rgba(120, 140, 255, 0.18);
-  background: rgba(255, 255, 255, 0.04);
-  border-radius: 16px;
-}
-body.theme-ai .publish-option {
-  border: 1px solid rgba(120, 140, 255, 0.2);
-  background: rgba(255, 255, 255, 0.03);
-  border-radius: 12px;
-  color: #E8E9F3;
-  font-weight: 500;
-}
-body.theme-ai .publish-option.selected {
-  background: linear-gradient(135deg, #4F8BFF 0%, #A855F7 100%);
-  color: #ffffff;
-  border-color: transparent;
-  box-shadow: 0 4px 20px rgba(79, 139, 255, 0.4);
-}
-body.theme-ai .publish-hint { color: rgba(232, 233, 243, 0.6); }
-body.theme-ai .publish-field input,
-body.theme-ai .publish-field textarea,
-body.theme-ai .publish-code-input {
-  border: 1px solid rgba(120, 140, 255, 0.2);
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 12px;
-  color: #E8E9F3;
-  padding: 12px 14px;
-}
-body.theme-ai .publish-field input::placeholder,
-body.theme-ai .publish-field textarea::placeholder {
-  color: rgba(232, 233, 243, 0.35);
-}
-body.theme-ai .publish-field > label { color: #A8B5FF; }
-body.theme-ai .publish-title { color: #E8E9F3; }
-body.theme-ai .toast {
-  background: linear-gradient(135deg, #4F8BFF 0%, #A855F7 100%);
-  border-radius: 14px;
-  box-shadow: 0 8px 32px rgba(79, 139, 255, 0.5);
-}
-body.theme-ai .empty-tip { color: rgba(232, 233, 243, 0.5); }
-body.theme-ai .admin-user-item {
-  border: 1px solid rgba(120, 140, 255, 0.18);
-  background: rgba(255, 255, 255, 0.04);
-  border-radius: 14px;
-}
-body.theme-ai .admin-user-item h4 { color: #E8E9F3; }
-body.theme-ai .admin-user-item p { color: rgba(232, 233, 243, 0.6); }
-body.theme-ai .admin-btn {
-  border: none;
-  background: rgba(255, 59, 48, 0.15);
-  color: #FF6B6B;
-  border-radius: 10px;
-  padding: 5px 12px;
-}
-body.theme-ai .admin-btn:active {
-  background: #FF3B30;
-  color: #ffffff;
-}
-body.theme-ai .admin-panel-btn {
-  border: none;
-  background: rgba(255, 59, 48, 0.15);
-  color: #FF6B6B;
-  border-radius: 10px;
-}
-body.theme-ai .admin-role-tag {
-  border-radius: 8px;
-  font-weight: 500;
-}
-body.theme-ai .admin-role-tag.root { background: #FF3B30; }
-body.theme-ai .admin-role-tag.super { background: #4F8BFF; }
-body.theme-ai .back-btn,
-body.theme-ai .market-header h1 { font-weight: 600; }
-
-/* AI + 材质模糊 */
-body.material-on.theme-ai .navbar {
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  background: rgba(10, 14, 39, 0.7);
-}
-body.material-on.theme-ai .comment-input-bar {
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  background: rgba(10, 14, 39, 0.8);
-}
-body.material-on.theme-ai .back-bar {
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  background: rgba(10, 14, 39, 0.8);
-}
-    /* ===================================================== */
-    /* 主题：iOS 风格                                        */
-    /* ===================================================== */
+    /* ===== 主题：iOS ===== */
     body.theme-ios {
       background: #F2F2F7;
       color: #000000;
@@ -879,207 +624,69 @@ body.material-on.theme-ai .back-bar {
       border-bottom: 0.5px solid rgba(0, 0, 0, 0.12);
       height: 56px;
     }
-    body.theme-ios .nav-logo {
-      color: #000000;
-      font-weight: 600;
-      letter-spacing: -0.3px;
-    }
-    body.theme-ios .nav-avatar {
-      background: #007AFF;
-      color: #ffffff;
-      border: none;
-      font-weight: 500;
-    }
-    body.theme-ios .btn {
-      background: #007AFF;
-      color: #ffffff;
-      border: none;
-      border-radius: 12px;
-      padding: 11px 24px;
-      font-weight: 500;
-      box-shadow: none;
-    }
-    body.theme-ios .btn:active {
-      background: #0062CC;
-    }
-    body.theme-ios .search-bar {
-      border: none;
-      border-radius: 10px;
-      background: #E3E3E8;
-      padding: 10px 14px;
-    }
-    body.theme-ios .search-bar input {
-      color: #000000;
-    }
-    body.theme-ios .rom-card {
-      border: none;
-      border-radius: 14px;
-      background: #ffffff;
-      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
-      padding: 18px;
-    }
-    body.theme-ios .rom-card:active {
-      background: #F2F2F7;
-    }
-    body.theme-ios .rom-logo-placeholder {
-      border: none;
-      border-radius: 10px;
-      background: #F2F2F7;
-    }
+    body.theme-ios .nav-logo { color: #000000; font-weight: 600; letter-spacing: -0.3px; }
+    body.theme-ios .nav-avatar { background: #007AFF; color: #ffffff; border: none; font-weight: 500; }
+    body.theme-ios .btn { background: #007AFF; color: #ffffff; border: none; border-radius: 12px; padding: 11px 24px; font-weight: 500; box-shadow: none; }
+    body.theme-ios .btn:active { background: #0062CC; }
+    body.theme-ios .search-bar { border: none; border-radius: 10px; background: #E3E3E8; padding: 10px 14px; }
+    body.theme-ios .search-bar input { color: #000000; }
+    body.theme-ios .rom-card { border: none; border-radius: 14px; background: #ffffff; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04); padding: 18px; }
+    body.theme-ios .rom-card:active { background: #F2F2F7; }
+    body.theme-ios .rom-logo-placeholder { border: none; border-radius: 10px; background: #F2F2F7; }
     body.theme-ios .rom-bottom h3 { color: #000000; }
     body.theme-ios .rom-bottom p { color: #8E8E93; }
-    body.theme-ios .profile-header {
-      border-bottom: none;
-      background: #ffffff;
-      border-radius: 0 0 20px 20px;
-      padding-bottom: 32px;
-    }
-    body.theme-ios .profile-avatar {
-      background: #007AFF;
-      color: #ffffff;
-      border: none;
-      font-weight: 500;
-    }
-    body.theme-ios .profile-name { color: #000000; }
-    body.theme-ios .profile-level { color: #8E8E93; }
+    body.theme-ios .profile-header,
+    body.theme-ios .user-profile-header { border-bottom: none; background: #ffffff; border-radius: 0 0 20px 20px; padding-bottom: 32px; }
+    body.theme-ios .profile-avatar,
+    body.theme-ios .user-profile-avatar { background: #007AFF; color: #ffffff; border: none; font-weight: 500; }
+    body.theme-ios .profile-name,
+    body.theme-ios .user-profile-name { color: #000000; }
+    body.theme-ios .profile-level,
+    body.theme-ios .user-profile-level { color: #8E8E93; }
     body.theme-ios .tabs { border-bottom: 0.5px solid #C6C6C8; background: transparent; }
     body.theme-ios .tab { color: #8E8E93; }
     body.theme-ios .tab.active { color: #007AFF; }
     body.theme-ios .tab-underline { background: #007AFF; border-radius: 2px; }
-    body.theme-ios .comment-content {
-      border: none;
-      background: #ffffff;
-      border-radius: 12px;
-      padding: 14px 16px;
-    }
-    body.theme-ios .comment-avatar {
-      border: none;
-      background: #007AFF;
-      color: #ffffff;
-    }
-    body.theme-ios .comment-input-bar {
-      border-top: 0.5px solid #C6C6C8;
-      background: rgba(249, 249, 249, 0.94);
-    }
-    body.theme-ios .comment-input-bar input {
-      border: none;
-      background: #ffffff;
-      border-radius: 20px;
-      padding: 10px 16px;
-    }
-    body.theme-ios .comment-send {
-      background: #007AFF;
-      color: #ffffff;
-      border: none;
-    }
-    body.theme-ios .auth-box {
-      border: none;
-      background: #ffffff;
-      border-radius: 14px;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-      padding: 28px 22px;
-    }
-    body.theme-ios .auth-field input {
-      border: none;
-      background: #F2F2F7;
-      border-radius: 10px;
-      padding: 13px 14px;
-    }
+    body.theme-ios .comment-content { border: none; background: #ffffff; border-radius: 12px; padding: 14px 16px; }
+    body.theme-ios .comment-avatar { border: none; background: #007AFF; color: #ffffff; }
+    body.theme-ios .comment-input-bar { border-top: 0.5px solid #C6C6C8; background: rgba(249, 249, 249, 0.94); }
+    body.theme-ios .comment-input-bar input { border: none; background: #ffffff; border-radius: 20px; padding: 10px 16px; }
+    body.theme-ios .comment-send { background: #007AFF; color: #ffffff; border: none; }
+    body.theme-ios .auth-box { border: none; background: #ffffff; border-radius: 14px; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05); padding: 28px 22px; }
+    body.theme-ios .auth-field input { border: none; background: #F2F2F7; border-radius: 10px; padding: 13px 14px; }
     body.theme-ios .auth-field label { color: #007AFF; }
     body.theme-ios .auth-title { color: #000000; }
-    body.theme-ios .settings-group {
-      border: none;
-      background: #ffffff;
-      border-radius: 14px;
-      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
-      padding: 20px;
-    }
+    body.theme-ios .settings-group { border: none; background: #ffffff; border-radius: 14px; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04); padding: 20px; }
     body.theme-ios .settings-group h3 { color: #000000; }
-    body.theme-ios .settings-option {
-      border: none;
-      background: #F2F2F7;
-      border-radius: 10px;
-      font-weight: 500;
-    }
-    body.theme-ios .settings-option.selected {
-      background: #007AFF;
-      color: #ffffff;
-    }
-    body.theme-ios .detail-logo {
-      border-bottom: none;
-      background: #F2F2F7;
-    }
-    body.theme-ios .detail-info { border-bottom: none; }
+    body.theme-ios .settings-option { border: none; background: #F2F2F7; border-radius: 10px; font-weight: 500; }
+    body.theme-ios .settings-option.selected { background: #007AFF; color: #ffffff; }
+    body.theme-ios .detail-logo { border-bottom: none; background: #F2F2F7; }
+    body.theme-ios .detail-info,
+    body.theme-ios .detail-author { border-bottom: none; }
     body.theme-ios .detail-left h3 { color: #000000; }
     body.theme-ios .detail-left p { color: #8E8E93; }
+    body.theme-ios .detail-author-avatar { border: none; background: #007AFF; color: #fff; }
     body.theme-ios .intro-section { border-bottom: none; }
-    body.theme-ios .back-bar {
-      border-bottom: 0.5px solid #C6C6C8;
-      background: rgba(249, 249, 249, 0.94);
-    }
+    body.theme-ios .back-bar { border-bottom: 0.5px solid #C6C6C8; background: rgba(249, 249, 249, 0.94); }
     body.theme-ios .back-btn { color: #007AFF; }
     body.theme-ios .back-title { color: #000000; }
-    body.theme-ios .publish-box {
-      border: none;
-      background: #ffffff;
-      border-radius: 14px;
-      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
-    }
-    body.theme-ios .publish-option {
-      border: none;
-      background: #F2F2F7;
-      border-radius: 10px;
-      font-weight: 500;
-    }
-    body.theme-ios .publish-option.selected {
-      background: #007AFF;
-      color: #ffffff;
-    }
+    body.theme-ios .publish-box { border: none; background: #ffffff; border-radius: 14px; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04); }
+    body.theme-ios .publish-option { border: none; background: #F2F2F7; border-radius: 10px; font-weight: 500; }
+    body.theme-ios .publish-option.selected { background: #007AFF; color: #ffffff; }
     body.theme-ios .publish-field input,
     body.theme-ios .publish-field textarea,
-    body.theme-ios .publish-code-input {
-      border: none;
-      background: #F2F2F7;
-      border-radius: 10px;
-      padding: 13px 14px;
-    }
+    body.theme-ios .publish-code-input { border: none; background: #F2F2F7; border-radius: 10px; padding: 13px 14px; }
     body.theme-ios .publish-field > label { color: #007AFF; }
-    body.theme-ios .toast {
-      background: rgba(0, 0, 0, 0.82);
-      border-radius: 14px;
-    }
+    body.theme-ios .toast { background: rgba(0, 0, 0, 0.82); border-radius: 14px; }
     body.theme-ios .empty-tip { color: #8E8E93; }
-    body.theme-ios .admin-user-item {
-      border: none;
-      background: #ffffff;
-      border-radius: 12px;
-      box-shadow: 0 1px 2px rgba(0,0,0,0.04);
-    }
-    body.theme-ios .admin-btn {
-      border: none;
-      background: #FFEBEB;
-      color: #FF3B30;
-      border-radius: 8px;
-      padding: 5px 10px;
-    }
-    body.theme-ios .admin-btn:active {
-      background: #FF3B30;
-      color: #ffffff;
-    }
-    body.theme-ios .admin-panel-btn {
-      border: none;
-      background: #FFEBEB;
-      color: #FF3B30;
-      border-radius: 10px;
-    }
-    body.theme-ios .admin-role-tag {
-      border-radius: 8px;
-      font-weight: 500;
-    }
+    body.theme-ios .admin-user-item { border: none; background: #ffffff; border-radius: 12px; box-shadow: 0 1px 2px rgba(0,0,0,0.04); }
+    body.theme-ios .admin-btn { border: none; background: #FFEBEB; color: #FF3B30; border-radius: 8px; padding: 5px 10px; }
+    body.theme-ios .admin-btn:active { background: #FF3B30; color: #ffffff; }
+    body.theme-ios .admin-panel-btn { border: none; background: #FFEBEB; color: #FF3B30; border-radius: 10px; }
     body.theme-ios .admin-role-tag.root { background: #FF3B30; }
     body.theme-ios .admin-role-tag.super { background: #007AFF; }
 
-    /* iOS + 材质模糊 */
+    /* iOS + 材质 */
     body.material-on.theme-ios .navbar {
       backdrop-filter: blur(20px) saturate(180%);
       -webkit-backdrop-filter: blur(20px) saturate(180%);
@@ -1095,6 +702,301 @@ body.material-on.theme-ai .back-bar {
       -webkit-backdrop-filter: blur(20px) saturate(180%);
       background: rgba(249, 249, 249, 0.78);
     }
+
+    /* ===== 主题：AI ===== */
+    body.theme-ai {
+      background: linear-gradient(180deg, #0A0E27 0%, #1A0B2E 100%);
+      background-attachment: fixed;
+      color: #E8E9F3;
+      font-family: 'PingFang SC', 'Microsoft YaHei', 'Helvetica Neue', sans-serif;
+      min-height: 100vh;
+    }
+    body.theme-ai .navbar { background: rgba(10, 14, 39, 0.75); border-bottom: 1px solid rgba(120, 140, 255, 0.15); height: 60px; }
+    body.theme-ai .nav-logo {
+      font-weight: 600;
+      background: linear-gradient(135deg, #4F8BFF 0%, #A855F7 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    body.theme-ai .nav-avatar {
+      background: linear-gradient(135deg, #4F8BFF 0%, #A855F7 100%);
+      color: #ffffff;
+      border: none;
+      font-weight: 600;
+      box-shadow: 0 0 20px rgba(120, 140, 255, 0.5);
+    }
+    body.theme-ai .btn {
+      background: linear-gradient(135deg, #4F8BFF 0%, #A855F7 100%);
+      color: #ffffff;
+      border: none;
+      border-radius: 12px;
+      padding: 11px 26px;
+      font-weight: 500;
+      box-shadow: 0 4px 20px rgba(79, 139, 255, 0.35);
+      transition: all 0.2s;
+    }
+    body.theme-ai .btn:active { transform: scale(0.97); box-shadow: 0 2px 12px rgba(168, 85, 247, 0.5); }
+    body.theme-ai .search-bar {
+      border: 1px solid rgba(120, 140, 255, 0.2);
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.04);
+      padding: 12px 18px;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+    body.theme-ai .search-bar input { color: #E8E9F3; }
+    body.theme-ai .search-bar input::placeholder { color: rgba(232, 233, 243, 0.4); }
+    body.theme-ai .search-bar svg { stroke: rgba(232, 233, 243, 0.6); }
+    body.theme-ai .market-header h1 {
+      background: linear-gradient(135deg, #4F8BFF 0%, #A855F7 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    body.theme-ai .rom-card {
+      border: 1px solid rgba(120, 140, 255, 0.15);
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.04);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      padding: 18px;
+      transition: all 0.25s;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    }
+    body.theme-ai .rom-card:active {
+      transform: scale(0.98);
+      border-color: rgba(120, 140, 255, 0.4);
+      box-shadow: 0 8px 30px rgba(79, 139, 255, 0.25);
+    }
+    body.theme-ai .rom-logo-placeholder {
+      border: 1px solid rgba(120, 140, 255, 0.15);
+      border-radius: 14px;
+      background: linear-gradient(135deg, rgba(79, 139, 255, 0.1) 0%, rgba(168, 85, 247, 0.1) 100%);
+    }
+    body.theme-ai .rom-logo-placeholder svg { stroke: #A8B5FF; }
+    body.theme-ai .rom-bottom h3 { color: #E8E9F3; }
+    body.theme-ai .rom-bottom p {
+      background: linear-gradient(135deg, #4F8BFF 0%, #A855F7 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      font-weight: 500;
+    }
+    body.theme-ai .profile-header,
+    body.theme-ai .user-profile-header {
+      border-bottom: 1px solid rgba(120, 140, 255, 0.15);
+      background: linear-gradient(135deg, rgba(79, 139, 255, 0.1) 0%, rgba(168, 85, 247, 0.1) 100%);
+    }
+    body.theme-ai .profile-avatar,
+    body.theme-ai .user-profile-avatar {
+      background: linear-gradient(135deg, #4F8BFF 0%, #A855F7 100%);
+      color: #ffffff;
+      border: none;
+      box-shadow: 0 0 30px rgba(79, 139, 255, 0.5);
+    }
+    body.theme-ai .profile-name,
+    body.theme-ai .user-profile-name { color: #E8E9F3; }
+    body.theme-ai .profile-level,
+    body.theme-ai .user-profile-level {
+      background: linear-gradient(135deg, #4F8BFF 0%, #A855F7 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    body.theme-ai .tabs { border-bottom: 1px solid rgba(120, 140, 255, 0.15); }
+    body.theme-ai .tab { color: rgba(232, 233, 243, 0.4); }
+    body.theme-ai .tab.active { color: #A8B5FF; text-shadow: 0 0 12px rgba(120, 140, 255, 0.6); }
+    body.theme-ai .tab-underline {
+      background: linear-gradient(90deg, #4F8BFF 0%, #A855F7 100%);
+      border-radius: 4px;
+      height: 3px;
+      box-shadow: 0 0 12px rgba(120, 140, 255, 0.6);
+    }
+    body.theme-ai .comment-section h2 { color: #E8E9F3; }
+    body.theme-ai .comment-content {
+      border: 1px solid rgba(120, 140, 255, 0.15);
+      background: rgba(255, 255, 255, 0.04);
+      border-radius: 14px;
+      color: #E8E9F3;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+    body.theme-ai .comment-avatar {
+      border: none;
+      background: linear-gradient(135deg, #4F8BFF 0%, #A855F7 100%);
+      color: #ffffff;
+    }
+    body.theme-ai .comment-meta { color: rgba(232, 233, 243, 0.7); }
+    body.theme-ai .comment-input-bar {
+      border-top: 1px solid rgba(120, 140, 255, 0.15);
+      background: rgba(10, 14, 39, 0.85);
+    }
+    body.theme-ai .comment-input-bar input {
+      border: 1px solid rgba(120, 140, 255, 0.2);
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 14px;
+      color: #E8E9F3;
+      padding: 11px 16px;
+    }
+    body.theme-ai .comment-input-bar input::placeholder { color: rgba(232, 233, 243, 0.4); }
+    body.theme-ai .comment-send {
+      background: linear-gradient(135deg, #4F8BFF 0%, #A855F7 100%);
+      color: #ffffff;
+      border: none;
+      box-shadow: 0 4px 16px rgba(79, 139, 255, 0.4);
+    }
+    body.theme-ai .auth-box {
+      border: 1px solid rgba(120, 140, 255, 0.2);
+      background: rgba(255, 255, 255, 0.04);
+      border-radius: 22px;
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      box-shadow: 0 8px 40px rgba(0, 0, 0, 0.3);
+    }
+    body.theme-ai .auth-field input {
+      border: 1px solid rgba(120, 140, 255, 0.2);
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 12px;
+      color: #E8E9F3;
+      padding: 12px 14px;
+    }
+    body.theme-ai .auth-field input::placeholder { color: rgba(232, 233, 243, 0.35); }
+    body.theme-ai .auth-field label { color: #A8B5FF; }
+    body.theme-ai .auth-title {
+      background: linear-gradient(135deg, #4F8BFF 0%, #A855F7 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    body.theme-ai .settings-group {
+      border: 1px solid rgba(120, 140, 255, 0.18);
+      background: rgba(255, 255, 255, 0.04);
+      border-radius: 18px;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      padding: 20px;
+    }
+    body.theme-ai .settings-group h3 { color: #E8E9F3; }
+    body.theme-ai .settings-option {
+      border: 1px solid rgba(120, 140, 255, 0.2);
+      background: rgba(255, 255, 255, 0.03);
+      border-radius: 12px;
+      color: #E8E9F3;
+      font-weight: 500;
+    }
+    body.theme-ai .settings-option.selected {
+      background: linear-gradient(135deg, #4F8BFF 0%, #A855F7 100%);
+      color: #ffffff;
+      border-color: transparent;
+      box-shadow: 0 4px 20px rgba(79, 139, 255, 0.4);
+    }
+    body.theme-ai .settings-desc { color: rgba(232, 233, 243, 0.5); }
+    body.theme-ai .material-toggle-label { color: #E8E9F3; }
+    body.theme-ai .switch .slider { background: rgba(255, 255, 255, 0.15); }
+    body.theme-ai .switch input:checked + .slider { background: linear-gradient(135deg, #4F8BFF 0%, #A855F7 100%); }
+    body.theme-ai .detail-logo {
+      border-bottom: 1px solid rgba(120, 140, 255, 0.15);
+      background: linear-gradient(135deg, rgba(79, 139, 255, 0.08) 0%, rgba(168, 85, 247, 0.08) 100%);
+    }
+    body.theme-ai .detail-info,
+    body.theme-ai .detail-author { border-bottom: 1px solid rgba(120, 140, 255, 0.15); }
+    body.theme-ai .detail-left h3 { color: #E8E9F3; }
+    body.theme-ai .detail-left p { color: rgba(232, 233, 243, 0.7); }
+    body.theme-ai .detail-right { color: rgba(232, 233, 243, 0.7); }
+    body.theme-ai .detail-author-avatar {
+      border: none;
+      background: linear-gradient(135deg, #4F8BFF 0%, #A855F7 100%);
+      color: #fff;
+    }
+    body.theme-ai .detail-author-name { color: #A8B5FF; }
+    body.theme-ai .intro-section { border-bottom: 1px solid rgba(120, 140, 255, 0.15); }
+    body.theme-ai .intro-section h2 { color: #E8E9F3; }
+    body.theme-ai .intro-content { color: rgba(232, 233, 243, 0.85); }
+    body.theme-ai .back-bar {
+      border-bottom: 1px solid rgba(120, 140, 255, 0.15);
+      background: rgba(10, 14, 39, 0.85);
+    }
+    body.theme-ai .back-btn { color: #A8B5FF; }
+    body.theme-ai .back-title { color: #E8E9F3; }
+    body.theme-ai .publish-box {
+      border: 1px solid rgba(120, 140, 255, 0.18);
+      background: rgba(255, 255, 255, 0.04);
+      border-radius: 16px;
+    }
+    body.theme-ai .publish-option {
+      border: 1px solid rgba(120, 140, 255, 0.2);
+      background: rgba(255, 255, 255, 0.03);
+      border-radius: 12px;
+      color: #E8E9F3;
+      font-weight: 500;
+    }
+    body.theme-ai .publish-option.selected {
+      background: linear-gradient(135deg, #4F8BFF 0%, #A855F7 100%);
+      color: #ffffff;
+      border-color: transparent;
+      box-shadow: 0 4px 20px rgba(79, 139, 255, 0.4);
+    }
+    body.theme-ai .publish-hint { color: rgba(232, 233, 243, 0.6); }
+    body.theme-ai .publish-field input,
+    body.theme-ai .publish-field textarea,
+    body.theme-ai .publish-code-input {
+      border: 1px solid rgba(120, 140, 255, 0.2);
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 12px;
+      color: #E8E9F3;
+      padding: 12px 14px;
+    }
+    body.theme-ai .publish-field input::placeholder,
+    body.theme-ai .publish-field textarea::placeholder { color: rgba(232, 233, 243, 0.35); }
+    body.theme-ai .publish-field > label { color: #A8B5FF; }
+    body.theme-ai .publish-title { color: #E8E9F3; }
+    body.theme-ai .toast {
+      background: linear-gradient(135deg, #4F8BFF 0%, #A855F7 100%);
+      border-radius: 14px;
+      box-shadow: 0 8px 32px rgba(79, 139, 255, 0.5);
+    }
+    body.theme-ai .empty-tip { color: rgba(232, 233, 243, 0.5); }
+    body.theme-ai .admin-user-item {
+      border: 1px solid rgba(120, 140, 255, 0.18);
+      background: rgba(255, 255, 255, 0.04);
+      border-radius: 14px;
+    }
+    body.theme-ai .admin-user-item h4 { color: #E8E9F3; }
+    body.theme-ai .admin-user-item p { color: rgba(232, 233, 243, 0.6); }
+    body.theme-ai .admin-btn {
+      border: none;
+      background: rgba(255, 59, 48, 0.15);
+      color: #FF6B6B;
+      border-radius: 10px;
+      padding: 5px 12px;
+    }
+    body.theme-ai .admin-btn:active { background: #FF3B30; color: #ffffff; }
+    body.theme-ai .admin-panel-btn {
+      border: none;
+      background: rgba(255, 59, 48, 0.15);
+      color: #FF6B6B;
+      border-radius: 10px;
+    }
+    body.theme-ai .admin-role-tag.root { background: #FF3B30; }
+    body.theme-ai .admin-role-tag.super { background: #4F8BFF; }
+
+    /* AI + 材质 */
+    body.material-on.theme-ai .navbar {
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      background: rgba(10, 14, 39, 0.7);
+    }
+    body.material-on.theme-ai .comment-input-bar {
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      background: rgba(10, 14, 39, 0.8);
+    }
+    body.material-on.theme-ai .back-bar {
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      background: rgba(10, 14, 39, 0.8);
+    }
   </style>
 </head>
 <body>
@@ -1104,6 +1006,7 @@ body.material-on.theme-ai .back-bar {
     <div class="nav-avatar" id="navAvatar" onclick="onAvatarClick()">?</div>
   </header>
 
+  <!-- 市场 -->
   <div class="page active" id="pageMarket">
     <div class="market-header">
       <h1>Rom市场</h1>
@@ -1119,6 +1022,7 @@ body.material-on.theme-ai .back-bar {
     <div class="market-list" id="marketList"></div>
   </div>
 
+  <!-- 系统详情 -->
   <div class="page" id="pageDetail">
     <div class="back-bar">
       <button class="back-btn" onclick="goMarket()">←</button>
@@ -1140,6 +1044,12 @@ body.material-on.theme-ai .back-bar {
         <div>浏览人数:<span id="detailViews">0</span></div>
         <div>收藏人数:<span id="detailFavs">0</span></div>
       </div>
+    </div>
+
+    <!-- 创建人 -->
+    <div class="detail-author" id="detailAuthor" onclick="onAuthorClick()">
+      <div class="detail-author-avatar" id="detailAuthorAvatar">?</div>
+      <div class="detail-author-name" id="detailAuthorName">-</div>
     </div>
 
     <div id="romAdminBar" style="display:none; padding: 12px 20px; border-bottom: 2px solid #111111;">
@@ -1166,6 +1076,22 @@ body.material-on.theme-ai .back-bar {
     </div>
   </div>
 
+  <!-- 用户公开主页 -->
+  <div class="page" id="pageUserProfile">
+    <div class="back-bar">
+      <button class="back-btn" onclick="goBack()">←</button>
+      <div class="back-title">用户主页</div>
+    </div>
+    <div class="user-profile-header">
+      <div class="user-profile-avatar" id="userProfileAvatar">?</div>
+      <div class="user-profile-name" id="userProfileName">-</div>
+      <div class="user-profile-level" id="userProfileLevel">Lv.0</div>
+    </div>
+    <div class="user-profile-section-title">TA 发布的系统</div>
+    <div class="user-profile-roms" id="userProfileRoms"></div>
+  </div>
+
+  <!-- 登录 -->
   <div class="page" id="pageAuth">
     <div class="auth-container">
       <div class="auth-title">注册@登录</div>
@@ -1186,6 +1112,7 @@ body.material-on.theme-ai .back-bar {
     </div>
   </div>
 
+  <!-- 个人中心 -->
   <div class="page" id="pageProfile">
     <div class="profile-header">
       <div class="profile-avatar" id="profileAvatar">?</div>
@@ -1222,13 +1149,13 @@ body.material-on.theme-ai .back-bar {
         </div>
         <div class="settings-group">
           <h3>主题风格</h3>
-<div class="settings-options">
-  <div class="settings-option" id="theme-yl" onclick="setTheme('yl')">YL Design</div>
-  <div class="settings-option" id="theme-md3" onclick="setTheme('md3')">Material 3</div>
-  <div class="settings-option" id="theme-ios" onclick="setTheme('ios')">iOS</div>
-  <div class="settings-option" id="theme-ai" onclick="setTheme('ai')">AI</div>
-</div>
-<div class="settings-desc">YL：黑白线条；MD3：谷歌；iOS：苹果；AI：蓝紫渐变</div>
+          <div class="settings-options">
+            <div class="settings-option" id="theme-yl" onclick="setTheme('yl')">YL Design</div>
+            <div class="settings-option" id="theme-md3" onclick="setTheme('md3')">Material 3</div>
+            <div class="settings-option" id="theme-ios" onclick="setTheme('ios')">iOS</div>
+            <div class="settings-option" id="theme-ai" onclick="setTheme('ai')">AI</div>
+          </div>
+          <div class="settings-desc">YL：黑白线条；MD3：谷歌；iOS：苹果；AI：蓝紫渐变</div>
         </div>
         <div class="settings-group">
           <h3>字体大小</h3>
@@ -1260,6 +1187,7 @@ body.material-on.theme-ai .back-bar {
     </div>
   </div>
 
+  <!-- 发布 -->
   <div class="page" id="pagePublish">
     <div class="publish-container">
       <div class="publish-title">发布Roms</div>
@@ -1302,10 +1230,12 @@ body.material-on.theme-ai .back-bar {
 
     let currentUser = null;
     let currentRom = null;
+    let currentUserProfile = null;  // 当前查看的公开主页用户
     let currentTab = 'published';
     let marketData = [];
     let publishCondition = 'free';
     let currentLogoData = '';
+    let previousPage = 'pageMarket';  // 用于返回
 
     // ============================================================
     // 高级材质开关
@@ -1329,7 +1259,6 @@ body.material-on.theme-ai .back-bar {
     // ============================================================
     function applySettings() {
       let theme = localStorage.getItem('yl_theme') || 'yl';
-      // 兼容旧数据：miui / hyperos → ios
       if (theme === 'miui' || theme === 'hyperos') {
         theme = 'ios';
         localStorage.setItem('yl_theme', 'ios');
@@ -1339,7 +1268,7 @@ body.material-on.theme-ai .back-bar {
 
       document.body.classList.toggle('theme-md3', theme === 'md3');
       document.body.classList.toggle('theme-ios', theme === 'ios');
-document.body.classList.toggle('theme-ai', theme === 'ai');
+      document.body.classList.toggle('theme-ai', theme === 'ai');
 
       const scaleMap = { s: 0.85, m: 1, l: 1.15, xl: 1.3 };
       document.documentElement.style.setProperty('--font-scale', scaleMap[fs] || 1);
@@ -1357,7 +1286,7 @@ document.body.classList.toggle('theme-ai', theme === 'ai');
         document.getElementById('theme-yl')?.classList.toggle('selected', theme === 'yl');
         document.getElementById('theme-md3')?.classList.toggle('selected', theme === 'md3');
         document.getElementById('theme-ios')?.classList.toggle('selected', theme === 'ios');
-document.getElementById('theme-ai')?.classList.toggle('selected', theme === 'ai');
+        document.getElementById('theme-ai')?.classList.toggle('selected', theme === 'ai');
         document.getElementById('fs-s')?.classList.toggle('selected', fs === 's');
         document.getElementById('fs-m')?.classList.toggle('selected', fs === 'm');
         document.getElementById('fs-l')?.classList.toggle('selected', fs === 'l');
@@ -1396,12 +1325,13 @@ document.getElementById('theme-ai')?.classList.toggle('selected', theme === 'ai'
     const pages = {
       pageMarket: 'Rom市场',
       pageDetail: '系统详情',
+      pageUserProfile: '用户主页',
       pageAuth: '注册@登录',
       pageProfile: '个人中心',
       pagePublish: '发布系统'
     };
 
-    function switchPage(id) {
+    function switchPage(id, pushUrl) {
       document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
       const t = document.getElementById(id);
       if (t) {
@@ -1431,10 +1361,37 @@ document.getElementById('theme-ai')?.classList.toggle('selected', theme === 'ai'
       forceGoMarket();
     }
 
-    function onAvatarClick() {
-      if (currentUser) switchPage('pageProfile');
-      else switchPage('pageAuth');
+    function goBack() {
+      // 从用户主页返回时，回市场（或上一页）
+      history.pushState({}, '', '/');
+      forceGoMarket();
     }
+
+    // 点头像 → 个人中心（/my）
+    function onAvatarClick() {
+      if (currentUser) {
+        history.pushState({}, '', '/my');
+        switchPage('pageProfile');
+      } else {
+        switchPage('pageAuth');
+      }
+    }
+
+    // 点评论区头像 / 创建人 → 用户公开主页
+    function goUserProfile(publicId) {
+      if (!publicId) return;
+      history.pushState({}, '', '/user/' + publicId);
+      openUserProfile(publicId, false);
+    }
+
+    function onAuthorClick() {
+      if (currentRom && currentRom.author_public_id) {
+        goUserProfile(currentRom.author_public_id);
+      } else {
+        showToast('无法获取作者信息');
+      }
+    }
+
     function onPublishClick() {
       if (!currentUser) { showToast('请先登录'); switchPage('pageAuth'); return; }
       if (isBanned()) { showToast('您已被封禁，无法发布'); return; }
@@ -1457,7 +1414,11 @@ document.getElementById('theme-ai')?.classList.toggle('selected', theme === 'ai'
     }
     function updateAvatarUI() {
       const av = document.getElementById('navAvatar');
-      av.textContent = currentUser ? currentUser.username.charAt(0).toUpperCase() : '?';
+      if (currentUser && currentUser.avatar) {
+        av.innerHTML = `<img src="${currentUser.avatar}" alt="">`;
+      } else {
+        av.innerHTML = currentUser ? currentUser.username.charAt(0).toUpperCase() : '?';
+      }
     }
 
     const BOOK_SVG = `
@@ -1473,6 +1434,11 @@ document.getElementById('theme-ai')?.classList.toggle('selected', theme === 'ai'
     function renderLogo(rom) {
       if (rom && rom.logo) return `<img src="${rom.logo}" alt="">`;
       return BOOK_SVG;
+    }
+
+    function renderAvatar(username, avatar, size) {
+      if (avatar) return `<img src="${avatar}" alt="">`;
+      return escapeHtml((username || '?').charAt(0).toUpperCase());
     }
 
     // ============================================================
@@ -1570,6 +1536,27 @@ document.getElementById('theme-ai')?.classList.toggle('selected', theme === 'ai'
         document.getElementById('detailViews').textContent = rom.views || 0;
         document.getElementById('detailFavs').textContent = rom.favorites_count || 0;
 
+        // 创建人
+        const authorAvatar = document.getElementById('detailAuthorAvatar');
+        const authorName = document.getElementById('detailAuthorName');
+        if (rom.author) {
+          authorName.textContent = rom.author;
+          // 找一下作者的 public_id 和头像（从市场数据里找）
+          const authorInfo = marketData.find(r => r.author === rom.author);
+          if (authorInfo && authorInfo.author_public_id) {
+            rom.author_public_id = authorInfo.author_public_id;
+            rom.author_avatar = authorInfo.author_avatar || '';
+          } else {
+            rom.author_public_id = '';
+          }
+          authorAvatar.innerHTML = rom.author_avatar
+            ? `<img src="${rom.author_avatar}" alt="">`
+            : escapeHtml(rom.author.charAt(0).toUpperCase());
+        } else {
+          authorName.textContent = '未知';
+          authorAvatar.textContent = '?';
+        }
+
         const introSection = document.getElementById('introSection');
         const introContent = document.getElementById('introContent');
         if (rom.intro && rom.intro.trim()) {
@@ -1603,6 +1590,59 @@ document.getElementById('theme-ai')?.classList.toggle('selected', theme === 'ai'
         showToast('加载失败');
         history.pushState({}, '', '/');
         forceGoMarket();
+      }
+    }
+
+    // ============================================================
+    // 用户公开主页
+    // ============================================================
+    async function openUserProfile(publicId, updateUrl = true) {
+      try {
+        const res = await fetch(API_BASE + '/api/user/profile/' + publicId);
+        const data = await res.json();
+        if (!data || !data.success) {
+          showToast('用户不存在');
+          goMarket();
+          return;
+        }
+        currentUserProfile = data.user;
+
+        // 渲染头部
+        const avatarEl = document.getElementById('userProfileAvatar');
+        if (data.user.avatar) {
+          avatarEl.innerHTML = `<img src="${data.user.avatar}" alt="">`;
+        } else {
+          avatarEl.textContent = data.user.username.charAt(0).toUpperCase();
+        }
+        document.getElementById('userProfileName').textContent = data.user.username;
+        document.getElementById('userProfileLevel').textContent = 'Lv.' + (data.user.level || 0);
+
+        // 渲染 ROM 列表
+        const romList = document.getElementById('userProfileRoms');
+        if (!data.roms || data.roms.length === 0) {
+          romList.innerHTML = '<div class="empty-tip">TA 还没有发布过系统</div>';
+        } else {
+          romList.innerHTML = data.roms.map(rom => `
+            <div class="rom-card" onclick="openDetailBySlug('${rom.slug}')">
+              <div class="rom-logo-placeholder">${renderLogo(rom)}</div>
+              <div class="rom-bottom">
+                <div>
+                  <h3>${escapeHtml(rom.name)}</h3>
+                  <p>${escapeHtml(rom.developer || '')}</p>
+                </div>
+              </div>
+            </div>
+          `).join('');
+        }
+
+        switchPage('pageUserProfile');
+
+        if (updateUrl) {
+          history.pushState({ publicId }, '', '/user/' + publicId);
+        }
+      } catch (e) {
+        showToast('加载失败');
+        goMarket();
       }
     }
 
@@ -1668,10 +1708,13 @@ document.getElementById('theme-ai')?.classList.toggle('selected', theme === 'ai'
         }
         list.innerHTML = data.map(c => `
           <div class="comment-item">
-            <div class="comment-avatar">${escapeHtml((c.username || '?').charAt(0))}</div>
+            <div class="comment-avatar" onclick="goUserProfile('${c.user_public_id || ''}')">
+              ${c.user_avatar ? `<img src="${c.user_avatar}" alt="">` : escapeHtml((c.username || '?').charAt(0).toUpperCase())}
+            </div>
             <div class="comment-body">
               <div class="comment-meta">
-                ${escapeHtml(c.username)} · ${formatTime(c.created_at)}
+                <span class="comment-meta-name" onclick="goUserProfile('${c.user_public_id || ''}')">${escapeHtml(c.username)}</span>
+                · ${formatTime(c.created_at)}
                 ${isAdmin() ? `<button class="admin-btn" onclick="adminDeleteComment(${c.id})">删除</button>` : ''}
               </div>
               <div class="comment-content">${escapeHtml(c.content)}</div>
@@ -1740,7 +1783,8 @@ document.getElementById('theme-ai')?.classList.toggle('selected', theme === 'ai'
           } else {
             showToast('登录成功');
           }
-          switchPage('pageMarket');
+          history.pushState({}, '', '/');
+          forceGoMarket();
         } else { showToast(data.message || '登录失败'); }
       } catch (e) { showToast('网络错误'); }
     }
@@ -1826,15 +1870,22 @@ document.getElementById('theme-ai')?.classList.toggle('selected', theme === 'ai'
       saveUser();
       updateAvatarUI();
       updateAdminUI();
+      history.pushState({}, '', '/');
       forceGoMarket();
       showToast('已退出登录');
     }
 
     async function loadProfile() {
-      if (!currentUser) { switchPage('pageAuth'); return; }
+      if (!currentUser) { history.pushState({}, '', '/'); switchPage('pageAuth'); return; }
       const name = currentUser.username;
       document.getElementById('profileName').textContent = name;
-      document.getElementById('profileAvatar').textContent = name.charAt(0).toUpperCase();
+      // 头像
+      const profileAvatarEl = document.getElementById('profileAvatar');
+      if (currentUser.avatar) {
+        profileAvatarEl.innerHTML = `<img src="${currentUser.avatar}" alt="">`;
+      } else {
+        profileAvatarEl.textContent = name.charAt(0).toUpperCase();
+      }
       try {
         const res = await fetch(API_BASE + '/api/user/level?username=' + encodeURIComponent(name));
         const data = await res.json();
@@ -1930,13 +1981,14 @@ document.getElementById('theme-ai')?.classList.toggle('selected', theme === 'ai'
           currentLogoData = '';
           document.getElementById('logoStatus').textContent = '未选择（可选）';
           document.getElementById('logoPreview').innerHTML = '';
+          history.pushState({}, '', '/my');
           switchPage('pageProfile');
         } else { showToast(data.message || '发布失败'); }
       } catch (e) { showToast('网络错误'); }
     }
 
     // ============================================================
-    // 管理员功能
+    // 管理员
     // ============================================================
     function isAdmin() { return currentUser && (currentUser.role === 'super' || currentUser.role === 'root'); }
     function isRoot() { return currentUser && currentUser.role === 'root'; }
@@ -2074,7 +2126,7 @@ document.getElementById('theme-ai')?.classList.toggle('selected', theme === 'ai'
     }
 
     // ============================================================
-    // 初始化
+    // 路由初始化
     // ============================================================
     loadUser();
     updateAvatarUI();
@@ -2088,16 +2140,40 @@ document.getElementById('theme-ai')?.classList.toggle('selected', theme === 'ai'
 
     (function initRoute() {
       const path = window.location.pathname;
-      const match = path.match(/^\/system\/(\d+)$/);
-      if (match) openDetailBySlug(match[1], false);
-      else switchPage('pageMarket');
+      // /system/xxx
+      const sysMatch = path.match(/^\/system\/(\d+)$/);
+      if (sysMatch) {
+        openDetailBySlug(sysMatch[1], false);
+        return;
+      }
+      // /user/xxx
+      const userMatch = path.match(/^\/user\/(\d+)$/);
+      if (userMatch) {
+        openUserProfile(userMatch[1], false);
+        return;
+      }
+      // /my
+      if (path === '/my') {
+        if (currentUser) switchPage('pageProfile');
+        else switchPage('pageAuth');
+        return;
+      }
+      // 默认进市场
+      switchPage('pageMarket');
     })();
 
     window.addEventListener('popstate', () => {
       const path = window.location.pathname;
-      const match = path.match(/^\/system\/(\d+)$/);
-      if (match) openDetailBySlug(match[1], false);
-      else forceGoMarket();
+      const sysMatch = path.match(/^\/system\/(\d+)$/);
+      if (sysMatch) { openDetailBySlug(sysMatch[1], false); return; }
+      const userMatch = path.match(/^\/user\/(\d+)$/);
+      if (userMatch) { openUserProfile(userMatch[1], false); return; }
+      if (path === '/my') {
+        if (currentUser) switchPage('pageProfile');
+        else switchPage('pageAuth');
+        return;
+      }
+      forceGoMarket();
     });
   </script>
 </body>
