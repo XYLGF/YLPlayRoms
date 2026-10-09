@@ -489,6 +489,21 @@
       border: 2px solid #ddd;
     }
 
+    /* 版本号 */
+    .settings-version {
+      text-align: center;
+      padding: 24px 0 40px;
+      font-size: calc(13px * var(--font-scale));
+      color: #999;
+      cursor: pointer;
+      letter-spacing: 1px;
+      transition: color 0.2s;
+      user-select: none;
+    }
+    .settings-version:active {
+      color: #666;
+    }
+
     .material-toggle {
       display: flex;
       align-items: center;
@@ -533,7 +548,7 @@
       background: linear-gradient(135deg, #4F8BFF 0%, #A855F7 100%);
     }
 
-    /* ===== 用户主页（公开） ===== */
+    /* ===== 用户主页 ===== */
     .user-profile-header {
       display: flex; flex-direction: column; align-items: center;
       padding: 40px 20px 28px;
@@ -557,6 +572,133 @@
     .user-profile-roms {
       padding: 0 20px 40px;
       display: flex; flex-direction: column; gap: 20px;
+    }
+
+    /* ===== macOS 关于弹窗 ===== */
+    .mac-modal-mask {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.35);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 99999;
+      padding: 20px;
+    }
+    .mac-modal-mask.show {
+      display: flex;
+    }
+    @keyframes macPopIn {
+      from {
+        transform: scale(0.85);
+        opacity: 0;
+      }
+      to {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+    .mac-modal {
+      width: 100%;
+      max-width: 420px;
+      background: #ececec;
+      border-radius: 12px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+      overflow: hidden;
+      animation: macPopIn 0.22s cubic-bezier(0.22, 0.9, 0.34, 1);
+    }
+    .mac-modal-titlebar {
+      height: 38px;
+      background: #e4e4e4;
+      display: flex;
+      align-items: center;
+      padding: 0 14px;
+      border-bottom: 1px solid #d0d0d0;
+      position: relative;
+    }
+    .mac-modal-lights {
+      display: flex;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+    .mac-light {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      cursor: pointer;
+      transition: opacity 0.15s;
+    }
+    .mac-light:active { opacity: 0.7; }
+    .mac-light.red { background: #FF5F56; border: 0.5px solid #E0443E; }
+    .mac-light.yellow { background: #FFBD2E; border: 0.5px solid #DEA123; }
+    .mac-light.green { background: #27C93F; border: 0.5px solid #1AAB29; }
+    .mac-modal-title {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 13px;
+      font-weight: 500;
+      color: #333;
+      letter-spacing: 0.3px;
+    }
+    .mac-modal-body {
+      padding: 32px 28px 28px;
+      background: #f7f7f7;
+      min-height: 180px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+    .mac-modal-text {
+      font-size: 15px;
+      line-height: 1.8;
+      color: #222;
+      letter-spacing: 0.3px;
+      word-break: break-word;
+      animation: macTextFade 0.5s ease-out;
+    }
+    @keyframes macTextFade {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .mac-modal-link {
+      color: #007AFF;
+      cursor: pointer;
+      text-decoration: underline;
+      font-weight: 500;
+    }
+    .mac-modal-link:active {
+      color: #0055CC;
+    }
+    .mac-creators {
+      text-align: left;
+      width: 100%;
+      animation: macTextFade 0.5s ease-out;
+    }
+    .mac-creators-title {
+      font-size: 18px;
+      font-weight: 600;
+      text-align: center;
+      margin-bottom: 20px;
+      color: #222;
+      letter-spacing: 1px;
+    }
+    .mac-creator-item {
+      padding: 10px 0;
+      font-size: 14px;
+      line-height: 1.7;
+      color: #333;
+      border-bottom: 1px solid #e0e0e0;
+    }
+    .mac-creator-item:last-child {
+      border-bottom: none;
+    }
+    .mac-creator-item strong {
+      color: #007AFF;
+      font-weight: 600;
     }
 
     /* ===== 主题：MD3 ===== */
@@ -686,7 +828,6 @@
     body.theme-ios .admin-role-tag.root { background: #FF3B30; }
     body.theme-ios .admin-role-tag.super { background: #007AFF; }
 
-    /* iOS + 材质 */
     body.material-on.theme-ios .navbar {
       backdrop-filter: blur(20px) saturate(180%);
       -webkit-backdrop-filter: blur(20px) saturate(180%);
@@ -981,7 +1122,6 @@
     body.theme-ai .admin-role-tag.root { background: #FF3B30; }
     body.theme-ai .admin-role-tag.super { background: #4F8BFF; }
 
-    /* AI + 材质 */
     body.material-on.theme-ai .navbar {
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
@@ -997,150 +1137,7 @@
       -webkit-backdrop-filter: blur(20px);
       background: rgba(10, 14, 39, 0.8);
     }
-     /* ===== 设置页底部版本号 ===== */
-.settings-version {
-  text-align: center;
-  padding: 24px 0 40px;
-  font-size: calc(13px * var(--font-scale));
-  color: #999;
-  cursor: pointer;
-  letter-spacing: 1px;
-  transition: color 0.2s;
-  user-select: none;
-}
-.settings-version:active {
-  color: #666;
-}
-
-/* ===== macOS 风格弹窗 ===== */
-.mac-modal-mask {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.35);
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
-  display: none;
-  align-items: center;
-  justify-content: center;
-  z-index: 99999;
-  padding: 20px;
-}
-.mac-modal-mask.show {
-  display: flex;
-}
-@keyframes macPopIn {
-  from {
-    transform: scale(0.85);
-    opacity: 0;
-  }
-  to {
-    transform: scale(1);
-    opacity: 1;
-  }
-}
-.mac-modal {
-  width: 100%;
-  max-width: 420px;
-  background: #ececec;
-  border-radius: 12px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
-  overflow: hidden;
-  animation: macPopIn 0.22s cubic-bezier(0.22, 0.9, 0.34, 1);
-}
-.mac-modal-titlebar {
-  height: 38px;
-  background: #e4e4e4;
-  display: flex;
-  align-items: center;
-  padding: 0 14px;
-  border-bottom: 1px solid #d0d0d0;
-  position: relative;
-}
-.mac-modal-lights {
-  display: flex;
-  gap: 8px;
-  flex-shrink: 0;
-}
-.mac-light {
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  cursor: pointer;
-  transition: opacity 0.15s;
-}
-.mac-light:active { opacity: 0.7; }
-.mac-light.red { background: #FF5F56; border: 0.5px solid #E0443E; }
-.mac-light.yellow { background: #FFBD2E; border: 0.5px solid #DEA123; }
-.mac-light.green { background: #27C93F; border: 0.5px solid #1AAB29; }
-.mac-modal-title {
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: 13px;
-  font-weight: 500;
-  color: #333;
-  letter-spacing: 0.3px;
-}
-.mac-modal-body {
-  padding: 32px 28px 28px;
-  background: #f7f7f7;
-  min-height: 180px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-}
-.mac-modal-text {
-  font-size: 15px;
-  line-height: 1.8;
-  color: #222;
-  letter-spacing: 0.3px;
-  word-break: break-word;
-  animation: macTextFade 0.5s ease-out;
-}
-@keyframes macTextFade {
-  from { opacity: 0; transform: translateY(8px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-.mac-modal-link {
-  color: #007AFF;
-  cursor: pointer;
-  text-decoration: underline;
-  font-weight: 500;
-}
-.mac-modal-link:active {
-  color: #0055CC;
-}
-
-/* 共创者名单列表 */
-.mac-creators {
-  text-align: left;
-  width: 100%;
-  animation: macTextFade 0.5s ease-out;
-}
-.mac-creators-title {
-  font-size: 18px;
-  font-weight: 600;
-  text-align: center;
-  margin-bottom: 20px;
-  color: #222;
-  letter-spacing: 1px;
-}
-.mac-creator-item {
-  padding: 10px 0;
-  font-size: 14px;
-  line-height: 1.7;
-  color: #333;
-  border-bottom: 1px solid #e0e0e0;
-}
-.mac-creator-item:last-child {
-  border-bottom: none;
-}
-.mac-creator-item strong {
-  color: #007AFF;
-  font-weight: 600;
-}
-</style>
+  </style>
 </head>
 <body>
 
@@ -1319,6 +1316,7 @@
             <div class="settings-option" id="color-purple" onclick="setTextColor('purple')"><span class="color-dot" style="background:#8800cc;"></span>紫</div>
           </div>
         </div>
+        <div class="settings-version" onclick="openAbout()">romstore v1.0.5</div>
       </div>
     </div>
     <div class="tab-content" id="tabAdmin">
@@ -1368,33 +1366,34 @@
   </div>
 
   <div class="toast" id="toast"></div>
+
   <!-- macOS 风格"关于"弹窗 -->
-<div class="mac-modal-mask" id="aboutModal" onclick="closeAboutOnMask(event)">
-  <div class="mac-modal" onclick="event.stopPropagation()">
-    <div class="mac-modal-titlebar">
-      <div class="mac-modal-lights">
-        <div class="mac-light red" onclick="closeAbout()"></div>
-        <div class="mac-light yellow" onclick="closeAbout()"></div>
-        <div class="mac-light green" onclick="closeAbout()"></div>
+  <div class="mac-modal-mask" id="aboutModal" onclick="closeAboutOnMask(event)">
+    <div class="mac-modal" onclick="event.stopPropagation()">
+      <div class="mac-modal-titlebar">
+        <div class="mac-modal-lights">
+          <div class="mac-light red" onclick="closeAbout()"></div>
+          <div class="mac-light yellow" onclick="closeAbout()"></div>
+          <div class="mac-light green" onclick="closeAbout()"></div>
+        </div>
+        <div class="mac-modal-title" id="aboutModalTitle">关于</div>
       </div>
-      <div class="mac-modal-title" id="aboutModalTitle">关于</div>
-    </div>
-    <div class="mac-modal-body" id="aboutModalBody">
-      <!-- 内容由 JS 注入 -->
+      <div class="mac-modal-body" id="aboutModalBody">
+        <!-- 内容由 JS 注入 -->
+      </div>
     </div>
   </div>
-</div>
   <script>
     const API_BASE = 'https://roms.xylplay.top';
 
     let currentUser = null;
     let currentRom = null;
-    let currentUserProfile = null;  // 当前查看的公开主页用户
+    let currentUserProfile = null;
     let currentTab = 'published';
     let marketData = [];
     let publishCondition = 'free';
     let currentLogoData = '';
-    let previousPage = 'pageMarket';  // 用于返回
+    let previousPage = 'pageMarket';
 
     // ============================================================
     // 高级材质开关
@@ -1521,12 +1520,10 @@
     }
 
     function goBack() {
-      // 从用户主页返回时，回市场（或上一页）
       history.pushState({}, '', '/');
       forceGoMarket();
     }
 
-    // 点头像 → 个人中心（/my）
     function onAvatarClick() {
       if (currentUser) {
         history.pushState({}, '', '/my');
@@ -1536,7 +1533,6 @@
       }
     }
 
-    // 点评论区头像 / 创建人 → 用户公开主页
     function goUserProfile(publicId) {
       if (!publicId) return;
       history.pushState({}, '', '/user/' + publicId);
@@ -1595,7 +1591,7 @@
       return BOOK_SVG;
     }
 
-    function renderAvatar(username, avatar, size) {
+    function renderAvatar(username, avatar) {
       if (avatar) return `<img src="${avatar}" alt="">`;
       return escapeHtml((username || '?').charAt(0).toUpperCase());
     }
@@ -1695,22 +1691,18 @@
         document.getElementById('detailViews').textContent = rom.views || 0;
         document.getElementById('detailFavs').textContent = rom.favorites_count || 0;
 
-        // 创建人
         const authorAvatar = document.getElementById('detailAuthorAvatar');
         const authorName = document.getElementById('detailAuthorName');
         if (rom.author) {
           authorName.textContent = rom.author;
-          // 找一下作者的 public_id 和头像（从市场数据里找）
-          const authorInfo = marketData.find(r => r.author === rom.author);
-          if (authorInfo && authorInfo.author_public_id) {
-            rom.author_public_id = authorInfo.author_public_id;
-            rom.author_avatar = authorInfo.author_avatar || '';
-          } else {
-            rom.author_public_id = '';
+          if (!rom.author_public_id) {
+            const authorInfo = marketData.find(r => r.author === rom.author);
+            if (authorInfo) {
+              rom.author_public_id = authorInfo.author_public_id || '';
+              rom.author_avatar = authorInfo.author_avatar || '';
+            }
           }
-          authorAvatar.innerHTML = rom.author_avatar
-            ? `<img src="${rom.author_avatar}" alt="">`
-            : escapeHtml(rom.author.charAt(0).toUpperCase());
+          authorAvatar.innerHTML = renderAvatar(rom.author, rom.author_avatar);
         } else {
           authorName.textContent = '未知';
           authorAvatar.textContent = '?';
@@ -1766,7 +1758,6 @@
         }
         currentUserProfile = data.user;
 
-        // 渲染头部
         const avatarEl = document.getElementById('userProfileAvatar');
         if (data.user.avatar) {
           avatarEl.innerHTML = `<img src="${data.user.avatar}" alt="">`;
@@ -1776,7 +1767,6 @@
         document.getElementById('userProfileName').textContent = data.user.username;
         document.getElementById('userProfileLevel').textContent = 'Lv.' + (data.user.level || 0);
 
-        // 渲染 ROM 列表
         const romList = document.getElementById('userProfileRoms');
         if (!data.roms || data.roms.length === 0) {
           romList.innerHTML = '<div class="empty-tip">TA 还没有发布过系统</div>';
@@ -1868,7 +1858,7 @@
         list.innerHTML = data.map(c => `
           <div class="comment-item">
             <div class="comment-avatar" onclick="goUserProfile('${c.user_public_id || ''}')">
-              ${c.user_avatar ? `<img src="${c.user_avatar}" alt="">` : escapeHtml((c.username || '?').charAt(0).toUpperCase())}
+              ${renderAvatar(c.username, c.user_avatar)}
             </div>
             <div class="comment-body">
               <div class="comment-meta">
@@ -2038,7 +2028,6 @@
       if (!currentUser) { history.pushState({}, '', '/'); switchPage('pageAuth'); return; }
       const name = currentUser.username;
       document.getElementById('profileName').textContent = name;
-      // 头像
       const profileAvatarEl = document.getElementById('profileAvatar');
       if (currentUser.avatar) {
         profileAvatarEl.innerHTML = `<img src="${currentUser.avatar}" alt="">`;
@@ -2284,73 +2273,74 @@
       } catch (e) { showToast('网络错误'); }
     }
 
-// ============================================================
-// 关于弹窗
-// ============================================================
-const aboutMessages = [
-  'Hi',
-  '恭喜你找到了它',
-  '你好，陌生人',
-  '虽然我不知道您是谁，但是你能找到这里已经很细心了',
-  '我利用空闲的时间开发了 YL Play Roms，虽然现在社区并没有很多人入住，但是还是觉得已经够好了'
-];
-let aboutIndex = 0;
-let aboutTimer = null;
+    // ============================================================
+    // 关于弹窗
+    // ============================================================
+    const aboutMessages = [
+      'Hi',
+      '恭喜你找到了它',
+      '你好，陌生人',
+      '虽然我不知道您是谁，但是你能找到这里已经很细心了',
+      '我利用空闲的时间开发了 YL Play Roms，虽然现在社区并没有很多人入住，但是还是觉得已经够好了'
+    ];
+    let aboutIndex = 0;
+    let aboutTimer = null;
 
-function openAbout() {
-  aboutIndex = 0;
-  document.getElementById('aboutModalTitle').textContent = '关于';
-  document.getElementById('aboutModal').classList.add('show');
-  renderAboutMessage();
-  startAboutTimer();
-}
-
-function renderAboutMessage() {
-  const body = document.getElementById('aboutModalBody');
-  if (aboutIndex < aboutMessages.length) {
-    body.innerHTML = `<div class="mac-modal-text">${escapeHtml(aboutMessages[aboutIndex])}</div>`;
-  } else {
-    body.innerHTML = `<div class="mac-modal-text">是否点击 <span class="mac-modal-link" onclick="showCreators()">查看 YL Play Roms 共创者名单</span>？</div>`;
-  }
-}
-
-function startAboutTimer() {
-  if (aboutTimer) clearInterval(aboutTimer);
-  aboutTimer = setInterval(() => {
-    if (aboutIndex < aboutMessages.length) {
-      aboutIndex++;
+    function openAbout() {
+      aboutIndex = 0;
+      document.getElementById('aboutModalTitle').textContent = '关于';
+      document.getElementById('aboutModal').classList.add('show');
       renderAboutMessage();
-      if (aboutIndex >= aboutMessages.length) {
-        clearInterval(aboutTimer);
-        aboutTimer = null;
+      startAboutTimer();
+    }
+
+    function renderAboutMessage() {
+      const body = document.getElementById('aboutModalBody');
+      if (aboutIndex < aboutMessages.length) {
+        body.innerHTML = `<div class="mac-modal-text">${escapeHtml(aboutMessages[aboutIndex])}</div>`;
+      } else {
+        body.innerHTML = `<div class="mac-modal-text">是否点击 <span class="mac-modal-link" onclick="showCreators()">查看 YL Play Roms 共创者名单</span>？</div>`;
       }
     }
-  }, 1800);
-}
 
-function showCreators() {
-  if (aboutTimer) { clearInterval(aboutTimer); aboutTimer = null; }
-  document.getElementById('aboutModalTitle').textContent = '共创者名单';
-  document.getElementById('aboutModalBody').innerHTML = `
-    <div class="mac-creators">
-      <div class="mac-creators-title">共创者名单</div>
-      <div class="mac-creator-item"><strong>1. YL Play Studio</strong>（立项和整个项目的主导者是他）</div>
-      <div class="mac-creator-item"><strong>2. Deepseek</strong>（生成代码的就是这个模型，感谢梁总😍😍😍😍）</div>
-      <div class="mac-creator-item"><strong>3. 安卓修改与反编译交流群的全体群员</strong>（首批测试就是在这里的）</div>
-    </div>
-  `;
-}
+    function startAboutTimer() {
+      if (aboutTimer) clearInterval(aboutTimer);
+      aboutTimer = setInterval(() => {
+        if (aboutIndex < aboutMessages.length) {
+          aboutIndex++;
+          renderAboutMessage();
+          if (aboutIndex >= aboutMessages.length) {
+            clearInterval(aboutTimer);
+            aboutTimer = null;
+          }
+        }
+      }, 1800);
+    }
 
-function closeAbout() {
-  document.getElementById('aboutModal').classList.remove('show');
-  if (aboutTimer) { clearInterval(aboutTimer); aboutTimer = null; }
-}
+    function showCreators() {
+      if (aboutTimer) { clearInterval(aboutTimer); aboutTimer = null; }
+      document.getElementById('aboutModalTitle').textContent = '共创者名单';
+      document.getElementById('aboutModalBody').innerHTML = `
+        <div class="mac-creators">
+          <div class="mac-creators-title">共创者名单</div>
+          <div class="mac-creator-item"><strong>1. YL Play Studio</strong>（立项和整个项目的主导者是他）</div>
+          <div class="mac-creator-item"><strong>2. Deepseek</strong>（生成代码的就是这个模型，感谢梁总😍😍😍😍）</div>
+          <div class="mac-creator-item"><strong>3. 安卓修改与反编译交流群的全体群员</strong>（首批测试就是在这里的）</div>
+        </div>
+      `;
+    }
 
-function closeAboutOnMask(e) {
-  if (e.target.id === 'aboutModal') closeAbout();
-}
+    function closeAbout() {
+      document.getElementById('aboutModal').classList.remove('show');
+      if (aboutTimer) { clearInterval(aboutTimer); aboutTimer = null; }
+    }
+
+    function closeAboutOnMask(e) {
+      if (e.target.id === 'aboutModal') closeAbout();
+    }
+
     // ============================================================
-    // 路由初始化
+    // 初始化 + 路由
     // ============================================================
     loadUser();
     updateAvatarUI();
@@ -2364,25 +2354,21 @@ function closeAboutOnMask(e) {
 
     (function initRoute() {
       const path = window.location.pathname;
-      // /system/xxx
       const sysMatch = path.match(/^\/system\/(\d+)$/);
       if (sysMatch) {
         openDetailBySlug(sysMatch[1], false);
         return;
       }
-      // /user/xxx
       const userMatch = path.match(/^\/user\/(\d+)$/);
       if (userMatch) {
         openUserProfile(userMatch[1], false);
         return;
       }
-      // /my
       if (path === '/my') {
         if (currentUser) switchPage('pageProfile');
         else switchPage('pageAuth');
         return;
       }
-      // 默认进市场
       switchPage('pageMarket');
     })();
 
