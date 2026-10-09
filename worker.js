@@ -106,6 +106,66 @@ function getBanMessage(count) {
 }
 
 // ============================================================
+// 工具：UA 判断是否可疑
+// ============================================================
+function isSuspiciousUA(ua) {
+  if (!ua || ua.length < 20) return 'UA 缺失或过短';
+  const lower = ua.toLowerCase();
+  const badPatterns = [
+    'okhttp', 'python', 'curl', 'wget', 'java/', 'go-http',
+    'headlesschrome', 'phantomjs', 'selenium', 'puppeteer', 'playwright',
+    'memu', 'nox', 'bluestacks', 'ldplayer', 'mumu', '逍遥',
+    'redfinger', 'mobox', '云手机', 'cloudphone',
+    'postman', 'insomnia', 'axios', 'node-fetch', 'requests'
+  ];
+  for (const p of badPatterns) {
+    if (lower.includes(p)) return 'UA 含可疑特征: ' + p;
+  }
+  return null;
+}
+
+// ============================================================
+// 工具：设备信息判断
+// ============================================================
+function checkDeviceInfo(info) {
+  if (!info) return null;
+  if (info.webdriver) return '检测到自动化工具';
+  if (info.hardwareConcurrency && info.hardwareConcurrency <= 1) return '硬件信息异常';
+  if (info.screenWidth && info.screenHeight) {
+    if (info.screenWidth < 200 || info.screenHeight < 200) return '屏幕分辨率异常';
+  }
+  if (!info.language) return '浏览器语言缺失';
+  return null;
+}
+
+// ============================================================
+// 工具：查 IP 信誉（IPQualityScore）
+// ============================================================
+async function checkIPQuality(apiKey, ip, userAgent, userLanguage) {
+  try {
+    const url = `https://www.ipqualityscore.com/api/json/ip/${apiKey}/${ip}?strictness=1&user_agent=${encodeURIComponent(userAgent)}&user_language=${encodeURIComponent(userLanguage || 'zh-CN')}`;
+    const res = await fetch(url);
+    if (!res.ok) {
+      console.error('IPQS 请求失败:', res.status);
+      return null;
+    }
+    const data = await res.json();
+    return {
+      fraudScore: data.fraud_score || 0,
+      isProxy: data.proxy || false,
+      isVPN: data.vpn || false,
+      isTor: data.tor || false,
+      isBot: data.bot_status || false,
+      isRecentAbuse: data.recent_abuse || false,
+      country: data.country_code || ''
+    };
+  } catch (e) {
+    console.error('IPQS 异常:', e.message);
+    return null;
+  }
+}
+
+// ============================================================
 // 主入口
 // ============================================================
 export default {
@@ -122,7 +182,6 @@ export default {
 
     if (method === 'OPTIONS') return new Response(null, { headers: cors });
 
-    // 路由分发
     if (path.startsWith('/api/')) {
       // API 请求
     } else if (path.includes('.')) {
@@ -134,6 +193,105 @@ export default {
     }
 
     try {
+      // ========================================================
+      // 访客：检查状态
+      // ========================================================
+      if (path === '/api/visitor/check' && method === 'POST') {
+        const ip = request.headers.get('CF-Connecting-IP') || 'unknown';
+        const country = request.cf?.country || 'unknown';
+        const ua = request.headers.get('User-Agent') || '';
+
+        const record = await env.DB.prepare(
+          'SELECT * FROM visitor_checks WHERE ip = ?'
+        ).bind(ip).first();
+
+        if (!record) {
+          await env.DB.prepare(
+            'INSERT INTO visitor_checks (ip, status, country, user_agent, created_at) VALUES (?, ?, ?, ?, ?)'
+          ).bind(ip, 'pending', country, ua, Date.now()).run();
+        } else if (record.status === 'passed') {
+          return json({ success: true, status: 'passed' }, 200, cors);
+        } else if (record.status === 'blocked') {
+          return json({ success: true, status: 'blocked', reason: record.block_reason }, 200, cors);
+        }
+        return json({ success: true, status: 'pending' }, 200, cors);
+      }
+
+      // ========================================================
+      // 访客：验证
+      // ========================================================
+      if (path === '/api/visitor/verify' && method === 'POST') {
+        const ip = request.headers.get('CF-Connecting-IP') || 'unknown';
+        const country = request.cf?.country || 'unknown';
+        const ua = request.headers.get('User-Agent') || '';
+        const body = await request.json().catch(() => ({}));
+        const deviceInfo = body.deviceInfo || null;
+
+        const uaReason = isSuspiciousUA(ua);
+        if (uaReason) {
+          await env.DB.prepare(
+            'UPDATE visitor_checks SET status = ?, block_reason = ? WHERE ip = ?'
+          ).bind('blocked', uaReason, ip).run();
+          return json({ success: true, status: 'blocked', reason: uaReason }, 200, cors);
+        }
+
+        const deviceReason = checkDeviceInfo(deviceInfo);
+        if (deviceReason) {
+          await env.DB.prepare(
+            'UPDATE visitor_checks SET status = ?, block_reason = ?, device_info = ? WHERE ip = ?'
+          ).bind('blocked', deviceReason, JSON.stringify(deviceInfo || {}), ip).run();
+          return json({ success: true, status: 'blocked', reason: deviceReason }, 200, cors);
+        }
+
+        const iqs = await checkIPQuality(
+          env.IQS_KEY,
+          ip,
+          ua,
+          deviceInfo?.language || ''
+        );
+
+        if (iqs) {
+          if (iqs.isProxy || iqs.isVPN || iqs.isTor || iqs.isBot) {
+            const reason = 'IP 风险: ' + JSON.stringify(iqs);
+            await env.DB.prepare(
+              'UPDATE visitor_checks SET status = ?, block_reason = ?, device_info = ? WHERE ip = ?'
+            ).bind('blocked', reason, JSON.stringify(deviceInfo || {}), ip).run();
+            return json({ success: true, status: 'blocked', reason: 'IP 风险' }, 200, cors);
+          }
+          if (iqs.fraudScore >= 75) {
+            await env.DB.prepare(
+              'UPDATE visitor_checks SET status = ?, block_reason = ?, device_info = ? WHERE ip = ?'
+            ).bind('suspicious', 'IP 风险分: ' + iqs.fraudScore, JSON.stringify(deviceInfo || {}), ip).run();
+            return json({ success: true, status: 'suspicious', reason: 'IP 风险分: ' + iqs.fraudScore }, 200, cors);
+          }
+        }
+
+        const trustedCountries = ['CN', 'HK', 'TW', 'MO', 'SG', 'US', 'JP', 'KR'];
+        if (!trustedCountries.includes(country)) {
+          await env.DB.prepare(
+            'UPDATE visitor_checks SET status = ?, block_reason = ?, device_info = ? WHERE ip = ?'
+          ).bind('suspicious', 'IP 地区: ' + country, JSON.stringify(deviceInfo || {}), ip).run();
+          return json({ success: true, status: 'suspicious', reason: 'IP 地区可疑' }, 200, cors);
+        }
+
+        await env.DB.prepare(
+          'UPDATE visitor_checks SET status = ?, passed_at = ?, device_info = ? WHERE ip = ?'
+        ).bind('passed', Date.now(), JSON.stringify(deviceInfo || {}), ip).run();
+
+        return json({ success: true, status: 'passed' }, 200, cors);
+      }
+
+      // ========================================================
+      // 访客：兜底强制通过
+      // ========================================================
+      if (path === '/api/visitor/force-pass' && method === 'POST') {
+        const ip = request.headers.get('CF-Connecting-IP') || 'unknown';
+        await env.DB.prepare(
+          'UPDATE visitor_checks SET status = ?, passed_at = ? WHERE ip = ?'
+        ).bind('passed', Date.now(), ip).run();
+        return json({ success: true }, 200, cors);
+      }
+
       // ========================================================
       // 注册
       // ========================================================
@@ -305,7 +463,7 @@ export default {
       }
 
       // ========================================================
-      // 获取用户公开主页信息
+      // 用户公开主页信息
       // ========================================================
       if (path.startsWith('/api/user/profile/') && method === 'GET') {
         const publicId = path.split('/').pop();
@@ -317,7 +475,6 @@ export default {
 
         if (!user) return json({ success: false, message: '用户不存在' }, 404, cors);
 
-        // 计算等级
         const roms = await env.DB.prepare('SELECT COUNT(*) as c FROM roms WHERE author = ?').bind(user.username).first();
         const hours = (Date.now() - user.created_at) / 3600000;
         let level = 0;
@@ -325,7 +482,6 @@ export default {
         if (roms.c >= 3 && hours >= 24) level = 2;
         if (roms.c >= 5 && hours >= 72) level = 3;
 
-        // 拉取他发布的 ROM
         const { results: romList } = await env.DB.prepare(
           'SELECT * FROM roms WHERE author = ? ORDER BY created_at DESC'
         ).bind(user.username).all();
@@ -365,7 +521,12 @@ export default {
       // 获取 ROM 列表
       // ========================================================
       if (path === '/api/roms' && method === 'GET') {
-        const { results } = await env.DB.prepare('SELECT * FROM roms ORDER BY created_at DESC').all();
+        const { results } = await env.DB.prepare(`
+          SELECT r.*, u.public_id AS author_public_id, u.avatar AS author_avatar
+          FROM roms r
+          LEFT JOIN users u ON r.author = u.username
+          ORDER BY r.created_at DESC
+        `).all();
         return json(results, 200, cors);
       }
 
@@ -374,7 +535,12 @@ export default {
       // ========================================================
       if (path.startsWith('/api/rom/by-slug/') && method === 'GET') {
         const slug = path.split('/').pop();
-        const rom = await env.DB.prepare('SELECT * FROM roms WHERE slug = ?').bind(slug).first();
+        const rom = await env.DB.prepare(`
+          SELECT r.*, u.public_id AS author_public_id, u.avatar AS author_avatar
+          FROM roms r
+          LEFT JOIN users u ON r.author = u.username
+          WHERE r.slug = ?
+        `).bind(slug).first();
         if (!rom) return json({ success: false, message: 'ROM 不存在' }, 404, cors);
         await env.DB.prepare('UPDATE roms SET views = views + 1 WHERE id = ?').bind(rom.id).run();
         return json(rom, 200, cors);
@@ -385,7 +551,12 @@ export default {
       // ========================================================
       if (path.startsWith('/api/rom/') && method === 'GET') {
         const id = path.split('/').pop();
-        const rom = await env.DB.prepare('SELECT * FROM roms WHERE id = ?').bind(id).first();
+        const rom = await env.DB.prepare(`
+          SELECT r.*, u.public_id AS author_public_id, u.avatar AS author_avatar
+          FROM roms r
+          LEFT JOIN users u ON r.author = u.username
+          WHERE r.id = ?
+        `).bind(id).first();
         if (!rom) return json({ success: false, message: 'ROM 不存在' }, 404, cors);
         await env.DB.prepare('UPDATE roms SET views = views + 1 WHERE id = ?').bind(id).run();
         return json(rom, 200, cors);
