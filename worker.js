@@ -88,7 +88,7 @@ async function sendEmail(apiKey, to, code) {
 }
 
 // ============================================================
-// 工具：根据触发次数算拉黑时长（毫秒）
+// 工具：根据触发次数算拉黑时长
 // ============================================================
 function getBanDuration(count) {
   if (count <= 3) return 0;
@@ -140,7 +140,6 @@ export default {
       if (path === '/api/register' && method === 'POST') {
         const { username, password, email } = await request.json();
 
-        // ===== 基础校验 =====
         if (!username || !password) return json({ success: false, message: '用户名和密码不能为空' }, 400, cors);
         if (username.length < 2 || username.length > 20) return json({ success: false, message: '用户名长度 2-20 位' }, 400, cors);
         if (password.length < 4) return json({ success: false, message: '密码至少 4 位' }, 400, cors);
@@ -154,7 +153,6 @@ export default {
         const ip = request.headers.get('CF-Connecting-IP') || 'unknown';
         const now = Date.now();
 
-        // ===== 黑名单检查 =====
         const blacklisted = await env.DB.prepare(
           'SELECT * FROM ip_blacklist WHERE ip = ? AND expires_at > ?'
         ).bind(ip, now).first();
@@ -166,13 +164,9 @@ export default {
           if (remainMin < 60) remainText = remainMin + ' 分钟';
           else if (remainMin < 1440) remainText = Math.ceil(remainMin / 60) + ' 小时';
           else remainText = Math.ceil(remainMin / 1440) + ' 天';
-          return json({
-            success: false,
-            message: `您的网络已被限制注册，请 ${remainText}后再试`
-          }, 403, cors);
+          return json({ success: false, message: `您的网络已被限制注册，请 ${remainText}后再试` }, 403, cors);
         }
 
-        // ===== 记录本次尝试 =====
         await env.DB.prepare(
           'INSERT INTO ip_request_logs (ip, action, created_at) VALUES (?, ?, ?)'
         ).bind(ip, 'register_attempt', now).run();
@@ -184,48 +178,37 @@ export default {
 
         const attemptCount = attempts.c;
 
-        // ===== 尝试次数过多，拉黑 =====
         if (attemptCount >= 4) {
           const banDuration = getBanDuration(attemptCount);
           const expiresAt = now + banDuration;
           await env.DB.prepare(
             'INSERT OR REPLACE INTO ip_blacklist (ip, reason, trigger_count, created_at, expires_at) VALUES (?, ?, ?, ?, ?)'
           ).bind(ip, '频繁注册', attemptCount, now, expiresAt).run();
-
-          return json({
-            success: false,
-            message: getBanMessage(attemptCount)
-          }, 429, cors);
+          return json({ success: false, message: getBanMessage(attemptCount) }, 429, cors);
         }
 
-        // ===== 判断是否需要邮箱验证 =====
         const recentCount = await env.DB.prepare(
           'SELECT COUNT(*) as c FROM register_logs WHERE ip = ? AND created_at > ?'
         ).bind(ip, oneHourAgo).first();
 
         const needEmail = recentCount.c >= 1;
 
-        // ===== 同 IP 1 小时内首次：直接注册 =====
         if (!needEmail) {
           const salt = crypto.randomUUID();
           const hashed = await hashPassword(password, salt);
+          const publicId = generateSlug();
           await env.DB.prepare(
-            'INSERT INTO users (username, password, salt, email, role, banned, created_at) VALUES (?, ?, ?, ?, ?, 0, ?)'
-          ).bind(username, hashed, salt, email || '', 'user', now).run();
+            'INSERT INTO users (username, password, salt, email, role, banned, public_id, created_at) VALUES (?, ?, ?, ?, ?, 0, ?, ?)'
+          ).bind(username, hashed, salt, email || '', 'user', publicId, now).run();
           await env.DB.prepare(
             'INSERT INTO register_logs (ip, email, created_at) VALUES (?, ?, ?)'
           ).bind(ip, email || '', now).run();
           return json({ success: true, message: '注册成功' }, 200, cors);
         }
 
-        // ===== 需要邮箱验证 =====
-        if (!email || !email.trim()) {
-          return json({ success: false, message: '该网络近期已注册过账号，请填写邮箱' }, 400, cors);
-        }
+        if (!email || !email.trim()) return json({ success: false, message: '该网络近期已注册过账号，请填写邮箱' }, 400, cors);
         const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-        if (!emailRegex.test(email)) {
-          return json({ success: false, message: '邮箱格式不正确' }, 400, cors);
-        }
+        if (!emailRegex.test(email)) return json({ success: false, message: '邮箱格式不正确' }, 400, cors);
 
         const code = generateCode();
         const expiresAt = now + 10 * 60 * 1000;
@@ -247,7 +230,7 @@ export default {
       }
 
       // ========================================================
-      // 验证邮箱并完成注册
+      // 验证邮箱
       // ========================================================
       if (path === '/api/verify-email' && method === 'POST') {
         const { email, code } = await request.json();
@@ -263,11 +246,12 @@ export default {
 
         const salt = crypto.randomUUID();
         const hashed = await hashPassword(record.password, salt);
+        const publicId = generateSlug();
         const now = Date.now();
 
         await env.DB.prepare(
-          'INSERT INTO users (username, password, salt, email, role, banned, created_at) VALUES (?, ?, ?, ?, ?, 0, ?)'
-        ).bind(record.username, hashed, salt, email, 'user', now).run();
+          'INSERT INTO users (username, password, salt, email, role, banned, public_id, created_at) VALUES (?, ?, ?, ?, ?, 0, ?, ?)'
+        ).bind(record.username, hashed, salt, email, 'user', publicId, now).run();
 
         const ip = request.headers.get('CF-Connecting-IP') || 'unknown';
         await env.DB.prepare(
@@ -313,8 +297,50 @@ export default {
             created_at: user.created_at,
             role: user.role || 'user',
             banned: user.banned || 0,
-            ban_reason: user.ban_reason || ''
+            ban_reason: user.ban_reason || '',
+            public_id: user.public_id || '',
+            avatar: user.avatar || ''
           }
+        }, 200, cors);
+      }
+
+      // ========================================================
+      // 获取用户公开主页信息
+      // ========================================================
+      if (path.startsWith('/api/user/profile/') && method === 'GET') {
+        const publicId = path.split('/').pop();
+        if (!publicId) return json({ success: false, message: '缺少用户ID' }, 400, cors);
+
+        const user = await env.DB.prepare(
+          'SELECT username, created_at, role, public_id, avatar FROM users WHERE public_id = ?'
+        ).bind(publicId).first();
+
+        if (!user) return json({ success: false, message: '用户不存在' }, 404, cors);
+
+        // 计算等级
+        const roms = await env.DB.prepare('SELECT COUNT(*) as c FROM roms WHERE author = ?').bind(user.username).first();
+        const hours = (Date.now() - user.created_at) / 3600000;
+        let level = 0;
+        if (roms.c > 0 && hours >= 1) level = 1;
+        if (roms.c >= 3 && hours >= 24) level = 2;
+        if (roms.c >= 5 && hours >= 72) level = 3;
+
+        // 拉取他发布的 ROM
+        const { results: romList } = await env.DB.prepare(
+          'SELECT * FROM roms WHERE author = ? ORDER BY created_at DESC'
+        ).bind(user.username).all();
+
+        return json({
+          success: true,
+          user: {
+            username: user.username,
+            created_at: user.created_at,
+            role: user.role,
+            public_id: user.public_id,
+            avatar: user.avatar || '',
+            level: level
+          },
+          roms: romList
         }, 200, cors);
       }
 
@@ -472,7 +498,7 @@ export default {
         const romId = url.searchParams.get('romId');
         if (!romId) return json([], 200, cors);
         const { results } = await env.DB.prepare(
-          'SELECT * FROM comments WHERE rom_id = ? ORDER BY created_at DESC'
+          'SELECT c.*, u.avatar AS user_avatar, u.public_id AS user_public_id FROM comments c LEFT JOIN users u ON c.username = u.username WHERE c.rom_id = ? ORDER BY c.created_at DESC'
         ).bind(romId).all();
         return json(results, 200, cors);
       }
@@ -545,7 +571,6 @@ export default {
         const targetUser = await env.DB.prepare('SELECT id, role FROM users WHERE username = ?').bind(target).first();
         if (!targetUser) return json({ success: false, message: '用户不存在' }, 404, cors);
         if (targetUser.role === 'root') return json({ success: false, message: '不能删除超级管理员' }, 403, cors);
-
         const { results: userRoms } = await env.DB.prepare('SELECT id FROM roms WHERE author = ?').bind(target).all();
         for (const r of userRoms) {
           await env.DB.prepare('DELETE FROM comments WHERE rom_id = ?').bind(r.id).run();
@@ -575,7 +600,7 @@ export default {
         const adminRole = await checkAdmin(requester);
         if (!adminRole) return json({ success: false, message: '无权限' }, 403, cors);
         const { results } = await env.DB.prepare(
-          'SELECT username, role, banned, ban_reason, created_at FROM users ORDER BY created_at DESC'
+          'SELECT username, role, banned, ban_reason, created_at, public_id, avatar FROM users ORDER BY created_at DESC'
         ).all();
         return json(results, 200, cors);
       }
