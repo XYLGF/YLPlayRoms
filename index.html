@@ -10,7 +10,6 @@
     :root {
       --font-scale: 1;
       --text-color: #111111;
-      --btn-press-scale: 0.96;
       --anim-speed: 0.3s;
       --anim-easing: cubic-bezier(0.22, 0.9, 0.34, 1);
     }
@@ -45,7 +44,7 @@
       transition: transform var(--anim-speed) var(--anim-easing),
                   background 0.15s, color 0.15s;
     }
-    body.material-on .btn:active { transform: scale(var(--btn-press-scale)); }
+    body.material-on .btn:active { transform: scale(0.96); }
     body.material-on .tab { transition: color 0.25s; }
     body.material-on .rom-card { transition: transform 0.2s var(--anim-easing); }
     body.material-on .rom-card:active { transform: scale(0.97); }
@@ -531,7 +530,6 @@
       transition: background 0.3s;
       border-radius: 30px;
     }
-
     body:not(.theme-ios) .switch .slider:before {
       position: absolute;
       content: "";
@@ -549,122 +547,178 @@
       background: linear-gradient(135deg, #4F8BFF 0%, #A855F7 100%);
     }
 
-/* ===================================================== */
-/* macOS 关于弹窗                                         */
-/* ===================================================== */
-.mac-modal-mask {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.35);
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
-  display: none;
-  align-items: center;
-  justify-content: center;
-  z-index: 99999;
-  padding: 20px;
-}
-.mac-modal-mask.show { display: flex; }
-@keyframes macPopIn {
-  from { transform: scale(0.85); opacity: 0; }
-  to { transform: scale(1); opacity: 1; }
-}
-.mac-modal {
-  width: 100%;
-  max-width: 420px;
-  background: #ececec;
-  border-radius: 12px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
-  overflow: hidden;
-  animation: macPopIn 0.22s cubic-bezier(0.22, 0.9, 0.34, 1);
-}
-.mac-modal-titlebar {
-  height: 38px;
-  background: #e4e4e4;
-  display: flex;
-  align-items: center;
-  padding: 0 14px;
-  border-bottom: 1px solid #d0d0d0;
-  position: relative;
-}
-.mac-modal-lights {
-  display: flex;
-  gap: 8px;
-  flex-shrink: 0;
-}
-.mac-light {
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  cursor: pointer;
-  transition: opacity 0.15s;
-}
-.mac-light:active { opacity: 0.7; }
-.mac-light.red { background: #FF5F56; border: 0.5px solid #E0443E; }
-.mac-light.yellow { background: #FFBD2E; border: 0.5px solid #DEA123; }
-.mac-light.green { background: #27C93F; border: 0.5px solid #1AAB29; }
-.mac-modal-title {
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: 13px;
-  font-weight: 500;
-  color: #333;
-  letter-spacing: 0.3px;
-}
-.mac-modal-body {
-  padding: 32px 28px 28px;
-  background: #f7f7f7;
-  min-height: 180px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-}
-.mac-modal-text {
-  font-size: 15px;
-  line-height: 1.8;
-  color: #222;
-  letter-spacing: 0.3px;
-  word-break: break-word;
-  animation: macTextFade 0.5s ease-out;
-}
-@keyframes macTextFade {
-  from { opacity: 0; transform: translateY(8px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-.mac-modal-link {
-  color: #007AFF;
-  cursor: pointer;
-  text-decoration: underline;
-  font-weight: 500;
-}
-.mac-modal-link:active { color: #0055CC; }
-.mac-creators {
-  text-align: left;
-  width: 100%;
-  animation: macTextFade 0.5s ease-out;
-}
-.mac-creators-title {
-  font-size: 18px;
-  font-weight: 600;
-  text-align: center;
-  margin-bottom: 20px;
-  color: #222;
-  letter-spacing: 1px;
-}
-.mac-creator-item {
-  padding: 10px 0;
-  font-size: 14px;
-  line-height: 1.7;
-  color: #333;
-  border-bottom: 1px solid #e0e0e0;
-}
-.mac-creator-item:last-child { border-bottom: none; }
-.mac-creator-item strong {
-  color: #007AFF;
-  font-weight: 600;
-}
+    /* ===================================================== */
+    /* 用户主页样式（补回）                                    */
+    /* ===================================================== */
+    .user-profile-header {
+      display: flex; flex-direction: column; align-items: center;
+      padding: 40px 20px 28px;
+      border-bottom: 2px solid #111111;
+    }
+    .user-profile-avatar {
+      width: 110px; height: 110px;
+      border: 3px solid #111111; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: calc(44px * var(--font-scale)); font-weight: 700; margin-bottom: 18px;
+      text-transform: uppercase;
+      overflow: hidden;
+    }
+    .user-profile-avatar img { width: 100%; height: 100%; object-fit: cover; }
+    .user-profile-name { font-size: calc(24px * var(--font-scale)); font-weight: 700; margin-bottom: 4px; }
+    .user-profile-level { font-size: calc(18px * var(--font-scale)); font-weight: 300; color: #555; }
+    .user-profile-section-title {
+      font-size: calc(22px * var(--font-scale)); font-weight: 700;
+      padding: 20px 20px 12px;
+    }
+    .user-profile-roms {
+      padding: 0 20px 40px;
+      display: flex; flex-direction: column; gap: 20px;
+    }
+    body.theme-md3 .user-profile-header {
+      border-bottom: none;
+      background: linear-gradient(135deg, #e8def8 0%, #f3edf7 100%);
+      border-radius: 0 0 32px 32px;
+    }
+    body.theme-md3 .user-profile-avatar { background: #6750a4; color: #ffffff; border: none; }
+    body.theme-ios .user-profile-header {
+      border-bottom: none; background: #ffffff; border-radius: 0 0 20px 20px; padding-bottom: 32px;
+    }
+    body.theme-ios .user-profile-avatar { background: #007AFF; color: #ffffff; border: none; font-weight: 500; }
+    body.theme-ios .user-profile-name { color: #000000; }
+    body.theme-ios .user-profile-level { color: #8E8E93; }
+    body.theme-ai .user-profile-header {
+      border-bottom: 1px solid rgba(120, 140, 255, 0.15);
+      background: linear-gradient(135deg, rgba(79, 139, 255, 0.1) 0%, rgba(168, 85, 247, 0.1) 100%);
+    }
+    body.theme-ai .user-profile-avatar {
+      background: linear-gradient(135deg, #4F8BFF 0%, #A855F7 100%);
+      color: #ffffff; border: none;
+      box-shadow: 0 0 30px rgba(79, 139, 255, 0.5);
+    }
+    body.theme-ai .user-profile-name { color: #E8E9F3; }
+    body.theme-ai .user-profile-level {
+      background: linear-gradient(135deg, #4F8BFF 0%, #A855F7 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* ===================================================== */
+    /* macOS 关于弹窗                                         */
+    /* ===================================================== */
+    .mac-modal-mask {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.35);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 99999;
+      padding: 20px;
+    }
+    .mac-modal-mask.show { display: flex; }
+    @keyframes macPopIn {
+      from { transform: scale(0.85); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+    .mac-modal {
+      width: 100%;
+      max-width: 420px;
+      background: #ececec;
+      border-radius: 12px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+      overflow: hidden;
+      animation: macPopIn 0.22s cubic-bezier(0.22, 0.9, 0.34, 1);
+    }
+    .mac-modal-titlebar {
+      height: 38px;
+      background: #e4e4e4;
+      display: flex;
+      align-items: center;
+      padding: 0 14px;
+      border-bottom: 1px solid #d0d0d0;
+      position: relative;
+    }
+    .mac-modal-lights {
+      display: flex;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+    .mac-light {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      cursor: pointer;
+      transition: opacity 0.15s;
+    }
+    .mac-light:active { opacity: 0.7; }
+    .mac-light.red { background: #FF5F56; border: 0.5px solid #E0443E; }
+    .mac-light.yellow { background: #FFBD2E; border: 0.5px solid #DEA123; }
+    .mac-light.green { background: #27C93F; border: 0.5px solid #1AAB29; }
+    .mac-modal-title {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 13px;
+      font-weight: 500;
+      color: #333;
+      letter-spacing: 0.3px;
+    }
+    .mac-modal-body {
+      padding: 32px 28px 28px;
+      background: #f7f7f7;
+      min-height: 180px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+    .mac-modal-text {
+      font-size: 15px;
+      line-height: 1.8;
+      color: #222;
+      letter-spacing: 0.3px;
+      word-break: break-word;
+      animation: macTextFade 0.5s ease-out;
+    }
+    @keyframes macTextFade {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .mac-modal-link {
+      color: #007AFF;
+      cursor: pointer;
+      text-decoration: underline;
+      font-weight: 500;
+    }
+    .mac-modal-link:active { color: #0055CC; }
+    .mac-creators {
+      text-align: left;
+      width: 100%;
+      animation: macTextFade 0.5s ease-out;
+    }
+    .mac-creators-title {
+      font-size: 18px;
+      font-weight: 600;
+      text-align: center;
+      margin-bottom: 20px;
+      color: #222;
+      letter-spacing: 1px;
+    }
+    .mac-creator-item {
+      padding: 10px 0;
+      font-size: 14px;
+      line-height: 1.7;
+      color: #333;
+      border-bottom: 1px solid #e0e0e0;
+    }
+    .mac-creator-item:last-child { border-bottom: none; }
+    .mac-creator-item strong {
+      color: #007AFF;
+      font-weight: 600;
+    }
+
     /* ===================================================== */
     /* iOS 液态玻璃开关（真折射 + 物理引擎）                   */
     /* ===================================================== */
@@ -748,18 +802,16 @@
     /* ===================================================== */
     /* iOS 液态玻璃按钮（真折射 + 物理引擎）                   */
     /* ===================================================== */
-    body.theme-ios .btn {
+    body.theme-ios .btn,
+    body.theme-ios .settings-option,
+    body.theme-ios .admin-btn,
+    body.theme-ios .admin-panel-btn {
       --press: 0;
       position: relative;
-      height: 48px;
-      padding: 0 26px;
       border: 0 !important;
-      border-radius: 999px !important;
       background: none !important;
-      font: inherit;
-      font-size: calc(15px * var(--font-scale));
-      font-weight: 500;
       color: #000 !important;
+      font-weight: 500;
       cursor: pointer;
       touch-action: none;
       user-select: none;
@@ -768,9 +820,43 @@
       will-change: transform;
       overflow: visible;
       box-shadow: none !important;
+      font-family: inherit;
+    }
+    body.theme-ios .btn {
+      height: 48px;
+      padding: 0 26px;
+      border-radius: 999px !important;
+      font-size: calc(15px * var(--font-scale));
       letter-spacing: 0 !important;
     }
-    body.theme-ios .btn .lg-glass {
+    body.theme-ios .settings-option {
+      border-radius: 14px !important;
+      font-size: calc(15px * var(--font-scale));
+      padding: 12px 10px;
+      text-align: center;
+      flex: 1;
+      min-width: 90px;
+    }
+    body.theme-ios .admin-btn {
+      border-radius: 14px !important;
+      font-size: 13px;
+      padding: 6px 14px;
+      margin-left: 0;
+      color: #FF3B30 !important;
+      background: rgba(255, 235, 235, 0.5) !important;
+    }
+    body.theme-ios .admin-panel-btn {
+      border-radius: 999px !important;
+      font-size: 14px;
+      padding: 10px 20px;
+      color: #FF3B30 !important;
+      background: rgba(255, 235, 235, 0.5) !important;
+    }
+
+    body.theme-ios .btn .lg-glass,
+    body.theme-ios .settings-option .lg-glass,
+    body.theme-ios .admin-btn .lg-glass,
+    body.theme-ios .admin-panel-btn .lg-glass {
       position: absolute;
       inset: 0;
       border-radius: inherit;
@@ -780,7 +866,10 @@
               backdrop-filter: url(#lg-btn-0) blur(2px) saturate(1.5);
       box-shadow: 0 4px 24px rgba(0, 0, 0, 0.1);
     }
-    body.theme-ios .btn .lg-glass::after {
+    body.theme-ios .btn .lg-glass::after,
+    body.theme-ios .settings-option .lg-glass::after,
+    body.theme-ios .admin-btn .lg-glass::after,
+    body.theme-ios .admin-panel-btn .lg-glass::after {
       content: "";
       position: absolute;
       inset: 0;
@@ -791,7 +880,10 @@
       -webkit-mask-composite: xor;
               mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
     }
-    body.theme-ios .btn .lg-glass::before {
+    body.theme-ios .btn .lg-glass::before,
+    body.theme-ios .settings-option .lg-glass::before,
+    body.theme-ios .admin-btn .lg-glass::before,
+    body.theme-ios .admin-panel-btn .lg-glass::before {
       content: "";
       position: absolute;
       inset: 0;
@@ -799,9 +891,21 @@
       background: radial-gradient(80px 60px at var(--gx, 50%) var(--gy, 50%), rgba(255,255,255,0.35), rgba(255,255,255,0) 70%);
       opacity: var(--press);
     }
-    body.theme-ios .btn > span {
+    body.theme-ios .btn > span,
+    body.theme-ios .btn > *:not(.lg-glass),
+    body.theme-ios .settings-option > span,
+    body.theme-ios .settings-option > *:not(.lg-glass),
+    body.theme-ios .admin-btn > span,
+    body.theme-ios .admin-btn > *:not(.lg-glass),
+    body.theme-ios .admin-panel-btn > span,
+    body.theme-ios .admin-panel-btn > *:not(.lg-glass) {
       position: relative;
       z-index: 1;
+    }
+    body.theme-ios .settings-option.selected {
+      background: rgba(52, 199, 89, 0.85) !important;
+      color: #fff !important;
+      box-shadow: 0 4px 20px rgba(52, 199, 89, 0.35) !important;
     }
 
     /* ===== 主题：MD3 ===== */
@@ -820,10 +924,8 @@
     body.theme-md3 .rom-logo-placeholder { border: none; border-radius: 12px; background: #ede8f3; }
     body.theme-md3 .rom-bottom h3 { color: #1d1b20; }
     body.theme-md3 .rom-bottom p { color: #6750a4; }
-    body.theme-md3 .profile-header,
-    body.theme-md3 .user-profile-header { border-bottom: none; background: linear-gradient(135deg, #e8def8 0%, #f3edf7 100%); border-radius: 0 0 32px 32px; }
-    body.theme-md3 .profile-avatar,
-    body.theme-md3 .user-profile-avatar { background: #6750a4; color: #ffffff; border: none; }
+    body.theme-md3 .profile-header { border-bottom: none; background: linear-gradient(135deg, #e8def8 0%, #f3edf7 100%); border-radius: 0 0 32px 32px; }
+    body.theme-md3 .profile-avatar { background: #6750a4; color: #ffffff; border: none; }
     body.theme-md3 .tabs { border-bottom: none; }
     body.theme-md3 .tab { color: #999; }
     body.theme-md3 .tab.active { color: #6750a4; }
@@ -878,14 +980,10 @@
     body.theme-ios .rom-logo-placeholder { border: none; border-radius: 10px; background: #F2F2F7; }
     body.theme-ios .rom-bottom h3 { color: #000000; }
     body.theme-ios .rom-bottom p { color: #8E8E93; }
-    body.theme-ios .profile-header,
-    body.theme-ios .user-profile-header { border-bottom: none; background: #ffffff; border-radius: 0 0 20px 20px; padding-bottom: 32px; }
-    body.theme-ios .profile-avatar,
-    body.theme-ios .user-profile-avatar { background: #007AFF; color: #ffffff; border: none; font-weight: 500; }
-    body.theme-ios .profile-name,
-    body.theme-ios .user-profile-name { color: #000000; }
-    body.theme-ios .profile-level,
-    body.theme-ios .user-profile-level { color: #8E8E93; }
+    body.theme-ios .profile-header { border-bottom: none; background: #ffffff; border-radius: 0 0 20px 20px; padding-bottom: 32px; }
+    body.theme-ios .profile-avatar { background: #007AFF; color: #ffffff; border: none; font-weight: 500; }
+    body.theme-ios .profile-name { color: #000000; }
+    body.theme-ios .profile-level { color: #8E8E93; }
     body.theme-ios .tabs { border-bottom: 0.5px solid #C6C6C8; background: transparent; }
     body.theme-ios .tab { color: #8E8E93; }
     body.theme-ios .tab.active { color: #007AFF; }
@@ -901,8 +999,6 @@
     body.theme-ios .auth-title { color: #000000; }
     body.theme-ios .settings-group { border: none; background: #ffffff; border-radius: 14px; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04); padding: 20px; }
     body.theme-ios .settings-group h3 { color: #000000; }
-    body.theme-ios .settings-option { border: none; background: #F2F2F7; border-radius: 10px; font-weight: 500; }
-    body.theme-ios .settings-option.selected { background: #007AFF; color: #ffffff; }
     body.theme-ios .detail-logo { border-bottom: none; background: #F2F2F7; }
     body.theme-ios .detail-info,
     body.theme-ios .detail-author { border-bottom: none; }
@@ -923,9 +1019,6 @@
     body.theme-ios .toast { background: rgba(0, 0, 0, 0.82); border-radius: 14px; }
     body.theme-ios .empty-tip { color: #8E8E93; }
     body.theme-ios .admin-user-item { border: none; background: #ffffff; border-radius: 12px; box-shadow: 0 1px 2px rgba(0,0,0,0.04); }
-    body.theme-ios .admin-btn { border: none; background: #FFEBEB; color: #FF3B30; border-radius: 8px; padding: 5px 10px; }
-    body.theme-ios .admin-btn:active { background: #FF3B30; color: #ffffff; }
-    body.theme-ios .admin-panel-btn { border: none; background: #FFEBEB; color: #FF3B30; border-radius: 10px; }
     body.theme-ios .admin-role-tag.root { background: #FF3B30; }
     body.theme-ios .admin-role-tag.super { background: #007AFF; }
 
@@ -1025,22 +1118,15 @@
       background-clip: text;
       font-weight: 500;
     }
-    body.theme-ai .profile-header,
-    body.theme-ai .user-profile-header {
-      border-bottom: 1px solid rgba(120, 140, 255, 0.15);
-      background: linear-gradient(135deg, rgba(79, 139, 255, 0.1) 0%, rgba(168, 85, 247, 0.1) 100%);
-    }
-    body.theme-ai .profile-avatar,
-    body.theme-ai .user-profile-avatar {
+    body.theme-ai .profile-header { border-bottom: 1px solid rgba(120, 140, 255, 0.15); background: linear-gradient(135deg, rgba(79, 139, 255, 0.1) 0%, rgba(168, 85, 247, 0.1) 100%); }
+    body.theme-ai .profile-avatar {
       background: linear-gradient(135deg, #4F8BFF 0%, #A855F7 100%);
       color: #ffffff;
       border: none;
       box-shadow: 0 0 30px rgba(79, 139, 255, 0.5);
     }
-    body.theme-ai .profile-name,
-    body.theme-ai .user-profile-name { color: #E8E9F3; }
-    body.theme-ai .profile-level,
-    body.theme-ai .user-profile-level {
+    body.theme-ai .profile-name { color: #E8E9F3; }
+    body.theme-ai .profile-level {
       background: linear-gradient(135deg, #4F8BFF 0%, #A855F7 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
@@ -1669,10 +1755,7 @@
         document.getElementById('color-purple')?.classList.toggle('selected', color === 'purple');
       }, 0);
 
-      // 主题切换后重建液态玻璃按钮的折射
-      setTimeout(() => {
-        if (window.rebuildLiquidGlass) window.rebuildLiquidGlass();
-      }, 100);
+      setTimeout(rebuildLiquidGlass, 100);
     }
 
     function setTheme(t) { localStorage.setItem('yl_theme', t); applySettings(); showToast('主题已切换'); }
@@ -1718,11 +1801,7 @@
       document.querySelector('.nav-logo').textContent = 'YL Play Roms' + (pages[id] ? ' · ' + pages[id] : '');
       if (id === 'pageMarket') loadMarket();
       if (id === 'pageProfile' && currentUser) loadProfile();
-
-      // 切页后重建液态玻璃
-      setTimeout(() => {
-        if (window.rebuildLiquidGlass) window.rebuildLiquidGlass();
-      }, 50);
+      setTimeout(rebuildLiquidGlass, 50);
     }
 
     function forceGoMarket() {
@@ -1735,9 +1814,7 @@
       }
       document.querySelector('.nav-logo').textContent = 'YL Play Roms · Rom市场';
       loadMarket();
-      setTimeout(() => {
-        if (window.rebuildLiquidGlass) window.rebuildLiquidGlass();
-      }, 50);
+      setTimeout(rebuildLiquidGlass, 50);
     }
 
     function goMarket() {
@@ -2096,6 +2173,7 @@
             </div>
           </div>
         `).join('');
+        setTimeout(rebuildLiquidGlass, 50);
       } catch (e) {
         list.innerHTML = '<div style="color:#999;font-size:14px;">加载失败</div>';
       }
@@ -2238,6 +2316,7 @@
       else if (tab === 'favorites') { document.getElementById('tabFavorites').classList.add('active'); loadMyFavorites(); }
       else if (tab === 'settings') { document.getElementById('tabSettings').classList.add('active'); applySettings(); applyMaterial(); }
       else if (tab === 'admin') { document.getElementById('tabAdmin').classList.add('active'); loadAdminUsers(); }
+      setTimeout(rebuildLiquidGlass, 50);
     }
 
     function handleLogout() {
@@ -2438,6 +2517,7 @@
             </div>
           `;
         }).join('');
+        setTimeout(rebuildLiquidGlass, 50);
       } catch (e) { list.innerHTML = '<div style="color:#999;padding:20px;">加载失败</div>'; }
     }
 
@@ -2568,7 +2648,7 @@
     // ============================================================
     // iOS 真·液态玻璃（SVG 折射 + 物理引擎）
     // ============================================================
-    function initLiquidGlassButtons() {
+    function initLiquidGlass() {
       var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       var K = 4 / 48;
       var W_FRACTION = Math.sqrt(1000), W_SCALE = Math.sqrt(250), W_VELOCITY = Math.sqrt(300);
@@ -2628,28 +2708,28 @@
         return [t + d, -z * w * d + e * (-o * wd * sn + (v + z * w * o) * c)];
       }
 
-      // ===== 按钮 =====
-      Array.prototype.forEach.call(document.querySelectorAll('.btn'), function (el, idx) {
+      // ===== 通用液态玻璃元素（按钮 / 设置选项 / 管理员按钮）=====
+      function attachLiquid(el, idx, idPrefix) {
+        if (el.dataset.lgBound) return;
+        el.dataset.lgBound = '1';
+
         if (!el.querySelector('.lg-glass')) {
           var origHTML = el.innerHTML;
           el.innerHTML = '<div class="lg-glass"></div><span>' + origHTML + '</span>';
         }
         var glass = el.querySelector('.lg-glass');
         if (!glass) return;
-        var id = 'lg-btn-' + idx;
+        var id = idPrefix + idx;
 
         function build() {
           if (!el.offsetWidth) return;
-          setRefraction(id, el.offsetWidth, el.offsetHeight, el.offsetHeight / 2, 12, 24);
+          setRefraction(id, el.offsetWidth, el.offsetHeight, Math.min(el.offsetHeight / 2, el.offsetWidth / 2), 12, 24);
           var f = 'url(#' + id + ') blur(2px) saturate(1.5)';
           glass.style.webkitBackdropFilter = f;
           glass.style.backdropFilter = f;
         }
         build();
         if (window.ResizeObserver) new ResizeObserver(build).observe(el);
-
-        if (el.dataset.lgBound) return;
-        el.dataset.lgBound = '1';
 
         var p = 0, pv = 0, tp = 0, dx = 0, dy = 0, tdx = 0, tdy = 0, vx = 0, vy = 0;
         var pid = null, raf = 0, last = 0, sx = 0, sy = 0;
@@ -2704,22 +2784,34 @@
         el.addEventListener('keydown', function (e) { if (e.key === ' ' || e.key === 'Enter') { tp = 1; kick(); } });
         el.addEventListener('keyup', function () { tp = 0; kick(); });
         draw();
+      }
+
+      // 按钮
+      Array.prototype.forEach.call(document.querySelectorAll('.btn'), function (el, idx) {
+        attachLiquid(el, idx, 'lg-btn-');
       });
 
-      // ===== 开关 =====
+      // 设置选项（字体大小/字体颜色）
+      Array.prototype.forEach.call(document.querySelectorAll('.settings-option'), function (el, idx) {
+        attachLiquid(el, idx, 'lg-opt-');
+      });
+
+      // 管理员按钮
+      Array.prototype.forEach.call(document.querySelectorAll('.admin-btn, .admin-panel-btn'), function (el, idx) {
+        attachLiquid(el, idx, 'lg-adm-');
+      });
+
+      // 开关
       Array.prototype.forEach.call(document.querySelectorAll('.switch'), function (el) {
-        if (el.querySelector('.lg-track')) return;
+        if (el.dataset.lgBound) return;
+        el.dataset.lgBound = '1';
 
         var input = el.querySelector('input');
         var on = input ? input.checked : (el.getAttribute('aria-checked') === 'true');
         var disabled = el.getAttribute('aria-disabled') === 'true';
-        var onchangeHandler = input && input.getAttribute('onchange');
 
         el.innerHTML = '<span class="lg-track"></span><span class="lg-thumb"><span class="lg-glass"></span><span class="lg-solid"></span><span class="lg-rim"></span></span>';
         var thumb = el.querySelector('.lg-thumb');
-
-        if (el.dataset.lgBound) return;
-        el.dataset.lgBound = '1';
 
         var s = {
           f: on ? 1 : 0, fv: 0, tf: on ? 1 : 0,
@@ -2793,7 +2885,6 @@
           s.trackVel = false; s.tVel = 0; s.vel = 0; s.velv = 0; s.lastT = 0;
           if (s.tPress === 0) { s.tPress = 1; s.tScale = PRESSED_SCALE; }
           kick();
-          // 触发原 onchange（更新 material 状态）
           if (typeof window.toggleMaterial === 'function' && el.closest('.material-toggle')) {
             window.toggleMaterial(v);
           }
@@ -2821,9 +2912,9 @@
           if (moved) {
             s.tf = s.tf >= .5 ? 1 : 0; s.trackVel = true;
             var next = s.tf === 1;
-            if (next !== on) { 
-              on = next; 
-              el.setAttribute('aria-checked', next ? 'true' : 'false'); 
+            if (next !== on) {
+              on = next;
+              el.setAttribute('aria-checked', next ? 'true' : 'false');
               if (navigator.vibrate) navigator.vibrate(8);
               if (typeof window.toggleMaterial === 'function' && el.closest('.material-toggle')) {
                 window.toggleMaterial(next);
@@ -2850,12 +2941,16 @@
       setRefraction('lg-knob', 40, 24, 12, 5, 10);
     }
 
-    // 供外部重建（主题切换、页面切换时调用）
-    window.rebuildLiquidGlass = function() {
+    function rebuildLiquidGlass() {
       var svg = document.getElementById('lg-defs');
       if (svg) svg.innerHTML = '';
-      initLiquidGlassButtons();
-    };
+      // 清除标记，重新绑定
+      document.querySelectorAll('.btn, .settings-option, .admin-btn, .admin-panel-btn, .switch').forEach(function(el) {
+        delete el.dataset.lgBound;
+      });
+      initLiquidGlass();
+    }
+    window.rebuildLiquidGlass = rebuildLiquidGlass;
 
     // ============================================================
     // 初始化 + 路由
@@ -2866,7 +2961,7 @@
     applySettings();
     applyMaterial();
     initVisitorGate();
-    setTimeout(function() { initLiquidGlassButtons(); }, 100);
+    setTimeout(initLiquidGlass, 100);
 
     window.addEventListener('resize', () => {
       updateTabUnderline();
