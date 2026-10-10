@@ -549,6 +549,122 @@
       background: linear-gradient(135deg, #4F8BFF 0%, #A855F7 100%);
     }
 
+/* ===================================================== */
+/* macOS 关于弹窗                                         */
+/* ===================================================== */
+.mac-modal-mask {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 99999;
+  padding: 20px;
+}
+.mac-modal-mask.show { display: flex; }
+@keyframes macPopIn {
+  from { transform: scale(0.85); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+.mac-modal {
+  width: 100%;
+  max-width: 420px;
+  background: #ececec;
+  border-radius: 12px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+  overflow: hidden;
+  animation: macPopIn 0.22s cubic-bezier(0.22, 0.9, 0.34, 1);
+}
+.mac-modal-titlebar {
+  height: 38px;
+  background: #e4e4e4;
+  display: flex;
+  align-items: center;
+  padding: 0 14px;
+  border-bottom: 1px solid #d0d0d0;
+  position: relative;
+}
+.mac-modal-lights {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+.mac-light {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+.mac-light:active { opacity: 0.7; }
+.mac-light.red { background: #FF5F56; border: 0.5px solid #E0443E; }
+.mac-light.yellow { background: #FFBD2E; border: 0.5px solid #DEA123; }
+.mac-light.green { background: #27C93F; border: 0.5px solid #1AAB29; }
+.mac-modal-title {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 13px;
+  font-weight: 500;
+  color: #333;
+  letter-spacing: 0.3px;
+}
+.mac-modal-body {
+  padding: 32px 28px 28px;
+  background: #f7f7f7;
+  min-height: 180px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+.mac-modal-text {
+  font-size: 15px;
+  line-height: 1.8;
+  color: #222;
+  letter-spacing: 0.3px;
+  word-break: break-word;
+  animation: macTextFade 0.5s ease-out;
+}
+@keyframes macTextFade {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.mac-modal-link {
+  color: #007AFF;
+  cursor: pointer;
+  text-decoration: underline;
+  font-weight: 500;
+}
+.mac-modal-link:active { color: #0055CC; }
+.mac-creators {
+  text-align: left;
+  width: 100%;
+  animation: macTextFade 0.5s ease-out;
+}
+.mac-creators-title {
+  font-size: 18px;
+  font-weight: 600;
+  text-align: center;
+  margin-bottom: 20px;
+  color: #222;
+  letter-spacing: 1px;
+}
+.mac-creator-item {
+  padding: 10px 0;
+  font-size: 14px;
+  line-height: 1.7;
+  color: #333;
+  border-bottom: 1px solid #e0e0e0;
+}
+.mac-creator-item:last-child { border-bottom: none; }
+.mac-creator-item strong {
+  color: #007AFF;
+  font-weight: 600;
+}
     /* ===================================================== */
     /* iOS 液态玻璃开关（真折射 + 物理引擎）                   */
     /* ===================================================== */
