@@ -527,7 +527,7 @@
       position: absolute;
       cursor: pointer;
       top: 0; left: 0; right: 0; bottom: 0;
-      background: #ccc;
+      background: #E9E9EA;
       transition: background 0.3s;
       border-radius: 30px;
     }
@@ -756,8 +756,6 @@
     }
     body.theme-ios .nav-logo { color: #000000; font-weight: 600; letter-spacing: -0.3px; }
     body.theme-ios .nav-avatar { background: #007AFF; color: #ffffff; border: none; font-weight: 500; }
-    body.theme-ios .btn { background: #007AFF; color: #ffffff; border: none; border-radius: 12px; padding: 11px 24px; font-weight: 500; box-shadow: none; }
-    body.theme-ios .btn:active { background: #0062CC; }
     body.theme-ios .search-bar { border: none; border-radius: 10px; background: #E3E3E8; padding: 10px 14px; }
     body.theme-ios .search-bar input { color: #000000; }
     body.theme-ios .rom-card { border: none; border-radius: 14px; background: #ffffff; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04); padding: 18px; }
@@ -830,6 +828,99 @@
       backdrop-filter: blur(20px) saturate(180%);
       -webkit-backdrop-filter: blur(20px) saturate(180%);
       background: rgba(249, 249, 249, 0.78);
+    }
+
+    /* ===================================================== */
+    /* iOS 液态玻璃按钮                                       */
+    /* ===================================================== */
+    body.theme-ios .btn {
+      position: relative;
+      background: rgba(255, 255, 255, 0.65) !important;
+      backdrop-filter: blur(20px) saturate(180%) !important;
+      -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+      border: 1px solid rgba(255, 255, 255, 0.6) !important;
+      color: #000 !important;
+      border-radius: 50px !important;
+      overflow: hidden;
+      box-shadow:
+        0 4px 16px rgba(0, 0, 0, 0.06),
+        inset 0 1px 0 rgba(255, 255, 255, 0.8),
+        inset 0 -1px 0 rgba(255, 255, 255, 0.2) !important;
+      transition: transform 0.3s cubic-bezier(0.22, 0.9, 0.34, 1);
+      isolation: isolate;
+    }
+
+    body.theme-ios .btn::before {
+      content: '';
+      position: absolute;
+      inset: -100%;
+      background: conic-gradient(
+        from 0deg,
+        transparent 0%,
+        rgba(255, 255, 255, 0.55) 8%,
+        transparent 18%,
+        transparent 82%,
+        rgba(255, 255, 255, 0.55) 92%,
+        transparent 100%
+      );
+      animation: liquidGlassRotate 5s linear infinite;
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    @keyframes liquidGlassRotate {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    body.theme-ios .btn::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      background: radial-gradient(
+        circle 80px at var(--x, 50%) var(--y, 50%),
+        rgba(255, 255, 255, 0.7) 0%,
+        transparent 70%
+      );
+      opacity: 0;
+      transition: opacity 0.3s;
+      pointer-events: none;
+      z-index: 0;
+    }
+    body.theme-ios .btn:active::after {
+      opacity: 1;
+    }
+
+    body.theme-ios .btn:active {
+      transform: scale(0.96);
+      box-shadow:
+        0 2px 8px rgba(0, 0, 0, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.8) !important;
+    }
+
+    body.theme-ios .btn.active,
+    body.theme-ios .btn.selected {
+      background: rgba(52, 199, 89, 0.85) !important;
+      border-color: rgba(52, 199, 89, 0.9) !important;
+      color: #fff !important;
+      box-shadow:
+        0 4px 20px rgba(52, 199, 89, 0.35),
+        inset 0 1px 0 rgba(255, 255, 255, 0.6) !important;
+    }
+
+    body.theme-ios .btn:disabled,
+    body.theme-ios .btn.disabled {
+      background: rgba(233, 233, 234, 0.8) !important;
+      border-color: rgba(200, 200, 200, 0.6) !important;
+      color: #8E8E93 !important;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04) !important;
+      cursor: not-allowed;
+    }
+
+    body.theme-ios .btn > * {
+      position: relative;
+      z-index: 1;
     }
 
     /* ===== 主题：AI ===== */
@@ -1156,7 +1247,6 @@
     <div class="nav-avatar" id="navAvatar" onclick="onAvatarClick()">?</div>
   </header>
 
-  <!-- 市场 -->
   <div class="page active" id="pageMarket">
     <div class="market-header">
       <h1>Rom市场</h1>
@@ -1172,7 +1262,6 @@
     <div class="market-list" id="marketList"></div>
   </div>
 
-  <!-- 系统详情 -->
   <div class="page" id="pageDetail">
     <div class="back-bar">
       <button class="back-btn" onclick="goMarket()">←</button>
@@ -1225,7 +1314,6 @@
     </div>
   </div>
 
-  <!-- 用户公开主页 -->
   <div class="page" id="pageUserProfile">
     <div class="back-bar">
       <button class="back-btn" onclick="goBack()">←</button>
@@ -1240,7 +1328,6 @@
     <div class="user-profile-roms" id="userProfileRoms"></div>
   </div>
 
-  <!-- 登录 -->
   <div class="page" id="pageAuth">
     <div class="auth-container">
       <div class="auth-title">注册@登录</div>
@@ -1261,7 +1348,6 @@
     </div>
   </div>
 
-  <!-- 个人中心 -->
   <div class="page" id="pageProfile">
     <div class="profile-header">
       <div class="profile-avatar" id="profileAvatar">?</div>
@@ -1337,7 +1423,6 @@
     </div>
   </div>
 
-  <!-- 发布 -->
   <div class="page" id="pagePublish">
     <div class="publish-container">
       <div class="publish-title">发布Roms</div>
@@ -1376,7 +1461,6 @@
 
   <div class="toast" id="toast"></div>
 
-  <!-- macOS 风格"关于"弹窗 -->
   <div class="mac-modal-mask" id="aboutModal" onclick="closeAboutOnMask(event)">
     <div class="mac-modal" onclick="event.stopPropagation()">
       <div class="mac-modal-titlebar">
@@ -1387,9 +1471,7 @@
         </div>
         <div class="mac-modal-title" id="aboutModalTitle">关于</div>
       </div>
-      <div class="mac-modal-body" id="aboutModalBody">
-        <!-- 内容由 JS 注入 -->
-      </div>
+      <div class="mac-modal-body" id="aboutModalBody"></div>
     </div>
   </div>
   <script>
@@ -2446,6 +2528,26 @@
     }
 
     // ============================================================
+    // 液态玻璃按钮：高光跟随手指
+    // ============================================================
+    function initLiquidGlassButtons() {
+      const handler = (e) => {
+        if (!document.body.classList.contains('theme-ios')) return;
+        const btn = e.target.closest('.btn');
+        if (!btn) return;
+        const rect = btn.getBoundingClientRect();
+        const x = (e.touches ? e.touches[0].clientX : e.clientX) - rect.left;
+        const y = (e.touches ? e.touches[0].clientY : e.clientY) - rect.top;
+        btn.style.setProperty('--x', x + 'px');
+        btn.style.setProperty('--y', y + 'px');
+      };
+
+      document.addEventListener('mousemove', handler);
+      document.addEventListener('touchmove', handler, { passive: true });
+      document.addEventListener('touchstart', handler, { passive: true });
+    }
+
+    // ============================================================
     // 初始化 + 路由
     // ============================================================
     loadUser();
@@ -2454,6 +2556,7 @@
     applySettings();
     applyMaterial();
     initVisitorGate();
+    initLiquidGlassButtons();
 
     window.addEventListener('resize', () => {
       updateTabUnderline();
